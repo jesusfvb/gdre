@@ -1,8 +1,7 @@
-import {AppBar, Badge, Box, CssBaseline, Grid, IconButton, Menu, MenuItem, Toolbar, Typography} from "@mui/material";
+import {AppBar, Box, CssBaseline, Grid, IconButton, Menu, MenuItem, Toolbar, Typography} from "@mui/material";
 import {Fragment, MouseEvent, useRef, useState} from "react";
 import {Outlet} from "react-router";
 import AccountCircle from '@mui/icons-material/AccountCircle';
-import NotificationsIcon from '@mui/icons-material/Notifications';
 
 export default function BarraDeNavegacion(props: { cerrarSesion: Function }) {
     const menuId = 'primary-search-account-menu';

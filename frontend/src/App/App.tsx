@@ -4,6 +4,7 @@ import Login from "./paginas/Login";
 import axios from "axios";
 import img_2 from "./img/identidad/img_2.png";
 import BarraDeNavegacion from "./componentes/BarraDeNavegacion";
+import Principal from "./paginas/Principal";
 
 export default function App(): ReactElement {
     axios.defaults.baseURL = 'http://localhost:8080';
@@ -40,9 +41,7 @@ export default function App(): ReactElement {
                 {(sesion === null) ? <Route path="*" element={<Login iniciarSesion={iniciarSesion}/>}/> :
                     <Route element={<BarraDeNavegacion cerrarSesion={cerrarSesion}/>}>
                         <Route path="/" element={<Navigate to="/principal"/>}/>
-                        <Route path="/principal" element={<div>
-                            <h1>Ojo</h1>
-                        </div>}/>
+                        <Route path="/principal" element={<Principal/>}/>
                     </Route>
                 }
             </Routes>
