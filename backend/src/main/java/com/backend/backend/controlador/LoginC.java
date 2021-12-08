@@ -1,6 +1,7 @@
 package com.backend.backend.controlador;
 
 
+import com.backend.backend.controlador.solicitudes.LoginSo;
 import com.backend.backend.servicios.implementacion.JwtSI;
 import com.backend.backend.servicios.implementacion.UserDetailsSI;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,20 +26,16 @@ public class LoginC {
     private JwtSI serviceJwt;
 
     @PostMapping
-    public ResponseEntity<?> createAuthenticationToken(@RequestParam String usuario, @RequestParam String contrasenna)
+    public ResponseEntity<?> createAuthenticationToken(@RequestBody LoginSo request)
             throws Exception {
         try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(usuario, contrasenna));
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsuario(), request.getContrasenna()));
         } catch (Exception e) {
             throw new Exception("Usuario o Contraseña Incorrecta", e);
         }
-        final UserDetails userDetails = serviceUserDetails.loadUserByUsername(usuario);
+        final UserDetails userDetails = serviceUserDetails.loadUserByUsername(request.getUsuario());
         final String jwt = serviceJwt.generateToken(userDetails);
 
         return ResponseEntity.ok(jwt);
-    }
-
-    public ResponseEntity<Void> prueva(@RequestParam Object cucu,@RequestParam Object apn){
-        return  ResponseEntity.ok(null);
     }
 }
