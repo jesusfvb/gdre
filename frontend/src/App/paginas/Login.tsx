@@ -1,27 +1,30 @@
 import {
-    Box, Button, Checkbox,
+    Box,
+    Button,
+    Checkbox,
     Container,
     createTheme,
-    CssBaseline, FormControlLabel,
-    Grid, Link, Paper,
+    CssBaseline,
+    FormControlLabel,
+    Grid,
+    Link,
+    Paper,
     TextField,
     ThemeProvider,
     Typography
 } from "@mui/material";
 import logo from '../img/logo.jpg'
-import img_2 from '../img/identidad/img_2.png'
 import {FormEvent} from "react";
 
-export default function Login(props: { iniciarSesion: Function<void> }) {
+export default function Login(props: { iniciarSesion: Function }) {
     const theme = createTheme();
-
     const iniciarSesion = (evento: FormEvent<HTMLFormElement>) => {
         evento.preventDefault()
         let inputs = evento.currentTarget.getElementsByTagName("input")
         props.iniciarSesion(inputs[0].value, inputs[1].value)
     }
 
-    function Copyright(props) {
+    function Copyright(props:any) {
         return (
             <Typography
                 variant="body2"

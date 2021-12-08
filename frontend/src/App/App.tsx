@@ -1,8 +1,10 @@
 import {ReactElement, useState} from "react";
-import {BrowserRouter, Route, Routes} from "react-router-dom";
+import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
 import Login from "./paginas/Login";
 import axios from "axios";
 import img_2 from "./img/identidad/img_2.png";
+import BarraDeNavegacion from "./componentes/BarraDeNavegacion";
+import Principal from "./paginas/Principal";
 
 export default function App(): ReactElement {
     axios.defaults.baseURL = 'http://localhost:8080';
@@ -21,7 +23,7 @@ export default function App(): ReactElement {
             })
             .catch(error => console.error(error))
     }
-    const serrarSesion = () => {
+    const cerrarSesion = () => {
         localStorage.clear()
         setSesion(null)
     }
@@ -37,12 +39,10 @@ export default function App(): ReactElement {
         <BrowserRouter>
             <Routes>
                 {(sesion === null) ? <Route path="*" element={<Login iniciarSesion={iniciarSesion}/>}/> :
-                    <Route path="*" element={
-                        <div>
-                            <h1>Dentro</h1>
-                            <button onClick={serrarSesion}>salir</button>
-                        </div>
-                    }/>
+                    <Route element={<BarraDeNavegacion cerrarSesion={cerrarSesion}/>}>
+                        <Route path="/" element={<Navigate to="/principal"/>}/>
+                        <Route path="/principal" element={<Principal/>}/>
+                    </Route>
                 }
             </Routes>
         </BrowserRouter>
