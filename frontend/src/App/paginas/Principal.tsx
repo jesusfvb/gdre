@@ -1,17 +1,22 @@
-import {Card, CardActionArea, CardContent, CardMedia, Grid, Typography} from "@mui/material";
+import {Avatar, Card, CardActionArea, CardContent, CardMedia, Grid, Paper, Typography} from "@mui/material";
 import ubicacion from '../img/ubicacion.jpg'
 import guardia from '../img/guardia.jpg'
 import cuarteleria from '../img/cuarteleria.jpg'
+import Calendario from "../componentes/Calendario";
 
 export default function Principal() {
     const sx = {
         card: {
             maxWidth: 345,
-            marginTop: 7
+            marginTop: 3,
+            marginBottom: 2
         },
         images: {
             width: 300,
             height: 200
+        },
+        info: {
+            marginTop: 2
         }
     }
 
@@ -73,8 +78,28 @@ export default function Principal() {
                     </Card>
                 </Grid>
             </Grid>
-            <Grid item>
-               Calendario
+            <Grid item container direction="row" justifyContent="space-around" alignItems="center">
+                <Grid item component={Paper} container direction="column" justifyContent="center"
+                      alignItems="center" sx={{width: 300, margin: 2, padding: "30px 50px"}}>
+                    < Avatar sx={{width: 90, height: 90}}/>
+                    <Typography>Julio C. Betancourt Ramos</Typography>
+                    <Grid item container direction="row" justifyContent="space-between" alignItems="center"
+                          sx={sx.info}>
+                        <Typography>Manzana:</Typography>
+                        <Typography>4</Typography>
+                    </Grid>
+                    <Grid item container direction="row" justifyContent="space-between" alignItems="center"
+                          sx={sx.info}>
+                        <Typography>Edificio:</Typography>
+                        <Typography>44</Typography>
+                    </Grid>
+                    <Grid item container direction="row" justifyContent="space-between" alignItems="center"
+                          sx={sx.info}>
+                        <Typography>Apartamento:</Typography>
+                        <Typography>202</Typography>
+                    </Grid>
+                </Grid>
+                <Calendario width={600} height={350}/>
             </Grid>
         </Grid>
     )

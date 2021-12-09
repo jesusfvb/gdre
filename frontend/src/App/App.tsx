@@ -9,9 +9,9 @@ import Principal from "./paginas/Principal";
 export default function App(): ReactElement {
     axios.defaults.baseURL = 'http://localhost:8080';
     const body = document.getElementsByTagName("body")[0]
-    const [sesion, setSesion] = useState<string | null>(localStorage.getItem("jwt"))
+    const [session, setSession] = useState<string | null>(localStorage.getItem("jwt"))
 
-    const iniciarSesion = (usuario: string, contrasenna: string): void => {
+    const iniciarSession = (usuario: string, contrasenna: string): void => {
         axios
             .post("/login", {
                 usuario: usuario,
@@ -19,16 +19,16 @@ export default function App(): ReactElement {
             })
             .then(datos => {
                 localStorage.setItem("jwt", datos.data)
-                setSesion(datos.data)
+                setSession(datos.data)
             })
             .catch(error => console.error(error))
     }
-    const cerrarSesion = () => {
+    const cerrarSession = () => {
         localStorage.clear()
-        setSesion(null)
+        setSession(null)
     }
 
-    if (sesion === null) {
+    if (session === null) {
         body.style.backgroundImage = `url(${img_2})`;
         body.style.backgroundRepeat = "no-repeat";
         body.style.backgroundSize = "cover";
@@ -38,8 +38,8 @@ export default function App(): ReactElement {
     return (
         <BrowserRouter>
             <Routes>
-                {(sesion === null) ? <Route path="*" element={<Login iniciarSesion={iniciarSesion}/>}/> :
-                    <Route element={<BarraDeNavegacion cerrarSesion={cerrarSesion}/>}>
+                {(session === null) ? <Route path="*" element={<Login iniciarSesion={iniciarSession}/>}/> :
+                    <Route element={<BarraDeNavegacion cerrarSession={cerrarSession}/>}>
                         <Route path="/" element={<Navigate to="/principal"/>}/>
                         <Route path="/principal" element={<Principal/>}/>
                     </Route>

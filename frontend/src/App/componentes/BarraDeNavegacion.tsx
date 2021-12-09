@@ -1,11 +1,22 @@
-import {AppBar, Box, CssBaseline, Grid, IconButton, Menu, MenuItem, Toolbar, Typography} from "@mui/material";
-import {Fragment, MouseEvent, useRef, useState} from "react";
+import {
+    AppBar,
+    Box,
+    Button,
+    ButtonGroup,
+    CssBaseline,
+    Grid,
+    IconButton,
+    Menu,
+    MenuItem,
+    Toolbar,
+    Typography
+} from "@mui/material";
+import {Fragment, MouseEvent, useState} from "react";
 import {Outlet} from "react-router";
 import AccountCircle from '@mui/icons-material/AccountCircle';
 
-export default function BarraDeNavegacion(props: { cerrarSesion: Function }) {
+export default function BarraDeNavegacion(props: { cerrarSession: Function }) {
     const menuId = 'primary-search-account-menu';
-    const cuenta = useRef<Element>()
     const [anchorEl, setAnchorEl] = useState<null | Element>(null);
 
     const isMenuOpen = Boolean(anchorEl);
@@ -16,8 +27,8 @@ export default function BarraDeNavegacion(props: { cerrarSesion: Function }) {
     const handleMenuClose = () => {
         setAnchorEl(null);
     };
-    const cerrarSesion = (evento: MouseEvent) => {
-        props.cerrarSesion()
+    const cerrarSession = (evento: MouseEvent) => {
+        props.cerrarSession()
     }
 
     return (
@@ -28,8 +39,18 @@ export default function BarraDeNavegacion(props: { cerrarSesion: Function }) {
                     <Typography variant="h4">
                         GDRE
                     </Typography>
+                    <ButtonGroup disableElevation variant="contained" sx={{marginLeft: 5}}>
+                        <Button>Inicio</Button>
+                    </ButtonGroup>
                     <Box sx={{flexGrow: 1}}/>
-                    <Box ref={cuenta}>
+                    <Grid
+                        container
+                        direction="row"
+                        justifyContent="flex-end"
+                        alignItems="center">
+                        <Typography>
+                            jesusfvb
+                        </Typography>
                         <IconButton
                             size="large"
                             edge="end"
@@ -52,9 +73,9 @@ export default function BarraDeNavegacion(props: { cerrarSesion: Function }) {
                                   horizontal: 'right'
                               }}
                         >
-                            <MenuItem onClick={cerrarSesion}>Salir</MenuItem>
+                            <MenuItem onClick={cerrarSession}>Salir</MenuItem>
                         </Menu>
-                    </Box>
+                    </Grid>
                 </Toolbar>
             </AppBar>
             <Toolbar/>

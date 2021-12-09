@@ -5,6 +5,8 @@
   "dependencies": {
     "@emotion/react": "^11.6.0",
     "@emotion/styled": "^11.6.0",
+    "@fullcalendar/daygrid": "^5.10.1",
+    "@fullcalendar/react": "^5.10.1",
     "@mui/icons-material": "^5.2.0",
     "@mui/material": "^5.2.1",
     "@testing-library/jest-dom": "^5.11.4",
