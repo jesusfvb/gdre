@@ -1,10 +1,11 @@
-import {ReactElement, useState} from "react";
-import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
+import { ReactElement, useState } from "react";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import Login from "./paginas/Login";
 import axios from "axios";
 import img_2 from "./img/identidad/img_2.png";
 import BarraDeNavegacion from "./componentes/BarraDeNavegacion";
 import Principal from "./paginas/Principal";
+import E404 from "./paginas/E404";
 
 export default function App(): ReactElement {
     axios.defaults.baseURL = 'http://localhost:8080';
