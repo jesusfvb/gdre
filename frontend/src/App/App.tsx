@@ -1,5 +1,5 @@
-import { ReactElement, useState } from "react";
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import {ReactElement, useState} from "react";
+import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
 import Login from "./paginas/Login";
 import axios from "axios";
 import img_2 from "./img/identidad/img_2.png";
@@ -40,10 +40,13 @@ export default function App(): ReactElement {
         <BrowserRouter>
             <Routes>
                 {(session === null) ? <Route path="*" element={<Login iniciarSesion={iniciarSession}/>}/> :
-                    <Route element={<BarraDeNavegacion cerrarSession={cerrarSession}/>}>
-                        <Route path="/" element={<Navigate to="/principal"/>}/>
-                        <Route path="/principal" element={<Principal/>}/>
-                    </Route>
+                    <>
+                        <Route element={<BarraDeNavegacion cerrarSession={cerrarSession}/>}>
+                            <Route path="/" element={<Navigate to="/principal"/>}/>
+                            <Route path="/principal" element={<Principal/>}/>
+                        </Route>
+                        <Route path={"*"} element={<E404/>}/>
+                    </>
                 }
             </Routes>
         </BrowserRouter>
