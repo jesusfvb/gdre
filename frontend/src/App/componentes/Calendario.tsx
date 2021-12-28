@@ -1,7 +1,7 @@
 import FullCalendar from '@fullcalendar/react' // must go before plugins
 import dayGridPlugin from '@fullcalendar/daygrid'
 
-export default function Calendario(props: { width: number, height: number }) {
+export default function Calendario(props: { width: number | string, height: number | string }) {
     const eventos = [
         {
             id: "1",

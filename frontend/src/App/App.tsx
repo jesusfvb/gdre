@@ -3,9 +3,9 @@ import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
 import Login from "./paginas/Login";
 import axios from "axios";
 import img_2 from "./img/identidad/img_2.png";
-import BarraDeNavegacion from "./componentes/BarraDeNavegacion";
 import Principal from "./paginas/Principal";
 import E404 from "./paginas/E404";
+import Marco from "./componentes/Marco";
 
 export default function App(): ReactElement {
     axios.defaults.baseURL = 'http://localhost:8080';
@@ -39,9 +39,9 @@ export default function App(): ReactElement {
     return (
         <BrowserRouter>
             <Routes>
-                {(session === null) ? <Route path="*" element={<Login iniciarSesion={iniciarSession}/>}/> :
+                {(session === null) ? <Route path="*" element={<Login iniciarSession={iniciarSession}/>}/> :
                     <>
-                        <Route element={<BarraDeNavegacion cerrarSession={cerrarSession}/>}>
+                        <Route element={<Marco cerrarSession={cerrarSession}/>}>
                             <Route path="/" element={<Navigate to="/principal"/>}/>
                             <Route path="/principal" element={<Principal/>}/>
                         </Route>
