@@ -1254,16 +1254,16 @@
     "source-map" "^0.5.7"
     "stylis" "^4.0.3"
 
-"@emotion/cache@^11.6.0":
-  "integrity" "sha512-ElbsWY1KMwEowkv42vGo0UPuLgtPYfIs9BxxVrmvsaJVvktknsHYYlx5NQ5g6zLDcOTyamlDc7FkRg2TAcQDKQ=="
-  "resolved" "http://nexus.prod.uci.cu/repository/npm-all/@emotion/cache/-/cache-11.6.0.tgz"
-  "version" "11.6.0"
+"@emotion/cache@^11.6.0", "@emotion/cache@^11.7.1":
+  "integrity" "sha512-r65Zy4Iljb8oyjtLeCuBH8Qjiy107dOYC6SJq7g7GV5UCQWMObY4SJDPGFjiiVpPrOJ2hmJOoBiYTC7hwx9E2A=="
+  "resolved" "http://nexus.prod.uci.cu/repository/npm-all/@emotion/cache/-/cache-11.7.1.tgz"
+  "version" "11.7.1"
   dependencies:
     "@emotion/memoize" "^0.7.4"
     "@emotion/sheet" "^1.1.0"
     "@emotion/utils" "^1.0.0"
     "@emotion/weak-memoize" "^0.2.5"
-    "stylis" "^4.0.10"
+    "stylis" "4.0.13"
 
 "@emotion/hash@^0.8.0":
   "integrity" "sha512-kBJtf7PH6aWwZ6fka3zQ0p6SBYzx4fl1LoZXE2RrnYST9Xljm7WfKJrU4g/Xr3Beg72MLrp1AWNUmuYJTL7Cow=="
@@ -1606,14 +1606,14 @@
     "@types/yargs" "^16.0.0"
     "chalk" "^4.0.0"
 
-"@mui/base@5.0.0-alpha.57":
-  "integrity" "sha512-UCJthNc4LGttoD/CxdCh8AaEu2B2uWNRW96J6PjlQ125+FEqO7+wuIGT98BNCGguVwetK/jTmo/fiHYDoW9gUA=="
-  "resolved" "http://nexus.prod.uci.cu/repository/npm-all/@mui/base/-/base-5.0.0-alpha.57.tgz"
-  "version" "5.0.0-alpha.57"
+"@mui/base@5.0.0-alpha.62":
+  "integrity" "sha512-ItmdSZwHKQbLbAsS3sWguR7OHqYqh2cYWahoVmHb13Kc6bMdmVUTY4x57IlDSU712B0yuA0Q/gPTq7xADKnFow=="
+  "resolved" "http://nexus.prod.uci.cu/repository/npm-all/@mui/base/-/base-5.0.0-alpha.62.tgz"
+  "version" "5.0.0-alpha.62"
   dependencies:
     "@babel/runtime" "^7.16.3"
     "@emotion/is-prop-valid" "^1.1.1"
-    "@mui/utils" "^5.2.1"
+    "@mui/utils" "^5.2.3"
     "@popperjs/core" "^2.4.4"
     "clsx" "^1.1.1"
     "prop-types" "^15.7.2"
@@ -1626,16 +1626,16 @@
   dependencies:
     "@babel/runtime" "^7.16.3"
 
-"@mui/material@^5.0.0", "@mui/material@^5.2.1":
-  "integrity" "sha512-y38+e1Qf95rVQ4lK8knYj4o1kB/WwJU0f/lMNmzlaenqGpyhd1M/e3BNwuYEDOLSPWUVeP2LvX2mL/IhKytA9A=="
-  "resolved" "http://nexus.prod.uci.cu/repository/npm-all/@mui/material/-/material-5.2.1.tgz"
-  "version" "5.2.1"
+"@mui/material@^5.0.0", "@mui/material@^5.2.1", "@mui/material@^5.2.3":
+  "integrity" "sha512-yF2bRqyJMo6bYXT7TPA9IU/XLaXHi47Xvmj8duQa5ha3bCpFMXLfGoZcAUl6ZDjjGEz1nCFS+c1qx219xD/aeQ=="
+  "resolved" "http://nexus.prod.uci.cu/repository/npm-all/@mui/material/-/material-5.2.6.tgz"
+  "version" "5.2.6"
   dependencies:
     "@babel/runtime" "^7.16.3"
-    "@mui/base" "5.0.0-alpha.57"
-    "@mui/system" "^5.2.1"
+    "@mui/base" "5.0.0-alpha.62"
+    "@mui/system" "^5.2.6"
     "@mui/types" "^7.1.0"
-    "@mui/utils" "^5.2.1"
+    "@mui/utils" "^5.2.3"
     "@types/react-transition-group" "^4.4.4"
     "clsx" "^1.1.1"
     "csstype" "^3.0.10"
@@ -1653,23 +1653,23 @@
     "@mui/utils" "^5.2.3"
     "prop-types" "^15.7.2"
 
-"@mui/styled-engine@^5.2.0":
-  "integrity" "sha512-NZ4pWYQcM5wreUfiXRd7IMFRF+Nq1vMzsIdXtXNjgctJTKHunrofasoBqv+cqevO+hqT75ezSbNHyaXzOXp6Mg=="
-  "resolved" "http://nexus.prod.uci.cu/repository/npm-all/@mui/styled-engine/-/styled-engine-5.2.0.tgz"
-  "version" "5.2.0"
+"@mui/styled-engine@^5.2.6":
+  "integrity" "sha512-bqAhli8eGS6v2qxivy2/4K0Ag8o//jsu1G2G6QcieFiT6y7oIF/nd/6Tvw6OSm3roOTifVQWNKwkt1yFWhGS+w=="
+  "resolved" "http://nexus.prod.uci.cu/repository/npm-all/@mui/styled-engine/-/styled-engine-5.2.6.tgz"
+  "version" "5.2.6"
   dependencies:
     "@babel/runtime" "^7.16.3"
-    "@emotion/cache" "^11.6.0"
+    "@emotion/cache" "^11.7.1"
     "prop-types" "^15.7.2"
 
-"@mui/system@^5.2.1":
-  "integrity" "sha512-YvkjmqgOruZgr+IkueRns99gl3MmnNs8BhnlZosYMLzKz/1lY0JqVBFqUh4sGVbD0UEKFwdk8H31itG5OIPChA=="
-  "resolved" "http://nexus.prod.uci.cu/repository/npm-all/@mui/system/-/system-5.2.3.tgz"
-  "version" "5.2.3"
+"@mui/system@^5.2.3", "@mui/system@^5.2.6":
+  "integrity" "sha512-PZ7bmpWOLikWgqn2zWv9/Xa7lxnRBOmfjoMH7c/IVYJs78W3971brXJ3xV9MEWWQcoqiYQeXzUJaNf4rFbKCBA=="
+  "resolved" "http://nexus.prod.uci.cu/repository/npm-all/@mui/system/-/system-5.2.6.tgz"
+  "version" "5.2.6"
   dependencies:
     "@babel/runtime" "^7.16.3"
     "@mui/private-theming" "^5.2.3"
-    "@mui/styled-engine" "^5.2.0"
+    "@mui/styled-engine" "^5.2.6"
     "@mui/types" "^7.1.0"
     "@mui/utils" "^5.2.3"
     "clsx" "^1.1.1"
@@ -1681,7 +1681,7 @@
   "resolved" "http://nexus.prod.uci.cu/repository/npm-all/@mui/types/-/types-7.1.0.tgz"
   "version" "7.1.0"
 
-"@mui/utils@^5.2.1", "@mui/utils@^5.2.3":
+"@mui/utils@^5.2.3":
   "integrity" "sha512-sQujlajIS0zQKcGIS6tZR0L1R+ib26B6UtuEn+cZqwKHsPo3feuS+SkdscYBdcCdMbrZs4gj8WIJHl2z6tbSzQ=="
   "resolved" "http://nexus.prod.uci.cu/repository/npm-all/@mui/utils/-/utils-5.2.3.tgz"
   "version" "5.2.3"
@@ -1691,6 +1691,16 @@
     "@types/react-is" "^16.7.1 || ^17.0.0"
     "prop-types" "^15.7.2"
     "react-is" "^17.0.2"
+
+"@mui/x-data-grid@^5.2.1":
+  "integrity" "sha512-d1kNZnISZy74uz9mDitSRqdOPLTyqPXue/BQJV42evZ2aGbEIo5WhrGrQUhz/wgfigGaeybphWo8b8+efnVjGw=="
+  "resolved" "http://nexus.prod.uci.cu/repository/npm-all/@mui/x-data-grid/-/x-data-grid-5.2.1.tgz"
+  "version" "5.2.1"
+  dependencies:
+    "@mui/utils" "^5.2.3"
+    "clsx" "^1.1.1"
+    "prop-types" "^15.7.2"
+    "reselect" "^4.1.5"
 
 "@nodelib/fs.scandir@2.1.4":
   "integrity" "sha512-33g3pMJk3bg5nXbL/+CY6I2eJDzZAni49PfJnL5fghPTggPvBd/pFNSgJsdAgWptuFu7qq/ERvOYFlhvsLTCKA=="
@@ -1734,9 +1744,9 @@
     "source-map" "^0.7.3"
 
 "@popperjs/core@^2.4.4":
-  "integrity" "sha512-IXf3XA7+XyN7CP9gGh/XB0UxVMlvARGEgGXLubFICsUMGz6Q+DU+i4gGlpOxTjKvXjkJDJC8YdqdKkDj9qZHEQ=="
-  "resolved" "http://nexus.prod.uci.cu/repository/npm-all/@popperjs/core/-/core-2.10.2.tgz"
-  "version" "2.10.2"
+  "integrity" "sha512-zrsUxjLOKAzdewIDRWy9nsV1GQsKBCWaGwsZQlCgr6/q+vjyZhFgqedLfFBuI9anTPEUT4APq9Mu0SZBTzIcGQ=="
+  "resolved" "http://nexus.prod.uci.cu/repository/npm-all/@popperjs/core/-/core-2.11.0.tgz"
+  "version" "2.11.0"
 
 "@rollup/plugin-node-resolve@^7.1.1":
   "integrity" "sha512-RxtSL3XmdTAE2byxekYLnx+98kEUOrPHF/KRVjLH+DEIHy6kjIw7YINQzn+NXiH/NTrQLAwYs0GWB+csWygA9Q=="
@@ -10017,6 +10027,11 @@
   "resolved" "https://registry.npmjs.org/requires-port/-/requires-port-1.0.0.tgz"
   "version" "1.0.0"
 
+"reselect@^4.1.5":
+  "integrity" "sha512-uVdlz8J7OO+ASpBYoz1Zypgx0KasCY20H+N8JD13oUMtPvSHQuscrHop4KbXrbsBcdB9Ds7lVK7eRkBIfO43vQ=="
+  "resolved" "http://nexus.prod.uci.cu/repository/npm-all/reselect/-/reselect-4.1.5.tgz"
+  "version" "4.1.5"
+
 "resolve-cwd@^2.0.0":
   "integrity" "sha1-AKn3OHVW4nA46uIyyqNypqWbZlo="
   "resolved" "https://registry.npmjs.org/resolve-cwd/-/resolve-cwd-2.0.0.tgz"
@@ -11020,10 +11035,10 @@
     "postcss" "^7.0.0"
     "postcss-selector-parser" "^3.0.0"
 
-"stylis@^4.0.10", "stylis@^4.0.3":
-  "integrity" "sha512-m3k+dk7QeJw660eIKRRn3xPF6uuvHs/FFzjX3HQ5ove0qYsiygoAhwn5a3IYKaZPo5LrYD0rfVmtv1gNY1uYwg=="
-  "resolved" "http://nexus.prod.uci.cu/repository/npm-all/stylis/-/stylis-4.0.10.tgz"
-  "version" "4.0.10"
+"stylis@^4.0.3", "stylis@4.0.13":
+  "integrity" "sha512-xGPXiFVl4YED9Jh7Euv2V220mriG9u4B2TA6Ybjc1catrstKD2PpIdU3U0RKpkVBC2EhmL/F0sPCr9vrFTNRag=="
+  "resolved" "http://nexus.prod.uci.cu/repository/npm-all/stylis/-/stylis-4.0.13.tgz"
+  "version" "4.0.13"
 
 "supports-color@^5.3.0":
   "integrity" "sha512-QjVjwdXIt408MIiAqCX4oUKsgU2EqAGzs2Ppkm4aQYbjm+ZEWEcW4SfFNTr4uMNZma0ey4f5lgLrkB0aX0QMow=="

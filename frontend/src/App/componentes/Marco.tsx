@@ -1,4 +1,4 @@
-import {Avatar, Box, Button, Grid, Paper, Typography} from "@mui/material";
+import {Avatar, Button, Grid, Paper, Typography} from "@mui/material";
 import {Outlet} from "react-router-dom"
 import BarraDeNavegacion from "./BarraDeNavegacion";
 
@@ -49,7 +49,7 @@ export default function Marco(props: { cerrarSession: Function }) {
                                 sx={{marginLeft: 1, width: "93%"}}>Ubicación</Button>
                     </Grid>
                 </Grid>
-                <Grid item>
+                <Grid item xl={true} lg={true} md={true} sm={true} xs={true}>
                     <Outlet/>
                 </Grid>
             </Grid>
