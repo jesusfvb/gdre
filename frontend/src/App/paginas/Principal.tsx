@@ -1,5 +1,4 @@
 import Calendario from "../componentes/Calendario";
-import {Grid} from "@mui/material";
 
 export default function Principal() {
     return (
