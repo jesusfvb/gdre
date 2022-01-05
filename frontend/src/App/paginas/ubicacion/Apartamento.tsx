@@ -1,4 +1,4 @@
-import {MouseEvent, ReactElement, useEffect, useRef, useState} from "react";
+import {useNavigate, useParams} from "react-router-dom";
 import {
     DataGrid,
     GridColumns,
@@ -6,13 +6,14 @@ import {
     GridToolbarContainer,
     GridToolbarFilterButton
 } from "@mui/x-data-grid";
+import {MouseEvent, ReactElement, useEffect, useRef, useState} from "react";
 import {Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, TextField} from "@mui/material";
-import {Add, Delete, NavigateNext, Update} from "@mui/icons-material";
+import {Add, Delete, NavigateBefore, NavigateNext, Update} from "@mui/icons-material";
 import axios from "axios";
-import {useNavigate} from "react-router-dom";
 
-export default function Edificio(): ReactElement {
+export default function Apartamento() {
     const navegate = useNavigate()
+    const params = useParams()
     const columns: GridColumns = [
         {
             field: "numero",
@@ -59,15 +60,18 @@ export default function Edificio(): ReactElement {
 
     const getData = () => {
         axios
-            .get("/edificio")
+            .get("/apartamento", {
+                params: {id: params.id}
+            })
             .then(response => setRows(response.data))
             .catch(error => console.error(error))
     }
     const save = () => {
         if (open.params !== undefined) {
             axios
-                .put("/edificio", {
+                .put("/apartamento", {
                     id: open.params.id,
+                    idEdificio: params.id,
                     numero: containerInputs.current?.querySelector<HTMLInputElement>("#numero")?.value
                 })
                 .then(response => {
@@ -78,7 +82,8 @@ export default function Edificio(): ReactElement {
                 })
         } else {
             axios
-                .post("/edificio", {
+                .post("/apartamento", {
+                    idEdificio: params.id,
                     numero: containerInputs.current?.querySelector<HTMLInputElement>("#numero")?.value
                 })
                 .then(response => {
@@ -90,7 +95,7 @@ export default function Edificio(): ReactElement {
     const borrar = (id: number | undefined = undefined) => (evento: MouseEvent) => {
         evento.stopPropagation()
         axios
-            .delete("/edificio", {
+            .delete("/apartamento", {
                 data: (id === undefined) ? selected : [id]
             })
             .then(response => {
@@ -108,6 +113,9 @@ export default function Edificio(): ReactElement {
     function MyToolbar(): ReactElement {
         return (
             <GridToolbarContainer>
+                <IconButton color={"secondary"} onClick={()=>navegate("/ubicacion/residencias/")}>
+                    <NavigateBefore/>
+                </IconButton>
                 <GridToolbarFilterButton/>
                 <Box sx={{flexGrow: 1}}/>
                 <IconButton onClick={handleClickOpen()}>
@@ -120,7 +128,7 @@ export default function Edificio(): ReactElement {
         )
     }
 
-    useEffect(getData, [])
+    useEffect(getData, [params.id])
     return (
         <>
             <DataGrid autoPageSize={true} density={"compact"} columns={columns} rows={rows} checkboxSelection

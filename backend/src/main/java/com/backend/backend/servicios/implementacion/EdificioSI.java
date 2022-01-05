@@ -19,6 +19,11 @@ public class EdificioSI implements EdificioS {
     private EdificioR edificioR;
 
     @Override
+    public Edificio getById(Integer id) {
+        return edificioR.findById(id).get();
+    }
+
+    @Override
     public List<EdificioResp> listar() {
         List<EdificioResp> listaSalida = new LinkedList<>();
         edificioR.findAll().forEach((edifico) -> listaSalida.add(edifico.convertir()));
