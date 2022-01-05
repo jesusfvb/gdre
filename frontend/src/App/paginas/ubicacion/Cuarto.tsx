@@ -1,4 +1,5 @@
 import {MouseEvent, ReactElement, useEffect, useRef, useState} from "react";
+import {useNavigate, useParams} from "react-router-dom";
 import {
     DataGrid,
     GridColumns,
@@ -17,12 +18,12 @@ import {
     TextField,
     Typography
 } from "@mui/material";
-import {Add, Delete, NavigateNext, Update} from "@mui/icons-material";
+import {Add, Delete, NavigateBefore, NavigateNext, Update} from "@mui/icons-material";
 import axios from "axios";
-import {useNavigate} from "react-router-dom";
 
-export default function Edificio(): ReactElement {
+export default function Cuarto(): ReactElement {
     const navegate = useNavigate()
+    const params = useParams()
     const columns: GridColumns = [
         {
             field: "numero",
@@ -33,21 +34,29 @@ export default function Edificio(): ReactElement {
             align: "left"
         },
         {
+            field: "capacidad",
+            flex: 1,
+            type: "number",
+            headerName: "Capacidad",
+            headerAlign: "left",
+            align: "left"
+        },
+        {
             field: "id",
             filterable: false,
             headerName: "Acción",
             minWidth: 130,
-            renderCell: (params) => (
+            renderCell: (param) => (
                 <>
-                    <IconButton color={"primary"} onClick={handleClickOpen(params.value)}>
+                    <IconButton color={"primary"} onClick={handleClickOpen(param.value)}>
                         <Update/>
                     </IconButton>
-                    <IconButton color={"error"} onClick={borrar(params.value)}>
+                    <IconButton color={"error"} onClick={borrar(param.value)}>
                         <Delete/>
                     </IconButton>
                     <IconButton color={"secondary"} onClick={(event) => {
                         event.stopPropagation()
-                        navegate(`/ubicacion/residencias/${params.value}/apartamento`)
+                        // navegate(`/ubicacion/residencias/${param.value}/apartamento`)
                     }}>
                         <NavigateNext/>
                     </IconButton>
@@ -69,16 +78,18 @@ export default function Edificio(): ReactElement {
 
     const getData = () => {
         axios
-            .get("/edificio")
+            .get("/cuarto", {params: {id: params.id}})
             .then(response => setRows(response.data))
             .catch(error => console.error(error))
     }
     const save = () => {
         if (open.params !== undefined) {
             axios
-                .put("/edificio", {
+                .put("/cuarto", {
                     id: open.params.id,
-                    numero: containerInputs.current?.querySelector<HTMLInputElement>("#numero")?.value
+                    idApartamento: params.id,
+                    numero: containerInputs.current?.querySelector<HTMLInputElement>("#numero")?.value,
+                    capacidad: containerInputs.current?.querySelector<HTMLInputElement>("#capacidad")?.value
                 })
                 .then(response => {
                     let newRows = [...rows]
@@ -88,8 +99,10 @@ export default function Edificio(): ReactElement {
                 })
         } else {
             axios
-                .post("/edificio", {
-                    numero: containerInputs.current?.querySelector<HTMLInputElement>("#numero")?.value
+                .post("/cuarto", {
+                    idApartamento: params.id,
+                    numero: containerInputs.current?.querySelector<HTMLInputElement>("#numero")?.value,
+                    capacidad: containerInputs.current?.querySelector<HTMLInputElement>("#capacidad")?.value
                 })
                 .then(response => {
                     setRows([...rows, response.data])
@@ -100,7 +113,7 @@ export default function Edificio(): ReactElement {
     const borrar = (id: number | undefined = undefined) => (evento: MouseEvent) => {
         evento.stopPropagation()
         axios
-            .delete("/edificio", {
+            .delete("/cuarto", {
                 data: (id === undefined) ? selected : [id]
             })
             .then(response => {
@@ -118,8 +131,12 @@ export default function Edificio(): ReactElement {
     function MyToolbar(): ReactElement {
         return (
             <GridToolbarContainer>
+                <IconButton color={"secondary"}
+                            onClick={() => navegate(`/ubicacion/residencias/${params.idEdificio}/apartamento`)}>
+                    <NavigateBefore/>
+                </IconButton>
                 <GridToolbarFilterButton/>
-                <Typography variant={"subtitle1"} sx={{marginLeft: 1}}>Edificio</Typography>
+                <Typography variant={"subtitle1"} sx={{marginLeft: 1}}>Cuarto</Typography>
                 <Box sx={{flexGrow: 1}}/>
                 <IconButton onClick={handleClickOpen()}>
                     <Add color={"success"}/>
@@ -131,7 +148,7 @@ export default function Edificio(): ReactElement {
         )
     }
 
-    useEffect(getData, [])
+    useEffect(getData, [params.id])
     return (
         <>
             <DataGrid autoPageSize={true} density={"compact"} columns={columns} rows={rows} checkboxSelection
@@ -140,7 +157,7 @@ export default function Edificio(): ReactElement {
                           Toolbar: MyToolbar,
                       }}/>
             <Dialog open={open.open} onClose={handleClose}>
-                <DialogTitle>Nuevo Edificio</DialogTitle>
+                <DialogTitle>Nuevo Cuarto</DialogTitle>
                 <DialogContent ref={containerInputs}>
                     <TextField
                         autoFocus
@@ -151,6 +168,16 @@ export default function Edificio(): ReactElement {
                         fullWidth
                         variant="standard"
                         defaultValue={(open.params !== undefined) ? open.params.numero : null}
+                    />
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="capacidad"
+                        label="Capacidad"
+                        type="number"
+                        fullWidth
+                        variant="standard"
+                        defaultValue={(open.params !== undefined) ? open.params.capacidad : null}
                     />
                 </DialogContent>
                 <DialogActions>

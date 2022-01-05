@@ -23,6 +23,11 @@ public class ApartamentoSI implements ApartamentoS {
     private EdificioS edificioS;
 
     @Override
+    public Apartamento geById(Integer idApartamento) {
+        return apartamentoR.findById(idApartamento).get();
+    }
+
+    @Override
     public List<ApartamentoResp> listarPorIdEdificio(Integer id) {
         List<ApartamentoResp> salida = new LinkedList<>();
         apartamentoR.findAllByEdificio_Id(id).forEach(apartamento -> {
@@ -46,6 +51,6 @@ public class ApartamentoSI implements ApartamentoS {
 
     @Override
     public ApartamentoResp update(ApartamentoUpSo apartamentoUpSo) {
-        return apartamentoR.save(new Apartamento(apartamentoUpSo,edificioS.getById(apartamentoUpSo.getIdEdificio()))).convertir();
+        return apartamentoR.save(new Apartamento(apartamentoUpSo, edificioS.getById(apartamentoUpSo.getIdEdificio()))).convertir();
     }
 }

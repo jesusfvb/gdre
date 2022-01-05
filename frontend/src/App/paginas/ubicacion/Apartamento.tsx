@@ -7,7 +7,17 @@ import {
     GridToolbarFilterButton
 } from "@mui/x-data-grid";
 import {MouseEvent, ReactElement, useEffect, useRef, useState} from "react";
-import {Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, TextField} from "@mui/material";
+import {
+    Box,
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    IconButton,
+    TextField,
+    Typography
+} from "@mui/material";
 import {Add, Delete, NavigateBefore, NavigateNext, Update} from "@mui/icons-material";
 import axios from "axios";
 
@@ -28,17 +38,17 @@ export default function Apartamento() {
             filterable: false,
             headerName: "Acción",
             minWidth: 130,
-            renderCell: (params) => (
+            renderCell: (param) => (
                 <>
-                    <IconButton color={"primary"} onClick={handleClickOpen(params.value)}>
+                    <IconButton color={"primary"} onClick={handleClickOpen(param.value)}>
                         <Update/>
                     </IconButton>
-                    <IconButton color={"error"} onClick={borrar(params.value)}>
+                    <IconButton color={"error"} onClick={borrar(param.value)}>
                         <Delete/>
                     </IconButton>
                     <IconButton color={"secondary"} onClick={(event) => {
                         event.stopPropagation()
-                        navegate(`/ubicacion/residencias/${params.value}/apartamento`)
+                        navegate(`/ubicacion/residencias/${params.id}/apartamento/${param.value}/cuarto`)
                     }}>
                         <NavigateNext/>
                     </IconButton>
@@ -113,10 +123,11 @@ export default function Apartamento() {
     function MyToolbar(): ReactElement {
         return (
             <GridToolbarContainer>
-                <IconButton color={"secondary"} onClick={()=>navegate("/ubicacion/residencias/")}>
+                <IconButton color={"secondary"} onClick={() => navegate("/ubicacion/residencias/")}>
                     <NavigateBefore/>
                 </IconButton>
                 <GridToolbarFilterButton/>
+                <Typography variant={"subtitle1"} sx={{marginLeft: 1}}>Apartamento</Typography>
                 <Box sx={{flexGrow: 1}}/>
                 <IconButton onClick={handleClickOpen()}>
                     <Add color={"success"}/>

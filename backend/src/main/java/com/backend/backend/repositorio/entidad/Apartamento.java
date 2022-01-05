@@ -5,6 +5,8 @@ import com.backend.backend.controlador.solicitudes.apartamento.ApartamentoNewSo;
 import com.backend.backend.controlador.solicitudes.apartamento.ApartamentoUpSo;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Apartamento extends Entidad {
@@ -15,6 +17,9 @@ public class Apartamento extends Entidad {
     @ManyToOne()
     @JoinColumn(name = "edificio_id")
     private Edificio edificio;
+
+    @OneToMany(mappedBy = "apartamento", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Cuarto> cuartos = new ArrayList<>();
 
 
     public Apartamento() {
@@ -44,4 +49,12 @@ public class Apartamento extends Entidad {
         this.edificio = edificio;
     }
 
+
+    public List<Cuarto> getCuartos() {
+        return cuartos;
+    }
+
+    public void setCuartos(List<Cuarto> cuartos) {
+        this.cuartos = cuartos;
+    }
 }
