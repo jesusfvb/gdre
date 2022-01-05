@@ -16,12 +16,12 @@ import {
 import logo from '../img/logo.jpg'
 import {FormEvent} from "react";
 
-export default function Login(props: { iniciarSesion: Function }) {
+export default function Login(props: { iniciarSession: Function }) {
     const theme = createTheme();
-    const iniciarSesion = (evento: FormEvent<HTMLFormElement>) => {
+    const iniciarSession = (evento: FormEvent<HTMLFormElement>) => {
         evento.preventDefault()
         let inputs = evento.currentTarget.getElementsByTagName("input")
-        props.iniciarSesion(inputs[0].value, inputs[1].value)
+        props.iniciarSession(inputs[0].value, inputs[1].value)
     }
 
     function Copyright(props:any) {
@@ -51,7 +51,7 @@ export default function Login(props: { iniciarSesion: Function }) {
                         display: "flex", flexDirection: "column", alignItems: "center",
                     }}>
                         <img src={logo} width={150} alt="logo"/>
-                        <Box component="form" noValidate sx={{mt: 3}} onSubmit={iniciarSesion}>
+                        <Box component="form" noValidate sx={{mt: 3}} onSubmit={iniciarSession}>
                             <Grid container spacing={2}>
                                 <Grid item xs={12}>
                                     <TextField required fullWidth id="email" label="Usuario" name="email"/>
