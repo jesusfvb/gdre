@@ -125,6 +125,7 @@ export default function Apartamento() {
             <GridToolbarContainer>
                 <IconButton color={"secondary"} onClick={() => navegate("/ubicacion/residencias/")}>
                     <NavigateBefore/>
+                    <Typography variant={"subtitle1"}>Edificio</Typography>
                 </IconButton>
                 <GridToolbarFilterButton/>
                 <Typography variant={"subtitle1"} sx={{marginLeft: 1}}>Apartamento</Typography>
@@ -148,7 +149,7 @@ export default function Apartamento() {
                           Toolbar: MyToolbar,
                       }}/>
             <Dialog open={open.open} onClose={handleClose}>
-                <DialogTitle>Nuevo Edificio</DialogTitle>
+                <DialogTitle>Nuevo Apartamento</DialogTitle>
                 <DialogContent ref={containerInputs}>
                     <TextField
                         autoFocus

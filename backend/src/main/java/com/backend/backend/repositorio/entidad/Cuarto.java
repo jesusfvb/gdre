@@ -1,13 +1,12 @@
 package com.backend.backend.repositorio.entidad;
 
 import com.backend.backend.controlador.respuestas.CuartoResp;
-import com.backend.backend.controlador.solicitudes.CuartoNewSo;
-import com.backend.backend.controlador.solicitudes.CuartoUpSo;
+import com.backend.backend.controlador.solicitudes.cuarto.CuartoNewSo;
+import com.backend.backend.controlador.solicitudes.cuarto.CuartoUpSo;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Cuarto extends Entidad {
@@ -22,6 +21,8 @@ public class Cuarto extends Entidad {
     @JoinColumn(name = "apartamento_id")
     private Apartamento apartamento;
 
+    @OneToMany(mappedBy = "cuarto")
+    private List<Usuario> usuarios = new ArrayList<>();
 
     public Cuarto() {
     }
@@ -52,4 +53,27 @@ public class Cuarto extends Entidad {
         this.apartamento = apartamento;
     }
 
+    public List<Usuario> getUsuarios() {
+        return usuarios;
+    }
+
+    public void setUsuarios(List<Usuario> usuarios) {
+        this.usuarios = usuarios;
+    }
+
+    public Integer getNumero() {
+        return numero;
+    }
+
+    public void setNumero(Integer numero) {
+        this.numero = numero;
+    }
+
+    public Integer getCapacidad() {
+        return capacidad;
+    }
+
+    public void setCapacidad(Integer capacidad) {
+        this.capacidad = capacidad;
+    }
 }

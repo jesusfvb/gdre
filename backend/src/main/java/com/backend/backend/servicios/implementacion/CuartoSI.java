@@ -1,12 +1,13 @@
 package com.backend.backend.servicios.implementacion;
 
 import com.backend.backend.controlador.respuestas.CuartoResp;
-import com.backend.backend.controlador.solicitudes.CuartoNewSo;
-import com.backend.backend.controlador.solicitudes.CuartoUpSo;
+import com.backend.backend.controlador.solicitudes.cuarto.CuartoNewSo;
+import com.backend.backend.controlador.solicitudes.cuarto.CuartoUpSo;
 import com.backend.backend.repositorio.CuartoR;
 import com.backend.backend.repositorio.entidad.Cuarto;
 import com.backend.backend.servicios.ApartamentoS;
 import com.backend.backend.servicios.CuartoS;
+import com.backend.backend.servicios.UsuarioS;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,14 @@ public class CuartoSI implements CuartoS {
 
     @Autowired
     private ApartamentoS apartamentoS;
+
+    @Autowired
+    private UsuarioS usuarioS;
+
+    @Override
+    public Cuarto getById(Integer idCuarto) {
+        return cuartoR.getById(idCuarto);
+    }
 
     @Override
     public List<CuartoResp> listarPorIdDeApartamento(Integer id) {
@@ -39,6 +48,7 @@ public class CuartoSI implements CuartoS {
     @Override
     public Integer[] borrar(Integer[] ids) {
         for (Integer id : ids) {
+            usuarioS.quitarCuarto(id);
             cuartoR.deleteById(id);
         }
         return ids;

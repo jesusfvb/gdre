@@ -49,6 +49,13 @@ public class Apartamento extends Entidad {
         this.edificio = edificio;
     }
 
+    public Integer getNumero() {
+        return numero;
+    }
+
+    public void setNumero(Integer numero) {
+        this.numero = numero;
+    }
 
     public List<Cuarto> getCuartos() {
         return cuartos;
