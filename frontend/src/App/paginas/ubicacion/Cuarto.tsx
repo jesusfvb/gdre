@@ -56,7 +56,7 @@ export default function Cuarto(): ReactElement {
                     </IconButton>
                     <IconButton color={"secondary"} onClick={(event) => {
                         event.stopPropagation()
-                        // navegate(`/ubicacion/residencias/${param.value}/apartamento`)
+                        navegate(`/ubicacion/residencias/${params.idEdificio}/apartamento/${params.id}/cuarto/${param.value}/residente`)
                     }}>
                         <NavigateNext/>
                     </IconButton>
@@ -134,6 +134,7 @@ export default function Cuarto(): ReactElement {
                 <IconButton color={"secondary"}
                             onClick={() => navegate(`/ubicacion/residencias/${params.idEdificio}/apartamento`)}>
                     <NavigateBefore/>
+                    <Typography variant={"subtitle1"}>Apartamento</Typography>
                 </IconButton>
                 <GridToolbarFilterButton/>
                 <Typography variant={"subtitle1"} sx={{marginLeft: 1}}>Cuarto</Typography>

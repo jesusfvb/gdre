@@ -10,6 +10,7 @@ import Ubicacion from "./paginas/ubicacion/Ubicacion";
 import Edificio from "./paginas/ubicacion/Edificio";
 import Apartamento from "./paginas/ubicacion/Apartamento";
 import Cuarto from "./paginas/ubicacion/Cuarto";
+import Residente from "./paginas/ubicacion/Residente";
 
 export default function App(): ReactElement {
     axios.defaults.baseURL = 'http://localhost:8080';
@@ -55,6 +56,9 @@ export default function App(): ReactElement {
                                 <Route path="/ubicacion/residencias/:id/apartamento" element={<Apartamento/>}/>
                                 <Route path="/ubicacion/residencias/:idEdificio/apartamento/:id/cuarto"
                                        element={<Cuarto/>}/>
+                                <Route
+                                    path="/ubicacion/residencias/:idEdificio/apartamento/:idApartamento/cuarto/:id/residente"
+                                    element={<Residente/>}/>
                             </Route>
                         </Route>
                         <Route path={"*"} element={<E404/>}/>

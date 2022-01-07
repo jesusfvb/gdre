@@ -125,6 +125,7 @@ export default function Apartamento() {
             <GridToolbarContainer>
                 <IconButton color={"secondary"} onClick={() => navegate("/ubicacion/residencias/")}>
                     <NavigateBefore/>
+                    <Typography variant={"subtitle1"}>Edificio</Typography>
                 </IconButton>
                 <GridToolbarFilterButton/>
                 <Typography variant={"subtitle1"} sx={{marginLeft: 1}}>Apartamento</Typography>
