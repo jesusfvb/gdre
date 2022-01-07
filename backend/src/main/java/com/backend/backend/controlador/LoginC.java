@@ -2,6 +2,7 @@ package com.backend.backend.controlador;
 
 
 import com.backend.backend.controlador.solicitudes.LoginSo;
+import com.backend.backend.controlador.solicitudes.TokenSo;
 import com.backend.backend.servicios.implementacion.JwtSI;
 import com.backend.backend.servicios.implementacion.UserDetailsSI;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,5 +38,10 @@ public class LoginC {
         final String jwt = serviceJwt.generateToken(userDetails);
 
         return ResponseEntity.ok(jwt);
+    }
+
+    @PutMapping
+    private ResponseEntity<Boolean> isTokenExpired(@RequestBody TokenSo token) {
+        return ResponseEntity.ok(serviceJwt.isTokenExpired(token.getToken()));
     }
 }

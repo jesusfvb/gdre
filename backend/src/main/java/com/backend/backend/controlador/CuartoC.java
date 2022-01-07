@@ -1,8 +1,8 @@
 package com.backend.backend.controlador;
 
 import com.backend.backend.controlador.respuestas.CuartoResp;
-import com.backend.backend.controlador.solicitudes.CuartoNewSo;
-import com.backend.backend.controlador.solicitudes.CuartoUpSo;
+import com.backend.backend.controlador.solicitudes.cuarto.CuartoNewSo;
+import com.backend.backend.controlador.solicitudes.cuarto.CuartoUpSo;
 import com.backend.backend.servicios.CuartoS;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
