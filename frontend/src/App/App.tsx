@@ -1,4 +1,4 @@
-import {ReactElement, useState} from "react";
+import {ReactElement, useEffect, useState} from "react";
 import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
 import Login from "./paginas/Login";
 import axios from "axios";
@@ -11,11 +11,11 @@ import Edificio from "./paginas/ubicacion/Edificio";
 import Apartamento from "./paginas/ubicacion/Apartamento";
 import Cuarto from "./paginas/ubicacion/Cuarto";
 import Residente from "./paginas/ubicacion/Residente";
+import Personas from "./paginas/ubicacion/Personas";
 
 export default function App(): ReactElement {
     axios.defaults.baseURL = 'http://localhost:8080';
-    const body = document.getElementsByTagName("body")[0]
-    const [session, setSession] = useState<string | null>(localStorage.getItem("jwt"))
+    const [session, setSession] = useState<boolean | null>(null)
 
     const iniciarSession = (usuario: string, contrasenna: string): void => {
         axios
@@ -31,27 +31,39 @@ export default function App(): ReactElement {
     }
     const cerrarSession = () => {
         localStorage.clear()
-        setSession(null)
+        setSession(false)
     }
 
-    if (session === null) {
-        body.style.backgroundImage = `url(${img_2})`;
-        body.style.backgroundRepeat = "no-repeat";
-        body.style.backgroundSize = "cover";
-    } else {
-        body.style.background = "none";
-        axios.defaults.headers.common['Authorization'] = session;
-    }
+    useEffect(() => {
+        const body = document.getElementsByTagName("body")[0]
+        let jwt = localStorage.getItem("jwt")
+        axios.defaults.headers.common["Content-Type"] = "application/json, text/plain, */*"
+        if (jwt !== null) {
+            axios
+                .put("/login", {token: jwt})
+                .then(response => {
+                    body.style.background = "none";
+                    axios.defaults.headers.common['Authorization'] = jwt + "";
+                    setSession(!response.data)
+                })
+                .catch(error => console.error(error))
+        } else {
+            body.style.backgroundImage = `url(${img_2})`;
+            body.style.backgroundRepeat = "no-repeat";
+            body.style.backgroundSize = "cover";
+        }
+    }, [session])
     return (
         <BrowserRouter>
             <Routes>
-                {(session === null) ? <Route path="*" element={<Login iniciarSession={iniciarSession}/>}/> :
+                {session === null ? <Route path="*" element={null}/> : !session ?
+                    <Route path="*" element={<Login iniciarSession={iniciarSession}/>}/> :
                     <>
                         <Route element={<Marco cerrarSession={cerrarSession}/>}>
                             <Route path="/" element={<Navigate to="/principal"/>}/>
                             <Route path="/principal" element={<Principal/>}/>
                             <Route element={<Ubicacion/>}>
-                                <Route path="/ubicacion" element={<h1>Personas</h1>}/>
+                                <Route path="/ubicacion" element={<Personas/>}/>
                                 <Route path="/ubicacion/residencias" element={<Edificio/>}/>
                                 <Route path="/ubicacion/residencias/:id/apartamento" element={<Apartamento/>}/>
                                 <Route path="/ubicacion/residencias/:idEdificio/apartamento/:id/cuarto"

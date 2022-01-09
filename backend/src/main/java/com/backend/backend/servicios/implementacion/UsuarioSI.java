@@ -1,6 +1,7 @@
 package com.backend.backend.servicios.implementacion;
 
-import com.backend.backend.controlador.respuestas.UsuarioResp;
+import com.backend.backend.controlador.respuestas.usuario.UsuarioResp;
+import com.backend.backend.controlador.respuestas.usuario.UsuarioUbicacionResp;
 import com.backend.backend.controlador.solicitudes.UbicarSo;
 import com.backend.backend.repositorio.UsuarioR;
 import com.backend.backend.servicios.CuartoS;
@@ -28,9 +29,36 @@ public class UsuarioSI implements UsuarioS {
     }
 
     @Override
+    public List<UsuarioUbicacionResp> listarUbicados() {
+        List<UsuarioUbicacionResp> salida = new LinkedList<>();
+        usuarioR.findAllByCuartoIsNotNull().forEach(usuario -> {
+            salida.add(usuario.convertir2());
+        });
+        return salida;
+    }
+
+    @Override
     public List<UsuarioResp> listarPorIdCuarto(Integer idCuarto) {
         List<UsuarioResp> salida = new LinkedList<>();
         usuarioR.findAllByCuarto_Id(idCuarto).forEach(usuario -> {
+            salida.add(usuario.convertir());
+        });
+        return salida;
+    }
+
+    @Override
+    public List<UsuarioResp> listarNoUbicados() {
+        List<UsuarioResp> salida = new LinkedList<>();
+        usuarioR.findAllByCuartoIsNullAndUbicarIsTrue().forEach(usuario -> {
+            salida.add(usuario.convertir());
+        });
+        return salida;
+    }
+
+    @Override
+    public List<UsuarioResp> listarPorConfirmar() {
+        List<UsuarioResp> salida = new LinkedList<>();
+        usuarioR.findAllByCuartoIsNullAndUbicarIsNull().forEach(usuario -> {
             salida.add(usuario.convertir());
         });
         return salida;
@@ -42,18 +70,25 @@ public class UsuarioSI implements UsuarioS {
     }
 
     @Override
-    public List<UsuarioResp> listarNoUbicados() {
-        List<UsuarioResp> salida = new LinkedList<>();
-        usuarioR.findAllByCuartoIsNull().forEach(usuario -> {
-            salida.add(usuario.convertir());
-        });
-        return salida;
-    }
-
-    @Override
     public Integer[] desubicar(Integer[] ids) {
         for (Integer id : ids) {
             usuarioR.save(usuarioR.getById(id).cuartoNull());
+        }
+        return ids;
+    }
+
+    @Override
+    public Integer[] confirmar(Integer[] ids) {
+        for (Integer id : ids) {
+            usuarioR.save(usuarioR.getById(id).confirmar());
+        }
+        return ids;
+    }
+
+    @Override
+    public Integer[] desconfirmar(Integer[] ids) {
+        for (Integer id : ids) {
+            usuarioR.save(usuarioR.getById(id).desconfirmar());
         }
         return ids;
     }

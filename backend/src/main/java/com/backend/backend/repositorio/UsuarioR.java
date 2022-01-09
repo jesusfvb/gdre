@@ -13,5 +13,10 @@ public interface UsuarioR extends JpaRepository<Usuario, Integer> {
 
     List<Usuario> findAllByCuarto_Id(Integer id);
 
-    List<Usuario> findAllByCuartoIsNull();
+    List<Usuario> findAllByCuartoIsNullAndUbicarIsTrue();
+
+    List<Usuario> findAllByCuartoIsNullAndUbicarIsNull();
+
+    List<Usuario> findAllByCuartoIsNotNull();
+
 }
