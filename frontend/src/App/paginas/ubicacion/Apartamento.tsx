@@ -149,7 +149,7 @@ export default function Apartamento() {
                           Toolbar: MyToolbar,
                       }}/>
             <Dialog open={open.open} onClose={handleClose}>
-                <DialogTitle>Nuevo Edificio</DialogTitle>
+                <DialogTitle>Nuevo Apartamento</DialogTitle>
                 <DialogContent ref={containerInputs}>
                     <TextField
                         autoFocus

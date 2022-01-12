@@ -42,15 +42,23 @@ export default function App(): ReactElement {
             axios
                 .put("/login", {token: jwt})
                 .then(response => {
-                    body.style.background = "none";
-                    axios.defaults.headers.common['Authorization'] = jwt + "";
-                    setSession(!response.data)
+                    if (response.data) {
+                        body.style.backgroundImage = `url(${img_2})`;
+                        body.style.backgroundRepeat = "no-repeat";
+                        body.style.backgroundSize = "cover";
+                        setSession(false)
+                    } else {
+                        body.style.background = "none";
+                        axios.defaults.headers.common['Authorization'] = jwt + "";
+                        setSession(true)
+                    }
                 })
                 .catch(error => console.error(error))
         } else {
             body.style.backgroundImage = `url(${img_2})`;
             body.style.backgroundRepeat = "no-repeat";
             body.style.backgroundSize = "cover";
+            setSession(false)
         }
     }, [session])
     return (

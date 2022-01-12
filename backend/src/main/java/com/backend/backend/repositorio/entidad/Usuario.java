@@ -45,7 +45,7 @@ public class Usuario extends Entidad {
     public UsuarioUbicacionResp convertir2() {
         Integer edificio = (this.cuarto != null) ? this.cuarto.getApartamento().getEdificio().getNumero() : null;
         Integer apartamento = (this.cuarto != null) ? this.cuarto.getApartamento().getNumero() : null;
-        Integer cuarto = (this.cuarto != null) ? this.cuarto.getId() : null;
+        Integer cuarto = (this.cuarto != null) ? this.cuarto.getNumero() : null;
         return new UsuarioUbicacionResp(super.getId(), this.nombre, edificio, apartamento, cuarto);
     }
 

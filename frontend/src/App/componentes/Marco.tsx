@@ -34,8 +34,8 @@ export default function Marco(props: { cerrarSession: Function }) {
                         </Grid>
                     </Paper>
                     <Grid item sx={{width: "100%", marginBottom: 1}}>
-                        <Button variant={"contained"} size={"small"}
-                                sx={{marginLeft: 1, width: "93%"}}>Principal</Button>
+                        <Button variant={"contained"} size={"small"} onClick={() => navigation("/principal")}
+                                sx={{marginLeft: 1, width: "93%"}}>Inicio</Button>
                     </Grid>
                     <Grid item sx={{width: "100%", marginBottom: 1}}>
                         <Button variant={"contained"} size={"small"}

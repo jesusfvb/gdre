@@ -363,7 +363,7 @@ export default function Personas(): ReactElement {
     useEffect(getData, [option])
     return (
         <>
-            <DataGrid autoPageSize={true} density={"compact"} columns={columns} rows={rows} checkboxSelection
+            <DataGrid autoPageSize={true} density={"compact"} columns={columns} rows={rows}
                       components={{
                           Toolbar: MyToolbar,
                       }}/>

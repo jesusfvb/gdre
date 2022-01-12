@@ -18,11 +18,13 @@ public class JwtSI {
     private final String SECRET_KEY = "GDRE";
 
     public String extractUserName(String token) {
-        return extractClaim(token, Claims::getSubject);
-    }
-
-    public Date extractExpiration(String token) {
-        return extractClaim(token, Claims::getExpiration);
+        String salida = null;
+        try {
+            salida = extractClaim(token, Claims::getSubject);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return salida;
     }
 
     public String generateToken(UserDetails userDetails) {
@@ -33,7 +35,13 @@ public class JwtSI {
     }
 
     public Boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
+        boolean salida = false;
+        try {
+            salida = extractExpiration(token).before(new Date());
+        } catch (Exception e) {
+            salida = true;
+        }
+        return salida;
     }
 
     public Boolean validateToken(String token, UserDetails userDetails) {
@@ -41,7 +49,11 @@ public class JwtSI {
         return (userName.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
-    private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+    private Date extractExpiration(String token) throws Exception {
+        return extractClaim(token, Claims::getExpiration);
+    }
+
+    private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) throws Exception {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
