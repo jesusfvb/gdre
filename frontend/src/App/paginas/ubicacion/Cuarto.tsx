@@ -1,4 +1,4 @@
-import {MouseEvent, ReactElement, useEffect, useRef, useState} from "react";
+import {ChangeEvent, MouseEvent, ReactElement, useEffect, useRef, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import {
     DataGrid,
@@ -67,12 +67,34 @@ export default function Cuarto(): ReactElement {
     const [rows, setRows] = useState<Array<any>>([])
     const [selected, setSelected] = useState<GridSelectionModel>([])
     const [open, setOpen] = useState<{ open: boolean, params?: any }>({open: false});
+    const [validate, setValidate] = useState<{ numero: boolean, capacidad: boolean }>({numero: true, capacidad: true})
+
+    const handleChangeNumero = (even: ChangeEvent<HTMLInputElement>) => {
+        const exp = new RegExp("^[0-9]+$")
+        if (even.target.value.length === 0) {
+            setValidate({...validate, numero: true})
+        } else {
+            setValidate({...validate, numero: !exp.test(even.target.value)})
+        }
+    }
+    const handleChangeCapacidad = (even: ChangeEvent<HTMLInputElement>) => {
+        const exp = new RegExp("^[0-9]+$")
+        if (even.target.value.length === 0) {
+            setValidate({...validate, capacidad: true})
+        } else {
+            setValidate({...validate, capacidad: !exp.test(even.target.value)})
+        }
+    }
 
     const handleClickOpen = (id: number | undefined = undefined) => (evento: MouseEvent) => {
         evento.stopPropagation()
+        if (id !== undefined) {
+            setValidate({numero: false, capacidad: false})
+        }
         setOpen({open: true, params: rows.find(row => row.id === id)});
     };
     const handleClose = () => {
+        setValidate({numero: true, capacidad: true})
         setOpen({open: false});
     };
 
@@ -83,31 +105,33 @@ export default function Cuarto(): ReactElement {
             .catch(error => console.error(error))
     }
     const save = () => {
-        if (open.params !== undefined) {
-            axios
-                .put("/cuarto", {
-                    id: open.params.id,
-                    idApartamento: params.id,
-                    numero: containerInputs.current?.querySelector<HTMLInputElement>("#numero")?.value,
-                    capacidad: containerInputs.current?.querySelector<HTMLInputElement>("#capacidad")?.value
-                })
-                .then(response => {
-                    let newRows = [...rows]
-                    newRows[rows.findIndex(row => row.id === open.params.id)] = response.data
-                    setRows(newRows)
-                    handleClose()
-                })
-        } else {
-            axios
-                .post("/cuarto", {
-                    idApartamento: params.id,
-                    numero: containerInputs.current?.querySelector<HTMLInputElement>("#numero")?.value,
-                    capacidad: containerInputs.current?.querySelector<HTMLInputElement>("#capacidad")?.value
-                })
-                .then(response => {
-                    setRows([...rows, response.data])
-                    handleClose()
-                })
+        if (!validate.numero && !validate.capacidad) {
+            if (open.params !== undefined) {
+                axios
+                    .put("/cuarto", {
+                        id: open.params.id,
+                        idApartamento: params.id,
+                        numero: containerInputs.current?.querySelector<HTMLInputElement>("#numero")?.value,
+                        capacidad: containerInputs.current?.querySelector<HTMLInputElement>("#capacidad")?.value
+                    })
+                    .then(response => {
+                        let newRows = [...rows]
+                        newRows[rows.findIndex(row => row.id === open.params.id)] = response.data
+                        setRows(newRows)
+                        handleClose()
+                    })
+            } else {
+                axios
+                    .post("/cuarto", {
+                        idApartamento: params.id,
+                        numero: containerInputs.current?.querySelector<HTMLInputElement>("#numero")?.value,
+                        capacidad: containerInputs.current?.querySelector<HTMLInputElement>("#capacidad")?.value
+                    })
+                    .then(response => {
+                        setRows([...rows, response.data])
+                        handleClose()
+                    })
+            }
         }
     }
     const borrar = (id: number | undefined = undefined) => (evento: MouseEvent) => {
@@ -169,6 +193,8 @@ export default function Cuarto(): ReactElement {
                         fullWidth
                         variant="standard"
                         defaultValue={(open.params !== undefined) ? open.params.numero : null}
+                        onChange={handleChangeNumero}
+                        error={validate.numero}
                     />
                     <TextField
                         autoFocus
@@ -179,6 +205,8 @@ export default function Cuarto(): ReactElement {
                         fullWidth
                         variant="standard"
                         defaultValue={(open.params !== undefined) ? open.params.capacidad : null}
+                        onChange={handleChangeCapacidad}
+                        error={validate.capacidad}
                     />
                 </DialogContent>
                 <DialogActions>
