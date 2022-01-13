@@ -1,7 +1,7 @@
-import {MouseEvent, ReactElement, useEffect, useState} from "react";
+import {MouseEvent, ReactElement, SyntheticEvent, useEffect, useState} from "react";
 import {DataGrid, GridColumns, GridToolbarContainer, GridToolbarFilterButton} from "@mui/x-data-grid";
 import {
-    Autocomplete,
+    Autocomplete, AutocompleteValue,
     Button,
     ButtonGroup,
     CircularProgress,
@@ -89,6 +89,12 @@ export default function Personas(): ReactElement {
     const [option, setOption] = useState<1 | 2 | 3>(1)
     const [rows, setRows] = useState<Array<any>>([])
     const [open, setOpen] = useState<boolean>(false);
+    const [validate, setValidate] = useState<{ edificio: boolean, apartamento: boolean, cuarto: boolean }>({
+        edificio: true,
+        apartamento: true,
+        cuarto: true
+    })
+
 
     const handleClickOpen = (id: number) => (evento: MouseEvent) => {
         evento.stopPropagation()
@@ -100,6 +106,11 @@ export default function Personas(): ReactElement {
         setValueEdificio(null)
         setValueApartamento(null)
         setValueCuarto(null)
+        setValidate({
+            edificio: true,
+            apartamento: true,
+            cuarto: true
+        })
         setOpen(false);
     };
 
@@ -122,17 +133,19 @@ export default function Personas(): ReactElement {
             .catch(error => console.error(error))
     }
     const ubicar = () => {
-        axios
-            .post("/usuario/ubicar", {
-                idCuarto: valueCuarto.id,
-                idUsuario: id
-            })
-            .then(response => {
-                let newRows = [...rows]
-                newRows.splice(newRows.findIndex((value) => value.id === response.data.id), 1)
-                setRows(newRows)
-                handleClose()
-            })
+        if (!validate.apartamento && !validate.edificio && !validate.cuarto) {
+            axios
+                .post("/usuario/ubicar", {
+                    idCuarto: valueCuarto.id,
+                    idUsuario: id
+                })
+                .then(response => {
+                    let newRows = [...rows]
+                    newRows.splice(newRows.findIndex((value) => value.id === response.data.id), 1)
+                    setRows(newRows)
+                    handleClose()
+                })
+        }
     }
     const desubicar = (id: number | undefined = undefined) => (evento: MouseEvent) => {
         evento.stopPropagation()
@@ -185,6 +198,17 @@ export default function Personas(): ReactElement {
         const [options, setOptions] = useState([]);
         const loading = open && options.length === 0;
 
+        const handleChangeEdificio = (event: SyntheticEvent, newValue: AutocompleteValue<any, any, any, any>) => {
+            if (newValue !== null) {
+                setValidate({...validate, edificio: false})
+                setValueApartamento(null)
+                setValueCuarto(null)
+            } else {
+                setValidate({...validate, edificio: true})
+            }
+            setValueEdificio(newValue)
+        }
+
         useEffect(() => {
             if (loading) {
                 axios
@@ -195,14 +219,13 @@ export default function Personas(): ReactElement {
                     .catch(error => console.error(error))
             }
         }, [loading]);
-
         return (
             <Autocomplete
                 id="nombre"
                 sx={{width: 300, paddingTop: 2}}
                 open={open}
                 value={valueEdificio}
-                onChange={(event, newValue) => setValueEdificio(newValue)}
+                onChange={handleChangeEdificio}
                 onOpen={() => {
                     setOpen(true);
                 }}
@@ -217,6 +240,7 @@ export default function Personas(): ReactElement {
                     <TextField
                         {...params}
                         label="Edificio"
+                        error={validate.edificio}
                         InputProps={{
                             ...params.InputProps,
                             endAdornment: (
@@ -237,6 +261,16 @@ export default function Personas(): ReactElement {
         const [options, setOptions] = useState([]);
         const loading = open && options.length === 0;
 
+        const handleChangeApartamento = (event: SyntheticEvent, newValue: AutocompleteValue<any, any, any, any>) => {
+            if (newValue !== null) {
+                setValidate({...validate, apartamento: false})
+                setValueCuarto(null)
+            } else {
+                setValidate({...validate, apartamento: true})
+            }
+            setValueApartamento(newValue)
+        }
+
         useEffect(() => {
             if (loading) {
                 axios
@@ -251,14 +285,13 @@ export default function Personas(): ReactElement {
                     .catch(error => console.error(error))
             }
         }, [loading]);
-
         return (
             <Autocomplete
                 id="nombre"
                 sx={{width: 300, paddingTop: 2}}
                 open={open}
                 value={valueApartamento}
-                onChange={(event, newValue) => setValueApartamento(newValue)}
+                onChange={handleChangeApartamento}
                 onOpen={() => {
                     setOpen(true);
                 }}
@@ -273,6 +306,7 @@ export default function Personas(): ReactElement {
                     <TextField
                         {...params}
                         label="Apartamento"
+                        error={validate.apartamento}
                         InputProps={{
                             ...params.InputProps,
                             endAdornment: (
@@ -292,6 +326,15 @@ export default function Personas(): ReactElement {
         const [open, setOpen] = useState(false);
         const [options, setOptions] = useState([]);
         const loading = open && options.length === 0;
+
+        const handleChangCuarto = (event: SyntheticEvent, newValue: AutocompleteValue<any, any, any, any>) => {
+            if (newValue !== null) {
+                setValidate({...validate, cuarto: false})
+            } else {
+                setValidate({...validate, cuarto: true})
+            }
+            setValueCuarto(newValue)
+        }
 
         useEffect(() => {
             if (loading) {
@@ -314,7 +357,7 @@ export default function Personas(): ReactElement {
                 sx={{width: 300, paddingTop: 2}}
                 open={open}
                 value={valueCuarto}
-                onChange={(event, newValue) => setValueCuarto(newValue)}
+                onChange={handleChangCuarto}
                 onOpen={() => {
                     setOpen(true);
                 }}
@@ -329,6 +372,7 @@ export default function Personas(): ReactElement {
                     <TextField
                         {...params}
                         label="Cuarto"
+                        error={validate.cuarto}
                         InputProps={{
                             ...params.InputProps,
                             endAdornment: (
@@ -372,7 +416,7 @@ export default function Personas(): ReactElement {
                 <DialogContent>
                     <MyAutocompleteEdificio/>
                     {(valueEdificio !== null) ? <MyAutocompleteApartamento/> : null}
-                    {(valueApartamento !== null) ? <MyAutocompleteCuarto/> : null}
+                    {(valueApartamento !== null && valueEdificio !== null) ? <MyAutocompleteCuarto/> : null}
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>

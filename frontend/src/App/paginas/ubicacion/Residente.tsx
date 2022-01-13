@@ -1,4 +1,4 @@
-import {MouseEvent, ReactElement, useEffect, useState} from "react";
+import {MouseEvent, ReactElement, SyntheticEvent, useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import {
     DataGrid,
@@ -8,7 +8,7 @@ import {
     GridToolbarFilterButton
 } from "@mui/x-data-grid";
 import {
-    Autocomplete,
+    Autocomplete, AutocompleteValue,
     Box,
     Button,
     CircularProgress,
@@ -50,6 +50,7 @@ export default function Residente(): ReactElement {
     const [rows, setRows] = useState<Array<any>>([])
     const [selected, setSelected] = useState<GridSelectionModel>([])
     const [open, setOpen] = useState<boolean>(false);
+    const [validate, setValidate] = useState<boolean>(true)
 
     const handleClickOpen = (evento: MouseEvent) => {
         evento.stopPropagation()
@@ -57,6 +58,7 @@ export default function Residente(): ReactElement {
     };
     const handleClose = () => {
         setValue(null)
+        setValidate(true)
         setOpen(false);
     };
 
@@ -98,6 +100,14 @@ export default function Residente(): ReactElement {
         const [options, setOptions] = useState([]);
         const loading = open && options.length === 0;
 
+        const handleChange = (event: SyntheticEvent, newValue: AutocompleteValue<any, any, any, any>) => {
+            if (newValue !== null) {
+                setValidate(false)
+            } else {
+                setValidate(true)
+            }
+            setValue(newValue)
+        }
         useEffect(() => {
             if (loading) {
                 axios
@@ -115,7 +125,7 @@ export default function Residente(): ReactElement {
                 sx={{width: 300, paddingTop: 2}}
                 open={open}
                 value={value}
-                onChange={(event, newValue) => setValue(newValue)}
+                onChange={handleChange}
                 onOpen={() => {
                     setOpen(true);
                 }}
@@ -130,6 +140,7 @@ export default function Residente(): ReactElement {
                     <TextField
                         {...params}
                         label="Usuarios"
+                        error={validate}
                         InputProps={{
                             ...params.InputProps,
                             endAdornment: (

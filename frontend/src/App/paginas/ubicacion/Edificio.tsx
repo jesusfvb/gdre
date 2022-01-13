@@ -1,4 +1,4 @@
-import {MouseEvent, ReactElement, useEffect, useRef, useState} from "react";
+import {ChangeEvent, MouseEvent, ReactElement, useEffect, useRef, useState} from "react";
 import {
     DataGrid,
     GridColumns,
@@ -58,12 +58,26 @@ export default function Edificio(): ReactElement {
     const [rows, setRows] = useState<Array<any>>([])
     const [selected, setSelected] = useState<GridSelectionModel>([])
     const [open, setOpen] = useState<{ open: boolean, params?: any }>({open: false});
+    const [validate, setValidate] = useState<boolean>(true)
+
+    const handleChange = (even: ChangeEvent<HTMLInputElement>) => {
+        const exp = new RegExp("^[0-9]+$")
+        if (even.target.value.length === 0) {
+            setValidate(true)
+        } else {
+            setValidate(!exp.test(even.target.value))
+        }
+    }
 
     const handleClickOpen = (id: number | undefined = undefined) => (evento: MouseEvent) => {
         evento.stopPropagation()
+        if(id!==undefined){
+            setValidate(false)
+        }
         setOpen({open: true, params: rows.find(row => row.id === id)});
     };
     const handleClose = () => {
+        setValidate(true)
         setOpen({open: false});
     };
 
@@ -74,27 +88,29 @@ export default function Edificio(): ReactElement {
             .catch(error => console.error(error))
     }
     const save = () => {
-        if (open.params !== undefined) {
-            axios
-                .put("/edificio", {
-                    id: open.params.id,
-                    numero: containerInputs.current?.querySelector<HTMLInputElement>("#numero")?.value
-                })
-                .then(response => {
-                    let newRows = [...rows]
-                    newRows[rows.findIndex(row => row.id === open.params.id)] = response.data
-                    setRows(newRows)
-                    handleClose()
-                })
-        } else {
-            axios
-                .post("/edificio", {
-                    numero: containerInputs.current?.querySelector<HTMLInputElement>("#numero")?.value
-                })
-                .then(response => {
-                    setRows([...rows, response.data])
-                    handleClose()
-                })
+        if (!validate) {
+            if (open.params !== undefined) {
+                axios
+                    .put("/edificio", {
+                        id: open.params.id,
+                        numero: containerInputs.current?.querySelector<HTMLInputElement>("#numero")?.value
+                    })
+                    .then(response => {
+                        let newRows = [...rows]
+                        newRows[rows.findIndex(row => row.id === open.params.id)] = response.data
+                        setRows(newRows)
+                        handleClose()
+                    })
+            } else {
+                axios
+                    .post("/edificio", {
+                        numero: containerInputs.current?.querySelector<HTMLInputElement>("#numero")?.value
+                    })
+                    .then(response => {
+                        setRows([...rows, response.data])
+                        handleClose()
+                    })
+            }
         }
     }
     const borrar = (id: number | undefined = undefined) => (evento: MouseEvent) => {
@@ -150,7 +166,9 @@ export default function Edificio(): ReactElement {
                         type="number"
                         fullWidth
                         variant="standard"
+                        error={validate}
                         defaultValue={(open.params !== undefined) ? open.params.numero : null}
+                        onChange={handleChange}
                     />
                 </DialogContent>
                 <DialogActions>
