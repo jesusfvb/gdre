@@ -1,4 +1,5 @@
-import FullCalendar from '@fullcalendar/react' // must go before plugins
+import "@fullcalendar/react/dist/vdom"
+import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 
 export default function Calendario(props: { width: number | string, height: number | string } | { height: number | string } | any) {
