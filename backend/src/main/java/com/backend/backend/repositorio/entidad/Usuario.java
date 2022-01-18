@@ -4,6 +4,8 @@ import com.backend.backend.controlador.respuestas.usuario.UsuarioResp;
 import com.backend.backend.controlador.respuestas.usuario.UsuarioUbicacionResp;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Usuario extends Entidad {
@@ -18,7 +20,14 @@ public class Usuario extends Entidad {
     @JoinColumn(name = "cuarto_id")
     private Cuarto cuarto;
 
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Cuarteleria> cuarteleria = new ArrayList<>();
+
     public Usuario() {
+    }
+
+    public Usuario(Integer idUsuario) {
+        super.setId(idUsuario);
     }
 
     public String getNombre() {
@@ -76,4 +85,13 @@ public class Usuario extends Entidad {
         this.ubicar = null;
         return this;
     }
+
+    public List<Cuarteleria> getCuarteleria() {
+        return cuarteleria;
+    }
+
+    public void setCuarteleria(List<Cuarteleria> cuarteleria) {
+        this.cuarteleria = cuarteleria;
+    }
+
 }

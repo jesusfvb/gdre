@@ -4,6 +4,7 @@ import com.backend.backend.controlador.respuestas.usuario.UsuarioResp;
 import com.backend.backend.controlador.respuestas.usuario.UsuarioUbicacionResp;
 import com.backend.backend.controlador.solicitudes.UbicarSo;
 import com.backend.backend.repositorio.UsuarioR;
+import com.backend.backend.repositorio.entidad.Usuario;
 import com.backend.backend.servicios.CuartoS;
 import com.backend.backend.servicios.UsuarioS;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,5 +92,10 @@ public class UsuarioSI implements UsuarioS {
             usuarioR.save(usuarioR.getById(id).desconfirmar());
         }
         return ids;
+    }
+
+    @Override
+    public Usuario getPorId(Integer id) {
+        return usuarioR.getById(id);
     }
 }

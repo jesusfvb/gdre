@@ -3,6 +3,7 @@ package com.backend.backend.servicios;
 import com.backend.backend.controlador.respuestas.usuario.UsuarioResp;
 import com.backend.backend.controlador.respuestas.usuario.UsuarioUbicacionResp;
 import com.backend.backend.controlador.solicitudes.UbicarSo;
+import com.backend.backend.repositorio.entidad.Usuario;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,4 +28,6 @@ public interface UsuarioS {
     Integer[] confirmar(Integer[] ids);
 
     Integer[] desconfirmar(Integer[] ids);
+
+    Usuario getPorId(Integer id);
 }
