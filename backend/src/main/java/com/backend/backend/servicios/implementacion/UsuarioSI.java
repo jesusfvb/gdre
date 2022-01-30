@@ -2,7 +2,9 @@ package com.backend.backend.servicios.implementacion;
 
 import com.backend.backend.controlador.respuestas.usuario.UsuarioResp;
 import com.backend.backend.controlador.respuestas.usuario.UsuarioUbicacionResp;
-import com.backend.backend.controlador.solicitudes.UbicarSo;
+import com.backend.backend.controlador.solicitudes.usuario.UbicarSo;
+import com.backend.backend.controlador.solicitudes.usuario.UsuarioNewSo;
+import com.backend.backend.controlador.solicitudes.usuario.UsuarioUpSo;
 import com.backend.backend.repositorio.UsuarioR;
 import com.backend.backend.repositorio.entidad.Usuario;
 import com.backend.backend.servicios.CuartoS;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UsuarioSI implements UsuarioS {
@@ -27,6 +30,11 @@ public class UsuarioSI implements UsuarioS {
         usuarioR.findAllByCuarto_Id(idCuarto).forEach(usuario -> {
             usuarioR.save(usuario.cuartoNull());
         });
+    }
+
+    @Override
+    public List<UsuarioResp> listar() {
+        return usuarioR.findAll().parallelStream().map(Usuario::convertir).collect(Collectors.toList());
     }
 
     @Override
@@ -71,6 +79,18 @@ public class UsuarioSI implements UsuarioS {
     }
 
     @Override
+    public UsuarioResp save(UsuarioNewSo usuario) {
+        return usuarioR.save(new Usuario(usuario)).convertir();
+    }
+
+    @Override
+    public UsuarioResp update(UsuarioUpSo usuario) {
+        Usuario usuarioP = getPorId(usuario.getId());
+        usuarioP.setNombre(usuario.getNombre());
+        return usuarioR.save(usuarioP).convertir();
+    }
+
+    @Override
     public Integer[] desubicar(Integer[] ids) {
         for (Integer id : ids) {
             usuarioR.save(usuarioR.getById(id).cuartoNull());
@@ -97,5 +117,13 @@ public class UsuarioSI implements UsuarioS {
     @Override
     public Usuario getPorId(Integer id) {
         return usuarioR.getById(id);
+    }
+
+    @Override
+    public Integer[] borrar(Integer[] ids) {
+        for (Integer id : ids) {
+            usuarioR.deleteById(id);
+        }
+        return ids;
     }
 }

@@ -13,6 +13,8 @@ import Cuarto from "./paginas/ubicacion/Cuarto";
 import Residente from "./paginas/ubicacion/Residente";
 import Personas from "./paginas/ubicacion/Personas";
 import Cuarteleria from "./paginas/Cuarteleria";
+import Guardia from "./paginas/Guardia";
+import Usuario from "./paginas/Usuario";
 
 export default function App(): ReactElement {
     axios.defaults.baseURL = 'http://localhost:8080';
@@ -82,6 +84,8 @@ export default function App(): ReactElement {
                                     element={<Residente/>}/>
                             </Route>
                             <Route path="/cuarteleria" element={<Cuarteleria/>}/>
+                            <Route path="/guardia" element={<Guardia/>}/>
+                            <Route path="/usuario" element={<Usuario/>}/>
                         </Route>
                         <Route path={"*"} element={<E404/>}/>
                     </>
