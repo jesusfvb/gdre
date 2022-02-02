@@ -230,7 +230,7 @@ export default function Cuarteleria(): ReactElement {
             <DataGrid columns={columns} rows={rows} components={{Toolbar: MyToolbar}} autoPageSize checkboxSelection
                       onSelectionModelChange={(selectionModel) => setSelected(selectionModel)}/>
             <Dialog open={open.open} onClose={handleClose}>
-                <DialogTitle>Guardia</DialogTitle>
+                <DialogTitle>Cuarteleria</DialogTitle>
                 <DialogContent>
                     {(open.id === undefined) ? <MyAutocomplete/> : null}
                     <TextField type={"date"} label="Fecha" variant="outlined" fullWidth focused sx={{marginTop: 2}}

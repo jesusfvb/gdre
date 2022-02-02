@@ -8,22 +8,32 @@ import {
 } from "@mui/x-data-grid";
 import {
     Autocomplete,
-    AutocompleteValue, Box, Button,
-    CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, FormControl,
-    IconButton, InputLabel, MenuItem, Select,
-    SelectChangeEvent,
+    AutocompleteValue,
+    Box,
+    Button,
+    ButtonGroup,
+    CircularProgress,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    IconButton,
     TextField
 } from "@mui/material";
-import {Add, Check, Delete, Update} from "@mui/icons-material";
+import {Add, Delete, Update} from "@mui/icons-material";
 import axios from "axios";
 
 export default function Guardia(): ReactElement {
+    const [option, setOption] = useState<number>(1)
     const columns: GridColumns = [
         {
-            field: "nombre",
-            headerName: "Nombre",
+            field: "coordinador",
+            headerName: "Coordinador",
             type: "string",
-            flex: 1
+            flex: 1,
+            hide: (option === 1),
+            filterable: (option !== 1),
+            renderCell: params => (params.value?.nombre)
         },
         {
             field: "fecha",
@@ -32,21 +42,13 @@ export default function Guardia(): ReactElement {
             flex: 1
         },
         {
-            field: "evaluacion",
-            headerName: "Evaluación",
-            type: "date",
-            flex: 1
-        },
-        {
             field: "id",
             headerName: "Acciones",
             type: "date",
             minWidth: 130,
+            filterable: false,
             renderCell: (params) => (
                 <>
-                    <IconButton color="primary" onClick={handleClickOpenEvaluacion(params.value)}>
-                        <Check/>
-                    </IconButton>
                     <IconButton color="primary" onClick={handleClickOpen(params.value)}>
                         <Update/>
                     </IconButton>
@@ -55,46 +57,43 @@ export default function Guardia(): ReactElement {
                     </IconButton>
                 </>
             )
-        }]
+        }
+    ]
     const [rows, setRows] = useState<Array<any>>([])
     const [open, setOpen] = useState<{ open: boolean, id: number | undefined }>({open: false, id: undefined});
-    const [value, setValue] = useState<{ usuario: any | null, fecha: string | null }>({usuario: null, fecha: null})
-    const [evaluacion, setEvaluacion] = useState<{ open: boolean, id: number | undefined, evaluacion: string }>({
-        open: false,
-        id: undefined,
-        evaluacion: ""
+    const [value, setValue] = useState<{ coordinador: any | null, fecha: string  }>({
+        coordinador: null,
+        fecha: ""
     })
     const [selected, setSelected] = useState<GridSelectionModel>([])
 
+
     const handleClickOpen = (id: number | undefined = undefined) => (evento: MouseEvent) => {
         evento.stopPropagation()
+        if (id !== undefined) {
+            let guardia = rows.find(row => row.id === id)
+            setValue({coordinador: guardia.coordinador, fecha: guardia.fecha})
+        }
         setOpen({open: true, id: id});
     };
     const handleClose = () => {
-        setValue({usuario: null, fecha: null})
+        setValue({coordinador: null, fecha: ""})
         setOpen({open: false, id: undefined});
-    };
-
-    const handleClickOpenEvaluacion = (id: number | undefined = undefined) => (evento: MouseEvent) => {
-        evento.stopPropagation()
-        setEvaluacion({open: true, id: id, evaluacion: ""});
-    };
-    const handleCloseEvaluacion = () => {
-        setEvaluacion({open: false, id: undefined, evaluacion: ""});
     };
 
     const handleChangeFecha = (evento: ChangeEvent<HTMLInputElement>) => {
         setValue({...value, fecha: evento.target.value});
     }
-    const handleChangeEvaluacion = (evento: SelectChangeEvent) => {
-        setEvaluacion({...evaluacion, evaluacion: evento.target.value as string})
-    }
 
     const save = () => {
         if (open.id !== undefined) {
             axios
-                .put("/cuarteleria", {
+                .put((option === 1) ? "/guardia/residencia" : "/guardia/docente", (option === 1) ? {
                     id: open.id,
+                    fecha: value.fecha,
+                } : {
+                    id: open.id,
+                    idCoordinador: value.coordinador.id,
                     fecha: value.fecha
                 })
                 .then(response => {
@@ -106,8 +105,10 @@ export default function Guardia(): ReactElement {
                 .catch(error => console.error(error))
         } else {
             axios
-                .post("/cuarteleria", {
-                    idUsuario: value.usuario.id,
+                .post((option === 1) ? "/guardia/residencia" : "/guardia/docente", (option === 1) ? {
+                    fecha: value.fecha,
+                } : {
+                    idCoordinador: value.coordinador.id,
                     fecha: value.fecha
                 })
                 .then(response => {
@@ -120,7 +121,7 @@ export default function Guardia(): ReactElement {
     const borrar = (id: number | undefined = undefined) => (evento: MouseEvent) => {
         evento.stopPropagation()
         axios
-            .delete("/cuarteleria", {data: (id !== undefined) ? [id] : selected})
+            .delete("/guardia", {data: (id !== undefined) ? [id] : selected})
             .then(response => {
                 let newRows: any = []
                 rows.forEach((value) => {
@@ -132,18 +133,6 @@ export default function Guardia(): ReactElement {
             })
             .catch(error => console.error(error))
     }
-    const evaluar = () => {
-        axios
-            .put("/cuarteleria/evaluar", {id: evaluacion.id, evaluacion: evaluacion.evaluacion})
-            .then(response => {
-                let newRows = [...rows]
-                newRows[rows.findIndex(row => row.id === response.data.id)] = response.data
-                setRows(newRows)
-                handleCloseEvaluacion()
-            })
-            .catch(error => console.error(error))
-        handleCloseEvaluacion()
-    }
 
     function MyAutocomplete(): ReactElement {
         const [open, setOpen] = useState(false);
@@ -151,7 +140,7 @@ export default function Guardia(): ReactElement {
         const loading = open && options.length === 0;
 
         const handleChange = (event: SyntheticEvent, newValue: AutocompleteValue<any, any, any, any>) => {
-            setValue({...value, usuario: newValue})
+            setValue({...value, coordinador: newValue})
         }
         useEffect(() => {
             if (loading) {
@@ -169,7 +158,7 @@ export default function Guardia(): ReactElement {
                 id="nombre"
                 sx={{width: 300, paddingTop: 2}}
                 open={open}
-                value={value.usuario}
+                value={value.coordinador}
                 onChange={handleChange}
                 onOpen={() => {
                     setOpen(true);
@@ -184,7 +173,7 @@ export default function Guardia(): ReactElement {
                 renderInput={(params: any) => (
                     <TextField
                         {...params}
-                        label="Usuarios"
+                        label="Coordinador"
                         InputProps={{
                             ...params.InputProps,
                             endAdornment: (
@@ -204,6 +193,14 @@ export default function Guardia(): ReactElement {
         return (
             <GridToolbarContainer>
                 <GridToolbarFilterButton/>
+                <ButtonGroup sx={{marginLeft: 1}} size={"small"}>
+                    <Button variant={(option === 1) ? "contained" : "outlined"} onClick={() => setOption(1)}>
+                        Residencia
+                    </Button>
+                    <Button variant={(option === 2) ? "contained" : "outlined"} onClick={() => setOption(2)}>
+                        Docente
+                    </Button>
+                </ButtonGroup>
                 <Box sx={{flexGrow: 1}}/>
                 <IconButton color={"success"} onClick={handleClickOpen()}>
                     <Add/>
@@ -217,10 +214,10 @@ export default function Guardia(): ReactElement {
 
     useEffect(() => {
         axios
-            .get("/cuarteleria")
+            .get((option === 1) ? "/guardia/residencia" : "/guardia/docente")
             .then((response) => setRows(response.data))
             .catch(error => console.error(error))
-    }, [])
+    }, [option])
     return (
         <div style={{height: "calc(100vh - 60px)"}}>
             <DataGrid columns={columns} rows={rows} components={{Toolbar: MyToolbar}} autoPageSize checkboxSelection
@@ -228,36 +225,13 @@ export default function Guardia(): ReactElement {
             <Dialog open={open.open} onClose={handleClose}>
                 <DialogTitle>Guardia</DialogTitle>
                 <DialogContent>
-                    {(open.id === undefined) ? <MyAutocomplete/> : null}
+                    {(option === 2) ? <MyAutocomplete/> : null}
                     <TextField type={"date"} label="Fecha" variant="outlined" fullWidth focused sx={{marginTop: 2}}
-                               onChange={handleChangeFecha}/>
+                               value={value.fecha} onChange={handleChangeFecha}/>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>
                     <Button onClick={save}>Aceptar</Button>
-                </DialogActions>
-            </Dialog>
-            <Dialog open={evaluacion.open} onClose={handleCloseEvaluacion}>
-                <DialogTitle>Evaluar</DialogTitle>
-                <DialogContent>
-                    <FormControl fullWidth sx={{marginTop: 2}}>
-                        <InputLabel id="demo-simple-select-label">Evaluación</InputLabel>
-                        <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            value={evaluacion.evaluacion}
-                            label="Evaluacion"
-                            onChange={handleChangeEvaluacion}
-                        >
-                            <MenuItem value={"Bien"}>Bien</MenuItem>
-                            <MenuItem value={"Regular"}>Regular</MenuItem>
-                            <MenuItem value={"Mal"}>Mal</MenuItem>
-                        </Select>
-                    </FormControl>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleCloseEvaluacion}>Cancel</Button>
-                    <Button onClick={evaluar}>Aceptar</Button>
                 </DialogActions>
             </Dialog>
         </div>
