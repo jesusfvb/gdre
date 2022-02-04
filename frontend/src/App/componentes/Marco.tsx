@@ -38,15 +38,20 @@ export default function Marco(props: { cerrarSession: Function }) {
                                 sx={{marginLeft: 1, width: "93%"}}>Inicio</Button>
                     </Grid>
                     <Grid item sx={{width: "100%", marginBottom: 1}}>
-                        <Button variant={"contained"} size={"small"}
+                        <Button variant={"contained"} size={"small"} onClick={() => navigation("/cuarteleria")}
                                 sx={{marginLeft: 1, width: "93%"}}>Cuarteleria</Button>
                     </Grid>
                     <Grid item sx={{width: "100%", marginBottom: 1}}>
-                        <Button variant={"contained"} size={"small"} sx={{marginLeft: 1, width: "93%"}}>Guardia</Button>
+                        <Button variant={"contained"} size={"small"} sx={{marginLeft: 1, width: "93%"}}
+                                onClick={() => navigation("/guardia")}>Guardia</Button>
                     </Grid>
                     <Grid item sx={{width: "100%", marginBottom: 1}}>
                         <Button variant={"contained"} size={"small"} onClick={() => navigation("/ubicacion")}
                                 sx={{marginLeft: 1, width: "93%"}}>Ubicación</Button>
+                    </Grid>
+                    <Grid item sx={{width: "100%", marginBottom: 1}}>
+                        <Button variant={"contained"} size={"small"} onClick={() => navigation("/usuario")}
+                                sx={{marginLeft: 1, width: "93%"}}>Usuario</Button>
                     </Grid>
                 </Grid>
                 <Grid item xl={true} lg={true} md={true} sm={true} xs={true} sx={{borderLeft: "solid 1px"}}>

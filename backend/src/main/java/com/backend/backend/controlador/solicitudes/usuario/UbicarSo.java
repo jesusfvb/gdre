@@ -1,4 +1,4 @@
-package com.backend.backend.controlador.solicitudes;
+package com.backend.backend.controlador.solicitudes.usuario;
 
 public class UbicarSo {
 
