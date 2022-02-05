@@ -1,11 +1,19 @@
 package com.backend.backend.repositorio.entidad;
 
+import com.backend.backend.controlador.respuestas.IntegranteResp;
+import com.backend.backend.controlador.solicitudes.integrantes.IntegranteNewSo;
+
 import javax.persistence.*;
 
 @Entity
 public class Integrante extends Entidad {
 
-    private enum Evaluacion {Bien, Regular, Mal}
+    public enum Evaluacion {Bien, Regular, Mal, Pendiente}
+
+    public enum Asistencia {Presente, Ausente, Pendiente}
+
+    @Enumerated(EnumType.STRING)
+    private Asistencia asistencia;
 
     @Column
     private String advertencia;
@@ -22,6 +30,14 @@ public class Integrante extends Entidad {
     private Usuario participante;
 
     public Integrante() {
+    }
+
+    public Integrante(IntegranteNewSo integrante) {
+        this.asistencia = Asistencia.Pendiente;
+        this.advertencia = null;
+        this.evaluacion = Evaluacion.Pendiente;
+        this.guardia = new Guardia(integrante.getIdGuardia());
+        this.participante = new Usuario(integrante.getIdParticipante());
     }
 
     public Usuario getParticipante() {
@@ -52,8 +68,20 @@ public class Integrante extends Entidad {
         this.evaluacion = evaluacion;
     }
 
+    public Asistencia getAsistencia() {
+        return asistencia;
+    }
+
+    public void setAsistencia(Asistencia asistencia) {
+        this.asistencia = asistencia;
+    }
+
+    public void setAdvertencia(String advertencia) {
+        this.advertencia = advertencia;
+    }
+
     @Override
-    public Object convertir() {
-        return null;
+    public IntegranteResp convertir() {
+        return new IntegranteResp(this.getId(), this.asistencia, this.advertencia, this.evaluacion, this.participante.convertir());
     }
 }
