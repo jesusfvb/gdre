@@ -20,11 +20,13 @@ import {
     IconButton,
     TextField
 } from "@mui/material";
-import {Add, Delete, Update} from "@mui/icons-material";
+import {Add, Delete, NavigateNext, Update} from "@mui/icons-material";
 import axios from "axios";
+import {useNavigate} from "react-router-dom";
 
 export default function Guardia(): ReactElement {
     const [option, setOption] = useState<number>(1)
+    const navegate = useNavigate()
     const columns: GridColumns = [
         {
             field: "coordinador",
@@ -55,13 +57,19 @@ export default function Guardia(): ReactElement {
                     <IconButton color="error" onClick={borrar(params.value)}>
                         <Delete/>
                     </IconButton>
+                    <IconButton color={"secondary"} onClick={(event) => {
+                        event.stopPropagation()
+                        navegate(`/guardia/${params.value}/integrantes`)
+                    }}>
+                        <NavigateNext/>
+                    </IconButton>
                 </>
             )
         }
     ]
     const [rows, setRows] = useState<Array<any>>([])
     const [open, setOpen] = useState<{ open: boolean, id: number | undefined }>({open: false, id: undefined});
-    const [value, setValue] = useState<{ coordinador: any | null, fecha: string  }>({
+    const [value, setValue] = useState<{ coordinador: any | null, fecha: string }>({
         coordinador: null,
         fecha: ""
     })

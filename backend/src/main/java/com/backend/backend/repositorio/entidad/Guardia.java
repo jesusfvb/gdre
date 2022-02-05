@@ -28,8 +28,11 @@ public class Guardia extends Entidad {
     @JoinColumn(name = "coordinador_id")
     private Usuario coordinador;
 
-
     public Guardia() {
+    }
+
+    public Guardia(Integer idGuardia) {
+        this.setId(idGuardia);
     }
 
     public Guardia(GuardiaResidenciaSol guardia) {
