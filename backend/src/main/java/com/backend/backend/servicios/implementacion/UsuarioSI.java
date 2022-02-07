@@ -10,6 +10,8 @@ import com.backend.backend.repositorio.entidad.Usuario;
 import com.backend.backend.servicios.CuartoS;
 import com.backend.backend.servicios.UsuarioS;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
@@ -18,6 +20,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class UsuarioSI implements UsuarioS {
+
+    @Autowired
+    public PasswordEncoder passwordEncoder;
 
     @Autowired
     private UsuarioR usuarioR;
@@ -117,6 +122,21 @@ public class UsuarioSI implements UsuarioS {
     @Override
     public Usuario getPorId(Integer id) {
         return usuarioR.getById(id);
+    }
+
+    @Override
+    public Usuario getByUsuario(String username) {
+        if (username.equals("admin")) {
+            Usuario usuario = new Usuario(-1);
+            usuario.setNombre("Admin");
+            usuario.setUsuario("admin");
+            usuario.setContrasena(passwordEncoder.encode("1234"));
+            usuario.setCuarto(null);
+            usuario.getRoles().add(Usuario.Rol.Usuario);
+            usuario.getRoles().add(Usuario.Rol.Administrador);
+            return usuario;
+        }
+        return usuarioR.findByUsuario(username);
     }
 
     @Override

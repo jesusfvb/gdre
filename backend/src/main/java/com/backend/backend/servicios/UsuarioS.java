@@ -31,14 +31,15 @@ public interface UsuarioS {
 
     UsuarioResp update(UsuarioUpSo usuario);
 
+    Usuario getPorId(Integer id);
+
+    Usuario getByUsuario(String username);
+
     Integer[] desubicar(Integer[] ids);
 
     Integer[] confirmar(Integer[] ids);
 
     Integer[] desconfirmar(Integer[] ids);
 
-    Usuario getPorId(Integer id);
-
     Integer[] borrar(Integer[] ids);
-
 }
