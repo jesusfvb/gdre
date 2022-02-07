@@ -16,7 +16,8 @@ import Cuarteleria from "./paginas/Cuarteleria";
 import Guardia from "./paginas/Guardia";
 import Usuario from "./paginas/Usuario";
 import Integrantes from "./paginas/Integrantes";
-import decode from "jwt-decode"
+import isJwtTokenExpired, {decode} from 'jwt-check-expiry';
+import {useSnackbar} from "notistack";
 
 interface InterfaceDatosUser {
     nombre: string,
@@ -37,6 +38,7 @@ export const DatosUser = createContext<InterfaceDatosUser>({
 export default function App(): ReactElement {
     axios.defaults.baseURL = 'http://localhost:8080';
     const body = document.getElementsByTagName("body")[0]
+    const {enqueueSnackbar} = useSnackbar();
     const [session, setSession] = useState<boolean | null>(null)
     const [datosUser, setDatosUser] = useState<InterfaceDatosUser>({
         nombre: "",
@@ -56,7 +58,9 @@ export default function App(): ReactElement {
                 localStorage.setItem("jwt", datos.data)
                 procesarToken(datos.data)
             })
-            .catch(error => console.error(error))
+            .catch(() => {
+                enqueueSnackbar("Usuario o Contraseña Incorrecta")
+            })
     }
     const cerrarSession = () => {
         localStorage.clear()
@@ -77,8 +81,8 @@ export default function App(): ReactElement {
 
     const procesarToken = (jwt: string) => {
         try {
-            let jwtDecode: any = decode(jwt);
-            if (new Date(jwtDecode.exp) < new Date()) {
+            let jwtDecode: any = decode(jwt).payload;
+            if (!isJwtTokenExpired(jwt)) {
                 setDatosUser({
                     nombre: jwtDecode.nombre,
                     usuario: jwtDecode.sub,
