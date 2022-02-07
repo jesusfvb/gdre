@@ -39,9 +39,4 @@ public class LoginC {
 
         return ResponseEntity.ok(jwt);
     }
-
-    @PutMapping
-    private ResponseEntity<Boolean> isTokenExpired(@RequestBody TokenSo token) {
-        return ResponseEntity.ok(serviceJwt.isTokenExpired(token.getToken()));
-    }
 }

@@ -1,8 +1,12 @@
 package com.backend.backend.servicios.implementacion;
 
+import com.backend.backend.controlador.respuestas.usuario.UsuarioUbicacionResp;
+import com.backend.backend.repositorio.entidad.Usuario;
+import com.backend.backend.servicios.UsuarioS;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +21,9 @@ public class JwtSI {
 
     private final String SECRET_KEY = "GDRE";
 
+    @Autowired
+    private UsuarioS usuarioS;
+
     public String extractUserName(String token) {
         String salida = null;
         try {
@@ -28,8 +35,13 @@ public class JwtSI {
     }
 
     public String generateToken(UserDetails userDetails) {
+        UsuarioUbicacionResp usuario = usuarioS.getByUsuario(userDetails.getUsername()).convertir2();
         Map<String, Object> claims = new HashMap<>();
         String subject = userDetails.getUsername();
+        claims.put("id", usuario.getId());
+        claims.put("nombre", usuario.getNombre());
+        claims.put("edificio", usuario.getEdificio());
+        claims.put("apartamento", usuario.getApartamento());
         claims.put("roles", userDetails.getAuthorities());
         return createToken(claims, subject);
     }

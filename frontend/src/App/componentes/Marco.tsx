@@ -1,9 +1,12 @@
 import {Avatar, Button, Grid, Paper, Typography} from "@mui/material";
 import {Outlet, useNavigate} from "react-router-dom"
 import BarraDeNavegacion from "./BarraDeNavegacion";
+import {useContext} from "react";
+import {DatosUser} from "../App";
 
 export default function Marco(props: { cerrarSession: Function }) {
     const navigation = useNavigate()
+    const datosUser = useContext(DatosUser)
     return (
         <Grid container direction={"column"}>
             <Grid item sx={{marginBottom: 1}}>
@@ -15,20 +18,16 @@ export default function Marco(props: { cerrarSession: Function }) {
                         <Grid item container justifyContent={"center"} alignItems={"center"} direction={"column"}
                               paddingTop={2} paddingBottom={2}>
                             <Avatar sx={{width: 90, height: 90}}/>
-                            <Typography variant={"h5"}>jesusfvb</Typography>
-                            <Grid container item justifyContent={"center"} sx={{marginTop: 2}}>
+                            <Typography variant={"h5"}>{datosUser.usuario}</Typography>
+                            <Grid container item justifyContent={"center"} sx={{marginTop: 1}}>
                                 <Typography variant={"overline"}> Dirección </Typography>
                                 <Grid container item justifyContent={"space-between"} sx={{padding: "0px 30px"}}>
-                                    <Typography>Manzana:</Typography>
-                                    <Typography>2</Typography>
-                                </Grid>
-                                <Grid container item justifyContent={"space-between"} sx={{padding: "0px 30px"}}>
                                     <Typography>Edificio:</Typography>
-                                    <Typography>2</Typography>
+                                    <Typography>{datosUser.edificio}</Typography>
                                 </Grid>
                                 <Grid container item justifyContent={"space-between"} sx={{padding: "0px 30px"}}>
                                     <Typography>Apartamento:</Typography>
-                                    <Typography>2</Typography>
+                                    <Typography>{datosUser.apartamento}</Typography>
                                 </Grid>
                             </Grid>
                         </Grid>

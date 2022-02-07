@@ -15,10 +15,16 @@ import java.util.Set;
 public class Usuario extends Entidad {
 
 
-    public enum Rol {Usuario, Estudiante, Profesor}
+    public enum Rol {Usuario, Estudiante, Profesor, Administrador}
 
     @Column
     private String nombre;
+
+    @Column
+    private String usuario;
+
+    @Column
+    private String contrasena;
 
     @Column()
     private Boolean ubicar;
@@ -48,6 +54,7 @@ public class Usuario extends Entidad {
 
     public Usuario(UsuarioNewSo usuario) {
         this.nombre = usuario.getNombre();
+        this.roles.add(Rol.Usuario);
     }
 
     public List<Integrante> getParticipacion() {
@@ -96,6 +103,22 @@ public class Usuario extends Entidad {
 
     public void setUbicar(Boolean ubicar) {
         this.ubicar = ubicar;
+    }
+
+    public String getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(String usuario) {
+        this.usuario = usuario;
+    }
+
+    public String getContrasena() {
+        return contrasena;
+    }
+
+    public void setContrasena(String contrasena) {
+        this.contrasena = contrasena;
     }
 
     public Usuario confirmar() {

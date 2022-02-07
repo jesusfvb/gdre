@@ -19,4 +19,6 @@ public interface UsuarioR extends JpaRepository<Usuario, Integer> {
 
     List<Usuario> findAllByCuartoIsNotNull();
 
+    Usuario findByUsuario(String usuario);
+
 }

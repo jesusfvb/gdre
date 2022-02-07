@@ -1,4 +1,4 @@
-import {ReactElement, useEffect, useState} from "react";
+import {createContext, ReactElement, useEffect, useState} from "react";
 import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
 import Login from "./paginas/Login";
 import axios from "axios";
@@ -16,10 +16,35 @@ import Cuarteleria from "./paginas/Cuarteleria";
 import Guardia from "./paginas/Guardia";
 import Usuario from "./paginas/Usuario";
 import Integrantes from "./paginas/Integrantes";
+import decode from "jwt-decode"
+
+interface InterfaceDatosUser {
+    nombre: string,
+    usuario: string,
+    edificio: string,
+    apartamento: string,
+    roles: Array<string>
+}
+
+export const DatosUser = createContext<InterfaceDatosUser>({
+    nombre: "",
+    usuario: "",
+    edificio: "",
+    apartamento: "",
+    roles: []
+})
 
 export default function App(): ReactElement {
     axios.defaults.baseURL = 'http://localhost:8080';
+    const body = document.getElementsByTagName("body")[0]
     const [session, setSession] = useState<boolean | null>(null)
+    const [datosUser, setDatosUser] = useState<InterfaceDatosUser>({
+        nombre: "",
+        usuario: "",
+        edificio: "",
+        apartamento: "",
+        roles: []
+    })
 
     const iniciarSession = (usuario: string, contrasenna: string): void => {
         axios
@@ -29,70 +54,86 @@ export default function App(): ReactElement {
             })
             .then(datos => {
                 localStorage.setItem("jwt", datos.data)
-                setSession(datos.data)
+                procesarToken(datos.data)
             })
             .catch(error => console.error(error))
     }
     const cerrarSession = () => {
         localStorage.clear()
+        sessionFalse()
+    }
+
+    const sessionTrue = (jwt: string) => {
+        body.style.background = "none";
+        axios.defaults.headers.common['Authorization'] = jwt;
+        setSession(true)
+    }
+    const sessionFalse = () => {
+        body.style.backgroundImage = `url(${img_2})`;
+        body.style.backgroundRepeat = "no-repeat";
+        body.style.backgroundSize = "cover";
         setSession(false)
     }
 
+    const procesarToken = (jwt: string) => {
+        try {
+            let jwtDecode: any = decode(jwt);
+            if (new Date(jwtDecode.exp) < new Date()) {
+                setDatosUser({
+                    nombre: jwtDecode.nombre,
+                    usuario: jwtDecode.sub,
+                    edificio: (jwtDecode.edificio === null) ? "N/A" : jwtDecode.edificio,
+                    apartamento: (jwtDecode.apartamento === null) ? "N/A" : jwtDecode.apartament,
+                    roles: jwtDecode.roles
+                })
+                sessionTrue(jwt)
+            } else {
+                sessionFalse()
+            }
+        } catch (e) {
+            sessionFalse()
+        }
+    }
+
     useEffect(() => {
-        const body = document.getElementsByTagName("body")[0]
         let jwt = localStorage.getItem("jwt")
         axios.defaults.headers.common["Content-Type"] = "application/json, text/plain, */*"
         if (jwt !== null) {
-            axios
-                .put("/login", {token: jwt})
-                .then(response => {
-                    if (response.data) {
-                        body.style.backgroundImage = `url(${img_2})`;
-                        body.style.backgroundRepeat = "no-repeat";
-                        body.style.backgroundSize = "cover";
-                        setSession(false)
-                    } else {
-                        body.style.background = "none";
-                        axios.defaults.headers.common['Authorization'] = jwt + "";
-                        setSession(true)
-                    }
-                })
-                .catch(error => console.error(error))
+            procesarToken(jwt)
         } else {
-            body.style.backgroundImage = `url(${img_2})`;
-            body.style.backgroundRepeat = "no-repeat";
-            body.style.backgroundSize = "cover";
-            setSession(false)
+            sessionFalse()
         }
-    }, [session])
+    }, [])
     return (
-        <BrowserRouter>
-            <Routes>
-                {session === null ? <Route path="*" element={null}/> : !session ?
-                    <Route path="*" element={<Login iniciarSession={iniciarSession}/>}/> :
-                    <>
-                        <Route element={<Marco cerrarSession={cerrarSession}/>}>
-                            <Route path="/" element={<Navigate to="/principal"/>}/>
-                            <Route path="/principal" element={<Principal/>}/>
-                            <Route element={<Ubicacion/>}>
-                                <Route path="/ubicacion" element={<Personas/>}/>
-                                <Route path="/ubicacion/residencias" element={<Edificio/>}/>
-                                <Route path="/ubicacion/residencias/:id/apartamento" element={<Apartamento/>}/>
-                                <Route path="/ubicacion/residencias/:idEdificio/apartamento/:id/cuarto"
-                                       element={<Cuarto/>}/>
-                                <Route
-                                    path="/ubicacion/residencias/:idEdificio/apartamento/:idApartamento/cuarto/:id/residente"
-                                    element={<Residente/>}/>
+        <DatosUser.Provider value={datosUser}>
+            <BrowserRouter>
+                <Routes>
+                    {session === null ? <Route path="*" element={null}/> : !session ?
+                        <Route path="*" element={<Login iniciarSession={iniciarSession}/>}/> :
+                        <>
+                            <Route element={<Marco cerrarSession={cerrarSession}/>}>
+                                <Route path="/" element={<Navigate to="/principal"/>}/>
+                                <Route path="/principal" element={<Principal/>}/>
+                                <Route element={<Ubicacion/>}>
+                                    <Route path="/ubicacion" element={<Personas/>}/>
+                                    <Route path="/ubicacion/residencias" element={<Edificio/>}/>
+                                    <Route path="/ubicacion/residencias/:id/apartamento" element={<Apartamento/>}/>
+                                    <Route path="/ubicacion/residencias/:idEdificio/apartamento/:id/cuarto"
+                                           element={<Cuarto/>}/>
+                                    <Route
+                                        path="/ubicacion/residencias/:idEdificio/apartamento/:idApartamento/cuarto/:id/residente"
+                                        element={<Residente/>}/>
+                                </Route>
+                                <Route path="/cuarteleria" element={<Cuarteleria/>}/>
+                                <Route path="/guardia" element={<Guardia/>}/>
+                                <Route path="/guardia/:id/integrantes" element={<Integrantes/>}/>
+                                <Route path="/usuario" element={<Usuario/>}/>
                             </Route>
-                            <Route path="/cuarteleria" element={<Cuarteleria/>}/>
-                            <Route path="/guardia" element={<Guardia/>}/>
-                            <Route path="/guardia/:id/integrantes" element={<Integrantes/>}/>
-                            <Route path="/usuario" element={<Usuario/>}/>
-                        </Route>
-                        <Route path={"*"} element={<E404/>}/>
-                    </>
-                }
-            </Routes>
-        </BrowserRouter>
+                            <Route path={"*"} element={<E404/>}/>
+                        </>
+                    }
+                </Routes>
+            </BrowserRouter>
+        </DatosUser.Provider>
     );
 }
