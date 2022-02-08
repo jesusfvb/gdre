@@ -1,9 +1,14 @@
 package com.backend.backend.controlador.respuestas;
 
 import com.backend.backend.controlador.respuestas.usuario.UsuarioResp;
+import com.backend.backend.repositorio.entidad.Guardia;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
+@NoArgsConstructor
+@Getter
 public class GuardiaResp {
 
     private Integer id;
@@ -12,24 +17,12 @@ public class GuardiaResp {
 
     private LocalDate fecha;
 
-    public GuardiaResp() {
+    public GuardiaResp(Guardia guardia) {
+        this.id = guardia.getId();
+        if (guardia.getCoordinador() != null) {
+            this.coordinador = new UsuarioResp(guardia.getCoordinador());
+        }
+        this.fecha = guardia.getFecha();
     }
 
-    public GuardiaResp(Integer id, LocalDate fecha, UsuarioResp coordinador) {
-        this.id = id;
-        this.fecha = fecha;
-        this.coordinador = coordinador;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public LocalDate getFecha() {
-        return fecha;
-    }
-
-    public UsuarioResp getCoordinador() {
-        return coordinador;
-    }
 }

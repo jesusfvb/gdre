@@ -6,6 +6,8 @@ import com.backend.backend.servicios.UsuarioS;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -17,12 +19,12 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Service
+@AllArgsConstructor(onConstructor = @__(@Autowired))
 public class JwtSI {
 
     private final String SECRET_KEY = "GDRE";
 
-    @Autowired
-    private UsuarioS usuarioS;
+    private final UsuarioS usuarioS;
 
     public String extractUserName(String token) {
         String salida = null;
@@ -35,7 +37,7 @@ public class JwtSI {
     }
 
     public String generateToken(UserDetails userDetails) {
-        UsuarioUbicacionResp usuario = usuarioS.getByUsuario(userDetails.getUsername()).convertir2();
+        UsuarioUbicacionResp usuario = new UsuarioUbicacionResp(usuarioS.getByUsuario(userDetails.getUsername()));
         Map<String, Object> claims = new HashMap<>();
         String subject = userDetails.getUsername();
         claims.put("id", usuario.getId());
@@ -75,9 +77,7 @@ public class JwtSI {
     }
 
     private String createToken(Map<String, Object> claims, String subject) {
-        return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + (1000 * 60 * 60) * 10))
-                .signWith(SignatureAlgorithm.HS256, SECRET_KEY.getBytes(StandardCharsets.UTF_8)).compact();
+        return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis())).setExpiration(new Date(System.currentTimeMillis() + (1000 * 60 * 60) * 10)).signWith(SignatureAlgorithm.HS256, SECRET_KEY.getBytes(StandardCharsets.UTF_8)).compact();
     }
 
 }

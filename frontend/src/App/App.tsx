@@ -53,6 +53,10 @@ export default function App(): ReactElement {
             .post("/login", {
                 usuario: usuario,
                 contrasenna: contrasenna
+            }, {
+                headers: {
+                    "Content-Type": "application/json"
+                }
             })
             .then(datos => {
                 localStorage.setItem("jwt", datos.data)

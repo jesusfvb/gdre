@@ -7,38 +7,35 @@ import com.backend.backend.repositorio.ApartamentoR;
 import com.backend.backend.repositorio.entidad.Apartamento;
 import com.backend.backend.servicios.ApartamentoS;
 import com.backend.backend.servicios.EdificioS;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor(onConstructor = @__(@Autowired))
 public class ApartamentoSI implements ApartamentoS {
 
-    @Autowired
-    private ApartamentoR apartamentoR;
+    private final ApartamentoR apartamentoR;
 
-    @Autowired
-    private EdificioS edificioS;
+    private final EdificioS edificioS;
 
     @Override
     public Apartamento geById(Integer idApartamento) {
-        return apartamentoR.findById(idApartamento).get();
+        return apartamentoR.getById(idApartamento);
     }
 
     @Override
     public List<ApartamentoResp> listarPorIdEdificio(Integer id) {
-        List<ApartamentoResp> salida = new LinkedList<>();
-        apartamentoR.findAllByEdificio_Id(id).forEach(apartamento -> {
-            salida.add(apartamento.convertir());
-        });
-        return salida;
+        return apartamentoR.findAllByEdificio_Id(id).parallelStream().map(ApartamentoResp::new).collect(Collectors.toList());
     }
 
     @Override
     public ApartamentoResp salvar(ApartamentoNewSo apartamentoNewSo) {
-        return apartamentoR.save(new Apartamento(apartamentoNewSo, edificioS.getById(apartamentoNewSo.getIdEdificio()))).convertir();
+        return new ApartamentoResp(apartamentoR.save(apartamentoNewSo.getApartamento()));
     }
 
     @Override
@@ -51,6 +48,6 @@ public class ApartamentoSI implements ApartamentoS {
 
     @Override
     public ApartamentoResp update(ApartamentoUpSo apartamentoUpSo) {
-        return apartamentoR.save(new Apartamento(apartamentoUpSo, edificioS.getById(apartamentoUpSo.getIdEdificio()))).convertir();
+        return new ApartamentoResp(apartamentoR.save(apartamentoUpSo.getApartamento(apartamentoR.getById(apartamentoUpSo.getId()))));
     }
 }

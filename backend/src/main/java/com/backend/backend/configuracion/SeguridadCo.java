@@ -2,9 +2,11 @@ package com.backend.backend.configuracion;
 
 import com.backend.backend.filtro.JwtRequestF;
 import com.backend.backend.servicios.implementacion.UserDetailsSI;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -18,22 +20,18 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@AllArgsConstructor(onConstructor = @__({@Autowired, @Lazy}))
 public class SeguridadCo extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    UserDetailsSI serviceUserDetails;
+    private final UserDetailsSI serviceUserDetails;
 
-    @Autowired
-    JwtRequestF filterJwtRequest;
+    private final JwtRequestF filterJwtRequest;
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+    public final PasswordEncoder passwordEncoder;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(serviceUserDetails).passwordEncoder(passwordEncoder());
+        auth.userDetailsService(serviceUserDetails).passwordEncoder(passwordEncoder);
     }
 
     @Override
@@ -56,5 +54,4 @@ public class SeguridadCo extends WebSecurityConfigurerAdapter {
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
-
 }

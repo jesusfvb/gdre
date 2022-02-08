@@ -1,7 +1,13 @@
 package com.backend.backend.controlador.respuestas;
 
+import com.backend.backend.repositorio.entidad.Cuarteleria;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDate;
 
+@NoArgsConstructor
+@Getter
 public class CuarteleriaResp {
 
     private Integer id;
@@ -12,33 +18,10 @@ public class CuarteleriaResp {
 
     private String evaluacion;
 
-    public CuarteleriaResp() {
-    }
-
-    public CuarteleriaResp(Integer id, LocalDate fecha,String evaluacion, String nombre) {
-        this.id = id;
-        this.fecha = fecha;
-        this.evaluacion= evaluacion;
-        this.nombre = nombre;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public LocalDate getFecha() {
-        return fecha;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public String getEvaluacion() {
-        return evaluacion;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public CuarteleriaResp(Cuarteleria cuarteleria) {
+        this.id = cuarteleria.getId();
+        this.nombre = cuarteleria.getUsuario().getNombre();
+        this.fecha = cuarteleria.getFecha();
+        this.evaluacion = cuarteleria.getEvaluacion();
     }
 }

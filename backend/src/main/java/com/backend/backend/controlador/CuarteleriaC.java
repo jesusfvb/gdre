@@ -5,6 +5,7 @@ import com.backend.backend.controlador.solicitudes.cuarteleria.CuarteleriaSo;
 import com.backend.backend.controlador.solicitudes.cuarteleria.CuarteleriaUpSo;
 import com.backend.backend.controlador.solicitudes.cuarteleria.EvaluacionSo;
 import com.backend.backend.servicios.CuarteleriaS;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,10 +15,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/cuarteleria")
 @CrossOrigin
+@AllArgsConstructor(onConstructor = @__(@Autowired))
 public class CuarteleriaC {
 
-    @Autowired
-    private CuarteleriaS cuarteleriaS;
+    private final CuarteleriaS cuarteleriaS;
 
     @GetMapping()
     private ResponseEntity<List<CuarteleriaResp>> listar() {

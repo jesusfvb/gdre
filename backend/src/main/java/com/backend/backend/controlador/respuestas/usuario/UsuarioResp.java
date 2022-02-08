@@ -1,21 +1,32 @@
 package com.backend.backend.controlador.respuestas.usuario;
 
+import com.backend.backend.repositorio.entidad.Usuario;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.stream.Collectors;
+
+@NoArgsConstructor
+@Getter
 public class UsuarioResp {
 
     private Integer id;
 
     private String nombre;
 
-    public UsuarioResp(Integer id, String nombre) {
-        this.id = id;
-        this.nombre = nombre;
+    private String usuario;
+
+    private String solapin;
+
+    private String rol;
+
+    public UsuarioResp(Usuario usuario) {
+        this.id = usuario.getId();
+        this.nombre = usuario.getNombre();
+        this.usuario = usuario.getUsuario();
+        this.solapin = usuario.getSolapin();
+        this.rol = usuario.getRoles().get(1).name();
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
 }

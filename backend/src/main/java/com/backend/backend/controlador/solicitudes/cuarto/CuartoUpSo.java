@@ -1,5 +1,13 @@
 package com.backend.backend.controlador.solicitudes.cuarto;
 
+import com.backend.backend.repositorio.entidad.Apartamento;
+import com.backend.backend.repositorio.entidad.Cuarto;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
+@Getter
 public class CuartoUpSo {
     private Integer id;
 
@@ -9,22 +17,12 @@ public class CuartoUpSo {
 
     private Integer capacidad;
 
-    public CuartoUpSo() {
+    @JsonIgnore
+    public Cuarto getCuarto(Cuarto cuarto) {
+        cuarto.setNumero(this.numero);
+        cuarto.setCapacidad(this.capacidad);
+        cuarto.setApartamento(new Apartamento(idApartamento));
+        return cuarto;
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public Integer getIdApartamento() {
-        return idApartamento;
-    }
-
-    public Integer getNumero() {
-        return numero;
-    }
-
-    public Integer getCapacidad() {
-        return capacidad;
-    }
 }

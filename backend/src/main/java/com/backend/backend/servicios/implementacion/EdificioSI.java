@@ -6,35 +6,33 @@ import com.backend.backend.controlador.solicitudes.edificio.EdificioUpSo;
 import com.backend.backend.repositorio.EdificioR;
 import com.backend.backend.repositorio.entidad.Edificio;
 import com.backend.backend.servicios.EdificioS;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor(onConstructor = @__(@Autowired))
 public class EdificioSI implements EdificioS {
 
-    @Autowired
-    private EdificioR edificioR;
+    private final EdificioR edificioR;
 
     @Override
     public Edificio getById(Integer id) {
-        return edificioR.findById(id).get();
+        return edificioR.getById(id);
     }
 
     @Override
     public List<EdificioResp> listar() {
-        List<EdificioResp> listaSalida = new LinkedList<>();
-        edificioR.findAll().forEach((edifico) -> listaSalida.add(edifico.convertir()));
-        return listaSalida;
+        return edificioR.findAll().parallelStream().map(EdificioResp::new).collect(Collectors.toUnmodifiableList());
     }
 
     @Override
     public EdificioResp salvar(EdificioNewSo solicitud) {
-        return edificioR.save(new Edificio(solicitud)).convertir();
+        return new EdificioResp(edificioR.save(solicitud.getEdificio()));
     }
-
 
     @Override
     public Integer[] borrar(Integer[] ids) {
@@ -46,6 +44,6 @@ public class EdificioSI implements EdificioS {
 
     @Override
     public EdificioResp update(EdificioUpSo solicitud) {
-        return edificioR.save(new Edificio(solicitud)).convertir();
+        return new EdificioResp(edificioR.save(solicitud.getEdificio(edificioR.getById(solicitud.getId()))));
     }
 }
