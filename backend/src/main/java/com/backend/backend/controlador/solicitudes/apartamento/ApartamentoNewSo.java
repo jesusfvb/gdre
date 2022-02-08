@@ -1,28 +1,24 @@
 package com.backend.backend.controlador.solicitudes.apartamento;
 
+import com.backend.backend.repositorio.entidad.Apartamento;
 import com.backend.backend.repositorio.entidad.Edificio;
-import com.backend.backend.servicios.EdificioS;
-import com.backend.backend.servicios.implementacion.EdificioSI;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-@Component
+@NoArgsConstructor
+@Getter
 public class ApartamentoNewSo {
 
     Integer idEdificio;
 
     Integer numero;
 
-    public ApartamentoNewSo() {
+    @JsonIgnore
+    public Apartamento getApartamento() {
+        Apartamento apartamento = new Apartamento();
+        apartamento.setEdificio(new Edificio(this.idEdificio));
+        apartamento.setNumero(this.numero);
+        return apartamento;
     }
-
-    public Integer getNumero() {
-        return numero;
-    }
-
-    public Integer getIdEdificio() {
-        return idEdificio;
-    }
-
 }

@@ -3,12 +3,18 @@ package com.backend.backend.repositorio.entidad;
 import com.backend.backend.controlador.respuestas.CuartoResp;
 import com.backend.backend.controlador.solicitudes.cuarto.CuartoNewSo;
 import com.backend.backend.controlador.solicitudes.cuarto.CuartoUpSo;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@NoArgsConstructor
+@Getter
+@Setter
 public class Cuarto extends Entidad {
 
     @Column
@@ -24,59 +30,7 @@ public class Cuarto extends Entidad {
     @OneToMany(mappedBy = "cuarto")
     private List<Usuario> usuarios = new ArrayList<>();
 
-    public Cuarto() {
-    }
-
-    public Cuarto(CuartoNewSo cuartoNewSo, Apartamento apartamento) {
-        this.numero = cuartoNewSo.getNumero();
-        this.capacidad = cuartoNewSo.getCapacidad();
-        this.apartamento = apartamento;
-    }
-
-    public Cuarto(CuartoUpSo cuartoUpSo, Apartamento apartamento) {
-        super.setId(cuartoUpSo.getId());
-        this.numero = cuartoUpSo.getNumero();
-        this.capacidad = cuartoUpSo.getCapacidad();
-        this.apartamento = apartamento;
-    }
-
-    public Cuarto(Integer idCuarto) {
-        this.setId(idCuarto);
-    }
-
-    public CuartoResp convertir() {
-        return new CuartoResp(super.getId(), this.numero, this.capacidad);
-    }
-
-    public Apartamento getApartamento() {
-        return apartamento;
-    }
-
-    public void setApartamento(Apartamento apartamento) {
-        this.apartamento = apartamento;
-    }
-
-    public List<Usuario> getUsuarios() {
-        return usuarios;
-    }
-
-    public void setUsuarios(List<Usuario> usuarios) {
-        this.usuarios = usuarios;
-    }
-
-    public Integer getNumero() {
-        return numero;
-    }
-
-    public void setNumero(Integer numero) {
-        this.numero = numero;
-    }
-
-    public Integer getCapacidad() {
-        return capacidad;
-    }
-
-    public void setCapacidad(Integer capacidad) {
-        this.capacidad = capacidad;
+    public Cuarto(Integer id) {
+        super.setId(id);
     }
 }

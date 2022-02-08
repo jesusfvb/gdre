@@ -1,5 +1,11 @@
 package com.backend.backend.controlador.respuestas;
 
+import com.backend.backend.repositorio.entidad.Cuarto;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
+@Getter
 public class CuartoResp {
 
     private Integer id;
@@ -8,24 +14,9 @@ public class CuartoResp {
 
     private Integer capacidad;
 
-    public CuartoResp() {
-    }
-
-    public CuartoResp(Integer id, Integer numero, Integer capacidad) {
-        this.id = id;
-        this.numero = numero;
-        this.capacidad = capacidad;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public Integer getNumero() {
-        return numero;
-    }
-
-    public Integer getCapacidad() {
-        return capacidad;
+    public CuartoResp(Cuarto cuarto) {
+        this.id = cuarto.getId();
+        this.numero = cuarto.getNumero();
+        this.capacidad = cuarto.getCapacidad();
     }
 }

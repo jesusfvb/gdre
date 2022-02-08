@@ -5,55 +5,41 @@ import com.backend.backend.controlador.solicitudes.cuarteleria.CuarteleriaSo;
 import com.backend.backend.controlador.solicitudes.cuarteleria.CuarteleriaUpSo;
 import com.backend.backend.controlador.solicitudes.cuarteleria.EvaluacionSo;
 import com.backend.backend.repositorio.CuarteleriaR;
-import com.backend.backend.repositorio.entidad.Cuarteleria;
 import com.backend.backend.servicios.CuarteleriaS;
 import com.backend.backend.servicios.UsuarioS;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor(onConstructor = @__(@Autowired))
 public class CuarteleriaSI implements CuarteleriaS {
 
-    @Autowired
-    private CuarteleriaR cuarteleriaR;
+    private final CuarteleriaR cuarteleriaR;
 
-    @Autowired
-    private UsuarioS usuarioS;
+    private final UsuarioS usuarioS;
 
     @Override
     public List<CuarteleriaResp> listar() {
-
-        List<CuarteleriaResp> salida = new LinkedList<>();
-
-        cuarteleriaR.findAll().forEach(cuarteleria -> {
-            salida.add(cuarteleria.convertir());
-        });
-
-        return salida;
+        return cuarteleriaR.findAll().parallelStream().map(CuarteleriaResp::new).collect(Collectors.toList());
     }
 
     @Override
     public CuarteleriaResp salvar(CuarteleriaSo cuarteleria) {
-        CuarteleriaResp salida = cuarteleriaR.save(new Cuarteleria(cuarteleria)).convertir();
-        salida.setNombre(usuarioS.getPorId(cuarteleria.getIdUsuario()).getNombre());
-        return salida;
+        return new CuarteleriaResp(cuarteleriaR.save(cuarteleria.getCuarteleria(usuarioS.getPorId(cuarteleria.getIdUsuario()))));
     }
 
     @Override
     public CuarteleriaResp update(CuarteleriaUpSo cuarteleria) {
-        Cuarteleria cuarteleriaP = cuarteleriaR.getById(cuarteleria.getId());
-        cuarteleriaP.setFecha(cuarteleria.getFecha());
-        return cuarteleriaR.save(cuarteleriaP).convertir();
+        return new CuarteleriaResp(cuarteleriaR.save(cuarteleria.getCuarteleria(cuarteleriaR.getById(cuarteleria.getId()))));
     }
 
     @Override
     public CuarteleriaResp evaluar(EvaluacionSo evaluacion) {
-        Cuarteleria cuarteleria = cuarteleriaR.getById(evaluacion.getId());
-        cuarteleria.setEvaluacion(evaluacion.getEvaluacion());
-        return cuarteleriaR.save(cuarteleria).convertir();
+        return new CuarteleriaResp(cuarteleriaR.save(evaluacion.getCuarteleria(cuarteleriaR.getById(evaluacion.getId()))));
     }
 
     @Override

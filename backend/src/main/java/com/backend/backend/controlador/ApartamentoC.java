@@ -4,7 +4,9 @@ import com.backend.backend.controlador.respuestas.ApartamentoResp;
 import com.backend.backend.controlador.solicitudes.apartamento.ApartamentoNewSo;
 import com.backend.backend.controlador.solicitudes.apartamento.ApartamentoUpSo;
 import com.backend.backend.servicios.ApartamentoS;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,10 +15,10 @@ import java.util.List;
 @RestController
 @CrossOrigin
 @RequestMapping("/apartamento")
+@AllArgsConstructor(onConstructor = @__(@Autowired))
 public class ApartamentoC {
 
-    @Autowired
-    private ApartamentoS apartamentoS;
+    private final ApartamentoS apartamentoS;
 
     @GetMapping
     private ResponseEntity<List<ApartamentoResp>> listarPorIdEdificio(@RequestParam Integer id) {

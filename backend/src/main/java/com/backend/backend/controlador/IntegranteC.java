@@ -6,6 +6,7 @@ import com.backend.backend.controlador.solicitudes.integrantes.AsistenciaSo;
 import com.backend.backend.controlador.solicitudes.integrantes.EvaluacionSo;
 import com.backend.backend.controlador.solicitudes.integrantes.IntegranteNewSo;
 import com.backend.backend.servicios.IntegranteS;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,10 +16,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/integrante")
 @CrossOrigin
+@AllArgsConstructor(onConstructor = @__(@Autowired))
 public class IntegranteC {
 
-    @Autowired
-    private IntegranteS integranteS;
+    private final IntegranteS integranteS;
 
     @GetMapping("/guardia/{id}")
     private ResponseEntity<List<IntegranteResp>> listarPorIdGuardia(@PathVariable Integer id) {

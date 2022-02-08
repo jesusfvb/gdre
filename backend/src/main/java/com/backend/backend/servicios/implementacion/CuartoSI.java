@@ -8,23 +8,23 @@ import com.backend.backend.repositorio.entidad.Cuarto;
 import com.backend.backend.servicios.ApartamentoS;
 import com.backend.backend.servicios.CuartoS;
 import com.backend.backend.servicios.UsuarioS;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor(onConstructor = @__(@Autowired))
 public class CuartoSI implements CuartoS {
 
-    @Autowired
-    private CuartoR cuartoR;
+    private final CuartoR cuartoR;
 
-    @Autowired
-    private ApartamentoS apartamentoS;
+    private final ApartamentoS apartamentoS;
 
-    @Autowired
-    private UsuarioS usuarioS;
+    private final UsuarioS usuarioS;
 
     @Override
     public Cuarto getById(Integer idCuarto) {
@@ -33,16 +33,12 @@ public class CuartoSI implements CuartoS {
 
     @Override
     public List<CuartoResp> listarPorIdDeApartamento(Integer id) {
-        List<CuartoResp> salida = new LinkedList<>();
-        cuartoR.findAllByApartamento_Id(id).forEach(cuarto -> {
-            salida.add(cuarto.convertir());
-        });
-        return salida;
+        return cuartoR.findAllByApartamento_Id(id).parallelStream().map(CuartoResp::new).collect(Collectors.toList());
     }
 
     @Override
     public CuartoResp salvar(CuartoNewSo cuartoNewSo) {
-        return cuartoR.save(new Cuarto(cuartoNewSo, apartamentoS.geById(cuartoNewSo.getIdApartamento()))).convertir();
+        return new CuartoResp(cuartoR.save(cuartoNewSo.getCuarto()));
     }
 
     @Override
@@ -56,6 +52,6 @@ public class CuartoSI implements CuartoS {
 
     @Override
     public CuartoResp update(CuartoUpSo cuartoUpSo) {
-        return cuartoR.save(new Cuarto(cuartoUpSo, apartamentoS.geById(cuartoUpSo.getIdApartamento()))).convertir();
+        return new CuartoResp(cuartoR.save(cuartoUpSo.getCuarto(cuartoR.getById(cuartoUpSo.getId()))));
     }
 }

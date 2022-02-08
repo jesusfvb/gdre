@@ -28,8 +28,6 @@ import {
 import {Add, AddTask, Delete, HowToReg, NavigateBefore, Warning} from "@mui/icons-material";
 import axios from "axios";
 import {useNavigate, useParams} from "react-router-dom";
-import {Simulate} from "react-dom/test-utils";
-import error = Simulate.error;
 
 export default function Integrantes(): ReactElement {
     const navegate = useNavigate()
@@ -62,9 +60,11 @@ export default function Integrantes(): ReactElement {
             flex: 1,
             renderCell: (params) => (
                 <>
-                    <Button disabled={params.value === null}
-                            onClick={handleClickOpenAdvertencia(undefined, params.value)}
-                            size={"small"} variant={"contained"}>Ver</Button>
+                    <Button disabled={(params.value === null)}
+                            onClick={handleClickOpenAdvertencia(undefined, params.value)} size={"small"}
+                            variant={"contained"}>
+                        Ver
+                    </Button>
                 </>
             )
         },
@@ -85,7 +85,7 @@ export default function Integrantes(): ReactElement {
                     <IconButton onClick={handleClickOpenAdvertencia(params.value, 1)}>
                         <Warning/>
                     </IconButton>
-                    <IconButton color="error">
+                    <IconButton color="error" onClick={borrar(params.value)}>
                         <Delete/>
                     </IconButton>
                 </>
@@ -218,6 +218,7 @@ export default function Integrantes(): ReactElement {
             id: advertencia.id,
             advertencia: advertencia.advertencia
         }).then(response => {
+            console.log(response.data)
             let newRows = [...rows]
             newRows[rows.findIndex(row => row.id === openAE.id)] = response.data
             setRows(newRows)

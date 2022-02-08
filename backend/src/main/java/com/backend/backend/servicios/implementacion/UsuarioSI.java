@@ -67,7 +67,7 @@ public class UsuarioSI implements UsuarioS {
     public UsuarioResp ubicar(UbicarSo ubicarSo) {
         Usuario usuario = usuarioR.getById(ubicarSo.getIdUsuario());
         usuario.setCuarto(new Cuarto(ubicarSo.getIdCuarto()));
-        return new UsuarioResp(usuario);
+        return new UsuarioResp(usuarioR.save(usuario));
     }
 
     @Override

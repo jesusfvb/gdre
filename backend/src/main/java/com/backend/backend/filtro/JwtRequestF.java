@@ -2,6 +2,7 @@ package com.backend.backend.filtro;
 
 import com.backend.backend.servicios.implementacion.JwtSI;
 import com.backend.backend.servicios.implementacion.UserDetailsSI;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,13 +18,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Component
+@AllArgsConstructor(onConstructor = @__(@Autowired))
 public class JwtRequestF extends OncePerRequestFilter {
 
-    @Autowired
-    private UserDetailsSI serviceUserDetails;
+    private final UserDetailsSI serviceUserDetails;
 
-    @Autowired
-    private JwtSI serviceJwt;
+    private final JwtSI serviceJwt;
 
     @Override
     protected void doFilterInternal(HttpServletRequest arg0, HttpServletResponse arg1, FilterChain arg2)

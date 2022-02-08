@@ -2,6 +2,7 @@ package com.backend.backend.configuracion;
 
 import com.backend.backend.filtro.JwtRequestF;
 import com.backend.backend.servicios.implementacion.UserDetailsSI;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,26 +20,18 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@AllArgsConstructor(onConstructor = @__({@Autowired, @Lazy}))
 public class SeguridadCo extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsSI serviceUserDetails;
 
     private final JwtRequestF filterJwtRequest;
 
-    @Autowired
-    public SeguridadCo(@Lazy UserDetailsSI serviceUserDetails, JwtRequestF filterJwtRequest) {
-        this.serviceUserDetails = serviceUserDetails;
-        this.filterJwtRequest = filterJwtRequest;
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+    public final PasswordEncoder passwordEncoder;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(serviceUserDetails).passwordEncoder(passwordEncoder());
+        auth.userDetailsService(serviceUserDetails).passwordEncoder(passwordEncoder);
     }
 
     @Override

@@ -1,23 +1,20 @@
 package com.backend.backend.controlador.respuestas;
 
+import com.backend.backend.repositorio.entidad.Edificio;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
+@Getter
 public class EdificioResp {
+
     private Integer id;
 
     private Integer numero;
 
-    public EdificioResp() {
-    }
-
-    public EdificioResp(Integer id, Integer numero) {
-        this.id = id;
-        this.numero = numero;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public Integer getNumero() {
-        return numero;
+    public EdificioResp(Edificio edificio) {
+        this.id = edificio.getId();
+        this.numero = edificio.getNumero();
     }
 }

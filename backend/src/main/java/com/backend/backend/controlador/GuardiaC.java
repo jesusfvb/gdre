@@ -6,6 +6,7 @@ import com.backend.backend.controlador.solicitudes.guardian.GuardiaDocenteUpSol;
 import com.backend.backend.controlador.solicitudes.guardian.GuardiaResidenciaSol;
 import com.backend.backend.controlador.solicitudes.guardian.GuardiaResidenciaUpSol;
 import com.backend.backend.servicios.GuardiaS;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,10 +16,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/guardia")
 @CrossOrigin("*")
+@AllArgsConstructor(onConstructor = @__(@Autowired))
 public class GuardiaC {
 
-    @Autowired
-    private GuardiaS guardiaS;
+    private final GuardiaS guardiaS;
 
     @GetMapping("/residencia")
     private ResponseEntity<List<GuardiaResp>> listarResidencia() {
