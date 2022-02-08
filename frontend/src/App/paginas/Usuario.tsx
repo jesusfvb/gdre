@@ -6,7 +6,17 @@ import {
     GridToolbarContainer,
     GridToolbarFilterButton
 } from "@mui/x-data-grid";
-import {Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, TextField} from "@mui/material";
+import {
+    Box,
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    FormControl,
+    IconButton, InputLabel, MenuItem, Select, SelectChangeEvent,
+    TextField
+} from "@mui/material";
 import {Add, Delete, Update} from "@mui/icons-material";
 import axios from "axios";
 
@@ -31,6 +41,12 @@ export default function Usuario(): ReactElement {
             flex: 1
         },
         {
+            field: "rol",
+            headerName: "Rol",
+            type: "date",
+            flex: 1
+        },
+        {
             field: "id",
             headerName: "Acciones",
             type: "date",
@@ -48,21 +64,38 @@ export default function Usuario(): ReactElement {
         }]
     const [rows, setRows] = useState<Array<any>>([])
     const [open, setOpen] = useState<{ open: boolean, id: number | undefined }>({open: false, id: undefined});
-    const [value, setValue] = useState<{ nombre: string }>({nombre: ""})
+    const [value, setValue] = useState<{ nombre: string, usuario: string, solapin: string, rol: string }>({
+        nombre: "",
+        usuario: "",
+        solapin: "",
+        rol: ""
+    })
     const [selected, setSelected] = useState<GridSelectionModel>([])
 
     const handleClickOpen = (id: number | undefined = undefined) => (evento: MouseEvent) => {
         evento.stopPropagation()
-        setValue({nombre: rows.find(row => row.id === id).nombre})
+        if (id !== undefined) {
+            let user = rows.find(row => row.id === id)
+            setValue({nombre: user.nombre, usuario: user.usuario, solapin: user.solapin, rol: user.rol})
+        }
         setOpen({open: true, id: id});
     };
     const handleClose = () => {
-        setValue({nombre: ""})
+        setValue({nombre: "", usuario: "", solapin: "", rol: ""})
         setOpen({open: false, id: undefined});
     };
 
     const handleChangeNombre = (evento: ChangeEvent<HTMLInputElement>) => {
-        setValue({nombre: evento.target.value});
+        setValue({...value, nombre: evento.target.value});
+    }
+    const handleChangeUsuario = (evento: ChangeEvent<HTMLInputElement>) => {
+        setValue({...value, usuario: evento.target.value});
+    }
+    const handleChangeSolapin = (evento: ChangeEvent<HTMLInputElement>) => {
+        setValue({...value, solapin: evento.target.value});
+    }
+    const handleChangeRol = (evento: SelectChangeEvent) => {
+        setValue({...value, rol: evento.target.value});
     }
 
     const save = () => {
@@ -70,7 +103,10 @@ export default function Usuario(): ReactElement {
             axios
                 .put("/usuario", {
                     id: open.id,
-                    nombre: value.nombre
+                    nombre: value.nombre,
+                    username: value.usuario,
+                    solapin: value.solapin,
+                    rol: value.rol
                 })
                 .then(response => {
                     let newRows = [...rows]
@@ -83,6 +119,9 @@ export default function Usuario(): ReactElement {
             axios
                 .post("/usuario", {
                     nombre: value.nombre,
+                    username: value.usuario,
+                    solapin: value.solapin,
+                    rol: value.rol
                 })
                 .then(response => {
                     setRows([...rows, response.data])
@@ -134,10 +173,31 @@ export default function Usuario(): ReactElement {
                       onSelectionModelChange={(selectionModel) => setSelected(selectionModel)}/>
             <Dialog open={open.open} onClose={handleClose}>
                 <DialogTitle>Usuario</DialogTitle>
-                <DialogContent>
+                <DialogContent sx={{width: 300}}>
                     <TextField type={"text"} label="Nombre" variant="outlined" fullWidth sx={{marginTop: 2}}
                                value={value.nombre}
                                onChange={handleChangeNombre}/>
+                    <TextField type={"text"} label="Usuario" variant="outlined" fullWidth sx={{marginTop: 2}}
+                               value={value.usuario}
+                               onChange={handleChangeUsuario}/>
+                    <TextField type={"text"} label="Solapin" variant="outlined" fullWidth sx={{marginTop: 2}}
+                               value={value.solapin}
+                               onChange={handleChangeSolapin}/>
+                    <FormControl fullWidth sx={{marginTop: 2}}>
+                        <InputLabel id="demo-simple-select-label">Rol</InputLabel>
+                        <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            value={value.rol}
+                            label="Rol"
+                            onChange={handleChangeRol}
+                        >
+                            <MenuItem value={"Estudiante"}>Estudiante</MenuItem>
+                            <MenuItem value={"Profesor"}>Profesor</MenuItem>
+                            <MenuItem value={"Instructora"}>Instructora</MenuItem>
+                            <MenuItem value={"Vicedecano"}>Vicedecano</MenuItem>
+                        </Select>
+                    </FormControl>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>

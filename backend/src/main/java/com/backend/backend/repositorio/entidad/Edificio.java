@@ -48,7 +48,6 @@ public class Edificio extends Entidad {
         this.apartamentos = apartamentos;
     }
 
-    @Override
     public EdificioResp convertir() {
         return new EdificioResp(super.getId(), numero);
     }

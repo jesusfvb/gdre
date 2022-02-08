@@ -40,7 +40,10 @@ public class Cuarto extends Entidad {
         this.apartamento = apartamento;
     }
 
-    @Override
+    public Cuarto(Integer idCuarto) {
+        this.setId(idCuarto);
+    }
+
     public CuartoResp convertir() {
         return new CuartoResp(super.getId(), this.numero, this.capacidad);
     }

@@ -1,5 +1,11 @@
 package com.backend.backend.controlador.respuestas.usuario;
 
+import com.backend.backend.repositorio.entidad.Usuario;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
+@Getter
 public class UsuarioUbicacionResp {
 
     private Integer id;
@@ -12,31 +18,13 @@ public class UsuarioUbicacionResp {
 
     private Integer cuarto;
 
-    public UsuarioUbicacionResp(Integer id, String nombre, Integer edificio, Integer apartamento, Integer cuarto) {
-        this.id = id;
-        this.nombre = nombre;
-        this.edificio = edificio;
-        this.apartamento = apartamento;
-        this.cuarto = cuarto;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public Integer getEdificio() {
-        return edificio;
-    }
-
-    public Integer getApartamento() {
-        return apartamento;
-    }
-
-    public Integer getCuarto() {
-        return cuarto;
+    public UsuarioUbicacionResp(Usuario usuario) {
+        this.id = usuario.getId();
+        this.nombre = usuario.getNombre();
+        if (usuario.getCuarto() != null) {
+            this.cuarto = usuario.getCuarto().getNumero();
+            this.apartamento = usuario.getCuarto().getApartamento().getNumero();
+            this.edificio = usuario.getCuarto().getApartamento().getEdificio().getNumero();
+        }
     }
 }

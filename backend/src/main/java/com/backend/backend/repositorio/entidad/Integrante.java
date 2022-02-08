@@ -80,8 +80,7 @@ public class Integrante extends Entidad {
         this.advertencia = advertencia;
     }
 
-    @Override
     public IntegranteResp convertir() {
-        return new IntegranteResp(this.getId(), this.asistencia, this.advertencia, this.evaluacion, this.participante.convertir());
+        return new IntegranteResp(this.getId(), this.asistencia, this.advertencia, this.evaluacion, null);
     }
 }

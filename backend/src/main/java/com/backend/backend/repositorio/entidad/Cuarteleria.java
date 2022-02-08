@@ -55,7 +55,6 @@ public class Cuarteleria extends Entidad {
         this.evaluacion = evaluacion;
     }
 
-    @Override
     public CuarteleriaResp convertir() {
         return new CuarteleriaResp(super.getId(), this.fecha, evaluacion, usuario.getNombre());
     }

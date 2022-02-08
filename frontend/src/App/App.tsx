@@ -76,6 +76,7 @@ export default function App(): ReactElement {
         body.style.backgroundImage = `url(${img_2})`;
         body.style.backgroundRepeat = "no-repeat";
         body.style.backgroundSize = "cover";
+        axios.defaults.headers.common["Authorization"] = ""
         setSession(false)
     }
 

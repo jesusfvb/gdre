@@ -75,9 +75,8 @@ public class Guardia extends Entidad {
         this.integrantes = integrantes;
     }
 
-    @Override
     public GuardiaResp convertir() {
-        return new GuardiaResp(this.getId(), this.fecha, (coordinador != null) ? coordinador.convertir() : null);
+        return new GuardiaResp(this.getId(), this.fecha, (coordinador != null) ? null : null);
     }
 
 }

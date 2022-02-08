@@ -1,6 +1,7 @@
 package com.backend.backend.servicios.implementacion;
 
 import com.backend.backend.controlador.respuestas.IntegranteResp;
+import com.backend.backend.controlador.respuestas.usuario.UsuarioResp;
 import com.backend.backend.controlador.solicitudes.integrantes.AdvertenciaSo;
 import com.backend.backend.controlador.solicitudes.integrantes.AsistenciaSo;
 import com.backend.backend.controlador.solicitudes.integrantes.EvaluacionSo;
@@ -34,7 +35,7 @@ public class IntegranteSI implements IntegranteS {
     @Override
     public IntegranteResp save(IntegranteNewSo integrante) {
         IntegranteResp salida = integranteR.save(new Integrante(integrante)).convertir();
-        salida.setParticipante(usuarioR.getById(salida.getParticipante().getId()).convertir());
+        salida.setParticipante(new UsuarioResp());
         return salida;
     }
 
