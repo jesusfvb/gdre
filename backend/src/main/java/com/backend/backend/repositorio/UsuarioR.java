@@ -21,4 +21,6 @@ public interface UsuarioR extends JpaRepository<Usuario, Integer> {
 
     Usuario findByUsuario(String usuario);
 
+    List<Usuario> findByRoles(Usuario.Rol roles);
+
 }

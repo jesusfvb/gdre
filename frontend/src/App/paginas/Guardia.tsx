@@ -163,7 +163,7 @@ export default function Guardia(): ReactElement {
         useEffect(() => {
             if (loading) {
                 axios
-                    .get("/usuario/ubicados")
+                    .get("/usuario/profesor")
                     .then(response => {
                         setOptions(response.data)
                     })
@@ -211,14 +211,21 @@ export default function Guardia(): ReactElement {
         return (
             <GridToolbarContainer>
                 <GridToolbarFilterButton/>
-                <ButtonGroup sx={{marginLeft: 1}} size={"small"}>
-                    <Button variant={(option === 1) ? "contained" : "outlined"} onClick={() => setOption(1)}>
-                        Residencia
-                    </Button>
-                    <Button variant={(option === 2) ? "contained" : "outlined"} onClick={() => setOption(2)}>
-                        Docente
-                    </Button>
-                </ButtonGroup>
+                {
+                    isRolRender(["Estudiante", "Administrador"],
+                        <>
+                            <ButtonGroup sx={{marginLeft: 1}} size={"small"}>
+                                <Button variant={(option === 1) ? "contained" : "outlined"}
+                                        onClick={() => setOption(1)}>
+                                    Residencia
+                                </Button>
+                                <Button variant={(option === 2) ? "contained" : "outlined"}
+                                        onClick={() => setOption(2)}>
+                                    Docente
+                                </Button>
+                            </ButtonGroup>
+                        </>
+                    )}
                 <Box sx={{flexGrow: 1}}/>
                 {
                     isRolRender("Administrador",
@@ -237,11 +244,24 @@ export default function Guardia(): ReactElement {
     }
 
     useEffect(() => {
-        axios
-            .get((option === 1) ? (isRolBoolean("Estudiante")) ? "/guardia/residencia/" + id : "/guardia/residencia"
-                : (isRolBoolean("Estudiante")) ? "/guardia/docente/" + id : "/guardia/docente")
-            .then((response) => setRows(response.data))
-            .catch(error => console.error(error))
+
+        if (isRolBoolean("Estudiante")) {
+            axios
+                .get((option === 1) ? "/guardia/residencia/" + id : "/guardia/docente/" + id)
+                .then((response) => setRows(response.data))
+                .catch(error => console.error(error))
+        } else if (isRolBoolean("Profesor")) {
+            setOption(2)
+            axios
+                .get("/guardia/docente/profesor/" + id)
+                .then((response) => setRows(response.data))
+                .catch(error => console.error(error))
+        } else {
+            axios
+                .get((option === 1) ? "/guardia/residencia/" : "/guardia/docente/")
+                .then((response) => setRows(response.data))
+                .catch(error => console.error(error))
+        }
     }, [option])
     return (
         <div style={{height: "calc(100vh - 60px)"}}>

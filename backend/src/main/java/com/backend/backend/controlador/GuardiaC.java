@@ -41,6 +41,11 @@ public class GuardiaC {
         return ResponseEntity.ok(guardiaS.listarDocente(id));
     }
 
+    @GetMapping("/docente/profesor/{id}")
+    private ResponseEntity<List<GuardiaResp>> listarDocentePorIProfesor(@PathVariable Integer id) {
+        return ResponseEntity.ok(guardiaS.listarDocenteProfesor(id));
+    }
+
     @PostMapping("/residencia")
     private ResponseEntity<GuardiaResp> salvarResidencia(@RequestBody GuardiaResidenciaSol guardia) {
         return ResponseEntity.ok(guardiaS.salvarResidencia(guardia));

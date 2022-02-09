@@ -15,9 +15,11 @@ public interface UsuarioS {
 
     void quitarCuarto(Integer idCuarto);
 
-    List<UsuarioResp> listar();
-
     List<UsuarioUbicacionResp> listarUbicados();
+
+    List<UsuarioResp> listarProfesor();
+
+    List<UsuarioResp> listar();
 
     List<UsuarioResp> listarPorIdCuarto(Integer idCuarto);
 

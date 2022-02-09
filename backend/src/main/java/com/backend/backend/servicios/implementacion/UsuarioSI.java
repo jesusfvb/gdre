@@ -64,6 +64,12 @@ public class UsuarioSI implements UsuarioS {
     }
 
     @Override
+    public List<UsuarioResp> listarProfesor() {
+        return usuarioR.findByRoles(Usuario.Rol.Profesor).parallelStream()
+                .map(UsuarioResp::new).collect(Collectors.toList());
+    }
+
+    @Override
     public UsuarioResp ubicar(UbicarSo ubicarSo) {
         Usuario usuario = usuarioR.getById(ubicarSo.getIdUsuario());
         usuario.setCuarto(new Cuarto(ubicarSo.getIdCuarto()));

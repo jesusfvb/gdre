@@ -51,6 +51,11 @@ public class GuardiaSI implements GuardiaS {
     }
 
     @Override
+    public List<GuardiaResp> listarDocenteProfesor(Integer id) {
+        return guardiaR.findByUbicacionAndCoordinador_Id(Guardia.Ubicacion.Docente, id).parallelStream().map(GuardiaResp::new).collect(Collectors.toList());
+    }
+
+    @Override
     public GuardiaResp salvarResidencia(GuardiaResidenciaSol guardia) {
         return new GuardiaResp(guardiaR.save(guardia.getGuardia()));
     }
