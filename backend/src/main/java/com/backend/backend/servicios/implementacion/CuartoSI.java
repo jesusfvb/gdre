@@ -22,8 +22,6 @@ public class CuartoSI implements CuartoS {
 
     private final CuartoR cuartoR;
 
-    private final ApartamentoS apartamentoS;
-
     private final UsuarioS usuarioS;
 
     @Override

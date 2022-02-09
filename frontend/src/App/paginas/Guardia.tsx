@@ -55,7 +55,7 @@ export default function Guardia(): ReactElement {
             renderCell: (params) => (
                 <>
                     {
-                        isRolRender("Administrador",
+                        isRolRender(["Vicedecano", "Administrador"],
                             <>
                                 <IconButton color="primary" onClick={handleClickOpen(params.value)}>
                                     <Update/>
@@ -212,7 +212,7 @@ export default function Guardia(): ReactElement {
             <GridToolbarContainer>
                 <GridToolbarFilterButton/>
                 {
-                    isRolRender(["Estudiante", "Administrador"],
+                    isRolRender(["Estudiante", "Vicedecano", "Administrador"],
                         <>
                             <ButtonGroup sx={{marginLeft: 1}} size={"small"}>
                                 <Button variant={(option === 1) ? "contained" : "outlined"}
@@ -228,7 +228,7 @@ export default function Guardia(): ReactElement {
                     )}
                 <Box sx={{flexGrow: 1}}/>
                 {
-                    isRolRender("Administrador",
+                    isRolRender(["Vicedecano", "Administrador"],
                         <>
                             <IconButton color={"success"} onClick={handleClickOpen()}>
                                 <Add/>

@@ -21,7 +21,6 @@ public class ApartamentoSI implements ApartamentoS {
 
     private final ApartamentoR apartamentoR;
 
-    private final EdificioS edificioS;
 
     @Override
     public Apartamento geById(Integer idApartamento) {

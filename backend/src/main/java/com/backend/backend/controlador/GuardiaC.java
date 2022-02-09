@@ -21,6 +21,12 @@ public class GuardiaC {
 
     private final GuardiaS guardiaS;
 
+
+    @GetMapping()
+    private ResponseEntity<List<GuardiaResp>> listar() {
+        return ResponseEntity.ok(guardiaS.listar());
+    }
+
     @GetMapping("/residencia")
     private ResponseEntity<List<GuardiaResp>> listarResidencia() {
         return ResponseEntity.ok(guardiaS.listarResidencia());
