@@ -1,4 +1,4 @@
-import {ChangeEvent, MouseEvent, ReactElement, useEffect, useRef, useState} from "react";
+import {ChangeEvent, MouseEvent, ReactElement, useContext, useEffect, useRef, useState} from "react";
 import {
     DataGrid,
     GridColumns,
@@ -20,9 +20,11 @@ import {
 import {Add, Delete, NavigateNext, Update} from "@mui/icons-material";
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
+import {IsRole} from "../../App";
 
 export default function Edificio(): ReactElement {
     const navegate = useNavigate()
+    const {isRolRender, isRolBoolean} = useContext(IsRole)
     const columns: GridColumns = [
         {
             field: "numero",
@@ -39,12 +41,16 @@ export default function Edificio(): ReactElement {
             minWidth: 130,
             renderCell: (params) => (
                 <>
-                    <IconButton color={"primary"} onClick={handleClickOpen(params.value)}>
-                        <Update/>
-                    </IconButton>
-                    <IconButton color={"error"} onClick={borrar(params.value)}>
-                        <Delete/>
-                    </IconButton>
+                    {isRolRender("Administrador",
+                        <>
+                            <IconButton color={"primary"} onClick={handleClickOpen(params.value)}>
+                                <Update/>
+                            </IconButton>
+                            <IconButton color={"error"} onClick={borrar(params.value)}>
+                                <Delete/>
+                            </IconButton>
+                        </>
+                    )}
                     <IconButton color={"secondary"} onClick={(event) => {
                         event.stopPropagation()
                         navegate(`/ubicacion/residencias/${params.value}/apartamento`)
@@ -71,7 +77,7 @@ export default function Edificio(): ReactElement {
 
     const handleClickOpen = (id: number | undefined = undefined) => (evento: MouseEvent) => {
         evento.stopPropagation()
-        if(id!==undefined){
+        if (id !== undefined) {
             setValidate(false)
         }
         setOpen({open: true, params: rows.find(row => row.id === id)});
@@ -137,12 +143,16 @@ export default function Edificio(): ReactElement {
                 <GridToolbarFilterButton/>
                 <Typography variant={"subtitle1"} sx={{marginLeft: 1}}>Edificio</Typography>
                 <Box sx={{flexGrow: 1}}/>
-                <IconButton onClick={handleClickOpen()}>
-                    <Add color={"success"}/>
-                </IconButton>
-                <IconButton onClick={borrar()} disabled={selected.length === 0} color={"error"}>
-                    <Delete/>
-                </IconButton>
+                {isRolRender("Administrador",
+                    <>
+                        <IconButton onClick={handleClickOpen()}>
+                            <Add color={"success"}/>
+                        </IconButton>
+                        <IconButton onClick={borrar()} disabled={selected.length === 0} color={"error"}>
+                            <Delete/>
+                        </IconButton>
+                    </>
+                )}
             </GridToolbarContainer>
         )
     }
@@ -150,7 +160,9 @@ export default function Edificio(): ReactElement {
     useEffect(getData, [])
     return (
         <>
-            <DataGrid autoPageSize={true} density={"compact"} columns={columns} rows={rows} checkboxSelection
+            <DataGrid autoPageSize={true} density={"compact"} columns={columns} rows={rows}
+                      checkboxSelection={isRolBoolean("Administrador")}
+                      disableSelectionOnClick={!isRolBoolean("Administrador")}
                       onSelectionModelChange={(selectionModel) => setSelected(selectionModel)}
                       components={{
                           Toolbar: MyToolbar,

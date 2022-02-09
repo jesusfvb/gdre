@@ -16,7 +16,11 @@ public interface GuardiaS {
 
     List<GuardiaResp> listarResidencia();
 
+    List<GuardiaResp> listarResidencia(Integer id);
+
     List<GuardiaResp> listarDocente();
+
+    List<GuardiaResp> listarDocente(Integer id);
 
     GuardiaResp salvarResidencia(GuardiaResidenciaSol guardia);
 
@@ -27,5 +31,4 @@ public interface GuardiaS {
     GuardiaResp modificarDocente(GuardiaDocenteUpSol guardia);
 
     Integer[] borrar(Integer[] ids);
-
 }

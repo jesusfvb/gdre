@@ -1,4 +1,4 @@
-import {ChangeEvent, MouseEvent, ReactElement, SyntheticEvent, useEffect, useState} from "react";
+import {ChangeEvent, MouseEvent, ReactElement, SyntheticEvent, useContext, useEffect, useState} from "react";
 import {
     DataGrid,
     GridColumns,
@@ -23,8 +23,11 @@ import {
 import {Add, Delete, NavigateNext, Update} from "@mui/icons-material";
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
+import {DatosUser, IsRole} from "../App";
 
 export default function Guardia(): ReactElement {
+    const {id} = useContext(DatosUser)
+    const {isRolRender, isRolBoolean} = useContext(IsRole)
     const [option, setOption] = useState<number>(1)
     const navegate = useNavigate()
     const columns: GridColumns = [
@@ -51,12 +54,19 @@ export default function Guardia(): ReactElement {
             filterable: false,
             renderCell: (params) => (
                 <>
-                    <IconButton color="primary" onClick={handleClickOpen(params.value)}>
-                        <Update/>
-                    </IconButton>
-                    <IconButton color="error" onClick={borrar(params.value)}>
-                        <Delete/>
-                    </IconButton>
+                    {
+                        isRolRender("Administrador",
+                            <>
+                                <IconButton color="primary" onClick={handleClickOpen(params.value)}>
+                                    <Update/>
+                                </IconButton>
+                                <IconButton color="error" onClick={borrar(params.value)}>
+                                    <Delete/>
+                                </IconButton>
+                            </>
+                        )
+                    }
+
                     <IconButton color={"secondary"} onClick={(event) => {
                         event.stopPropagation()
                         navegate(`/guardia/${params.value}/integrantes`)
@@ -210,25 +220,34 @@ export default function Guardia(): ReactElement {
                     </Button>
                 </ButtonGroup>
                 <Box sx={{flexGrow: 1}}/>
-                <IconButton color={"success"} onClick={handleClickOpen()}>
-                    <Add/>
-                </IconButton>
-                <IconButton color={"error"} onClick={borrar()} disabled={selected.length === 0}>
-                    <Delete/>
-                </IconButton>
+                {
+                    isRolRender("Administrador",
+                        <>
+                            <IconButton color={"success"} onClick={handleClickOpen()}>
+                                <Add/>
+                            </IconButton>
+                            <IconButton color={"error"} onClick={borrar()} disabled={selected.length === 0}>
+                                <Delete/>
+                            </IconButton>
+                        </>
+                    )
+                }
             </GridToolbarContainer>
         )
     }
 
     useEffect(() => {
         axios
-            .get((option === 1) ? "/guardia/residencia" : "/guardia/docente")
+            .get((option === 1) ? (isRolBoolean("Estudiante")) ? "/guardia/residencia/" + id : "/guardia/residencia"
+                : (isRolBoolean("Estudiante")) ? "/guardia/docente/" + id : "/guardia/docente")
             .then((response) => setRows(response.data))
             .catch(error => console.error(error))
     }, [option])
     return (
         <div style={{height: "calc(100vh - 60px)"}}>
-            <DataGrid columns={columns} rows={rows} components={{Toolbar: MyToolbar}} autoPageSize checkboxSelection
+            <DataGrid columns={columns} rows={rows} components={{Toolbar: MyToolbar}} autoPageSize
+                      checkboxSelection={isRolBoolean("Administrador")}
+                      disableSelectionOnClick={!isRolBoolean("Administrador")}
                       onSelectionModelChange={(selectionModel) => setSelected(selectionModel)}/>
             <Dialog open={open.open} onClose={handleClose}>
                 <DialogTitle>Guardia</DialogTitle>

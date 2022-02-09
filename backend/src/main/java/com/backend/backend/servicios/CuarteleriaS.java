@@ -13,6 +13,8 @@ public interface CuarteleriaS {
 
     List<CuarteleriaResp> listar();
 
+    List<CuarteleriaResp> listar(Integer id);
+
     CuarteleriaResp salvar(CuarteleriaSo cuarteleria);
 
     CuarteleriaResp update(CuarteleriaUpSo cuarteleria);

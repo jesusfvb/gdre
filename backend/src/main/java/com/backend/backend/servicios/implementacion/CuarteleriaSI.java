@@ -28,6 +28,11 @@ public class CuarteleriaSI implements CuarteleriaS {
     }
 
     @Override
+    public List<CuarteleriaResp> listar(Integer id) {
+        return cuarteleriaR.findAllByUsuario_Id(id).parallelStream().map(CuarteleriaResp::new).collect(Collectors.toList());
+    }
+
+    @Override
     public CuarteleriaResp salvar(CuarteleriaSo cuarteleria) {
         return new CuarteleriaResp(cuarteleriaR.save(cuarteleria.getCuarteleria(usuarioS.getPorId(cuarteleria.getIdUsuario()))));
     }

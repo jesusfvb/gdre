@@ -2,11 +2,12 @@ import {Avatar, Button, Grid, Paper, Typography} from "@mui/material";
 import {Outlet, useNavigate} from "react-router-dom"
 import BarraDeNavegacion from "./BarraDeNavegacion";
 import {useContext} from "react";
-import {DatosUser} from "../App";
+import {DatosUser, IsRole} from "../App";
 
 export default function Marco(props: { cerrarSession: Function }) {
     const navigation = useNavigate()
     const datosUser = useContext(DatosUser)
+    const {isRolRender} = useContext(IsRole)
     return (
         <Grid container direction={"column"}>
             <Grid item sx={{marginBottom: 1}}>
@@ -48,10 +49,12 @@ export default function Marco(props: { cerrarSession: Function }) {
                         <Button variant={"contained"} size={"small"} onClick={() => navigation("/ubicacion")}
                                 sx={{marginLeft: 1, width: "93%"}}>Ubicación</Button>
                     </Grid>
-                    <Grid item sx={{width: "100%", marginBottom: 1}}>
-                        <Button variant={"contained"} size={"small"} onClick={() => navigation("/usuario")}
-                                sx={{marginLeft: 1, width: "93%"}}>Usuario</Button>
-                    </Grid>
+                    {isRolRender("Administrador",
+                        <Grid item sx={{width: "100%", marginBottom: 1}}>
+                            <Button variant={"contained"} size={"small"} onClick={() => navigation("/usuario")}
+                                    sx={{marginLeft: 1, width: "93%"}}>Usuario</Button>
+                        </Grid>
+                    )}
                 </Grid>
                 <Grid item xl={true} lg={true} md={true} sm={true} xs={true} sx={{borderLeft: "solid 1px"}}>
                     <Outlet/>
