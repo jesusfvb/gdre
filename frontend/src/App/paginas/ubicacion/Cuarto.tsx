@@ -1,4 +1,4 @@
-import {ChangeEvent, MouseEvent, ReactElement, useEffect, useRef, useState} from "react";
+import {ChangeEvent, MouseEvent, ReactElement, useContext, useEffect, useRef, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import {
     DataGrid,
@@ -20,10 +20,12 @@ import {
 } from "@mui/material";
 import {Add, Delete, NavigateBefore, NavigateNext, Update} from "@mui/icons-material";
 import axios from "axios";
+import {IsRole} from "../../App";
 
 export default function Cuarto(): ReactElement {
     const navegate = useNavigate()
     const params = useParams()
+    const {isRolRender, isRolBoolean} = useContext(IsRole)
     const columns: GridColumns = [
         {
             field: "numero",
@@ -48,12 +50,16 @@ export default function Cuarto(): ReactElement {
             minWidth: 130,
             renderCell: (param) => (
                 <>
-                    <IconButton color={"primary"} onClick={handleClickOpen(param.value)}>
-                        <Update/>
-                    </IconButton>
-                    <IconButton color={"error"} onClick={borrar(param.value)}>
-                        <Delete/>
-                    </IconButton>
+                    {isRolRender("Administrador",
+                        <>
+                            <IconButton color={"primary"} onClick={handleClickOpen(param.value)}>
+                                <Update/>
+                            </IconButton>
+                            <IconButton color={"error"} onClick={borrar(param.value)}>
+                                <Delete/>
+                            </IconButton>
+                        </>
+                    )}
                     <IconButton color={"secondary"} onClick={(event) => {
                         event.stopPropagation()
                         navegate(`/ubicacion/residencias/${params.idEdificio}/apartamento/${params.id}/cuarto/${param.value}/residente`)
@@ -163,12 +169,16 @@ export default function Cuarto(): ReactElement {
                 <GridToolbarFilterButton/>
                 <Typography variant={"subtitle1"} sx={{marginLeft: 1}}>Cuarto</Typography>
                 <Box sx={{flexGrow: 1}}/>
-                <IconButton onClick={handleClickOpen()}>
-                    <Add color={"success"}/>
-                </IconButton>
-                <IconButton onClick={borrar()} disabled={selected.length === 0} color={"error"}>
-                    <Delete/>
-                </IconButton>
+                {isRolRender("Administrador",
+                    <>
+                        <IconButton onClick={handleClickOpen()}>
+                            <Add color={"success"}/>
+                        </IconButton>
+                        <IconButton onClick={borrar()} disabled={selected.length === 0} color={"error"}>
+                            <Delete/>
+                        </IconButton>
+                    </>
+                )}
             </GridToolbarContainer>
         )
     }
@@ -176,7 +186,9 @@ export default function Cuarto(): ReactElement {
     useEffect(getData, [params.id])
     return (
         <>
-            <DataGrid autoPageSize={true} density={"compact"} columns={columns} rows={rows} checkboxSelection
+            <DataGrid autoPageSize={true} density={"compact"} columns={columns} rows={rows}
+                      checkboxSelection={isRolBoolean("Administrador")}
+                      disableSelectionOnClick={!isRolBoolean("Administrador")}
                       onSelectionModelChange={(selectionModel) => setSelected(selectionModel)}
                       components={{
                           Toolbar: MyToolbar,

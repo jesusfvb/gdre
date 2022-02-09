@@ -20,19 +20,28 @@ import isJwtTokenExpired, {decode} from 'jwt-check-expiry';
 import {useSnackbar} from "notistack";
 
 interface InterfaceDatosUser {
+    id: number,
     nombre: string,
     usuario: string,
     edificio: string,
     apartamento: string,
-    roles: Array<string>
 }
 
 export const DatosUser = createContext<InterfaceDatosUser>({
+    id: -1,
     nombre: "",
     usuario: "",
     edificio: "",
     apartamento: "",
-    roles: []
+})
+export const IsRole = createContext<{
+    isRolRender: Function,
+    isRolBoolean: Function,
+}>({
+    isRolRender: () => {
+    },
+    isRolBoolean: () => {
+    }
 })
 
 export default function App(): ReactElement {
@@ -41,12 +50,13 @@ export default function App(): ReactElement {
     const {enqueueSnackbar} = useSnackbar();
     const [session, setSession] = useState<boolean | null>(null)
     const [datosUser, setDatosUser] = useState<InterfaceDatosUser>({
+        id: -1,
         nombre: "",
         usuario: "",
         edificio: "",
         apartamento: "",
-        roles: []
     })
+    const [roles, setRoles] = useState<Array<{ authority: string }>>([])
 
     const iniciarSession = (usuario: string, contrasenna: string): void => {
         axios
@@ -88,12 +98,13 @@ export default function App(): ReactElement {
             let jwtDecode: any = decode(jwt).payload;
             if (!isJwtTokenExpired(jwt)) {
                 setDatosUser({
+                    id: jwtDecode.id,
                     nombre: jwtDecode.nombre,
                     usuario: jwtDecode.sub,
                     edificio: (jwtDecode.edificio === null) ? "N/A" : jwtDecode.edificio,
                     apartamento: (jwtDecode.apartamento === null) ? "N/A" : jwtDecode.apartament,
-                    roles: jwtDecode.roles
                 })
+                setRoles(jwtDecode.roles)
                 sessionTrue(jwt)
             } else {
                 sessionFalse()
@@ -101,6 +112,43 @@ export default function App(): ReactElement {
         } catch (e) {
             sessionFalse()
         }
+    }
+
+    const isRolRenderF = (rol: string | Array<string>, render: ReactElement): ReactElement | null => {
+        let salida: ReactElement | null = null;
+        if (roles.length !== 0) {
+            if (typeof rol === "string") {
+                if (roles.some(value => value.authority === rol)) {
+                    salida = render;
+                }
+            } else {
+                rol.forEach(value => {
+                    if (roles.some(value1 => value1.authority === value)) {
+                        salida = render;
+                        return;
+                    }
+                });
+            }
+        }
+        return salida;
+    }
+    const isRolBooleanF = (rol: string | Array<string>): boolean => {
+        let salida: boolean = false;
+        if (roles.length !== 0) {
+            if (typeof rol === "string") {
+                if (roles.some(value => value.authority === rol)) {
+                    salida = true;
+                }
+            } else {
+                rol.forEach(value => {
+                    if (roles.some(value1 => value1.authority === value)) {
+                        salida = true;
+                        return;
+                    }
+                });
+            }
+        }
+        return salida;
     }
 
     useEffect(() => {
@@ -114,34 +162,36 @@ export default function App(): ReactElement {
     }, [])
     return (
         <DatosUser.Provider value={datosUser}>
-            <BrowserRouter>
-                <Routes>
-                    {session === null ? <Route path="*" element={null}/> : !session ?
-                        <Route path="*" element={<Login iniciarSession={iniciarSession}/>}/> :
-                        <>
-                            <Route element={<Marco cerrarSession={cerrarSession}/>}>
-                                <Route path="/" element={<Navigate to="/principal"/>}/>
-                                <Route path="/principal" element={<Principal/>}/>
-                                <Route element={<Ubicacion/>}>
-                                    <Route path="/ubicacion" element={<Personas/>}/>
-                                    <Route path="/ubicacion/residencias" element={<Edificio/>}/>
-                                    <Route path="/ubicacion/residencias/:id/apartamento" element={<Apartamento/>}/>
-                                    <Route path="/ubicacion/residencias/:idEdificio/apartamento/:id/cuarto"
-                                           element={<Cuarto/>}/>
-                                    <Route
-                                        path="/ubicacion/residencias/:idEdificio/apartamento/:idApartamento/cuarto/:id/residente"
-                                        element={<Residente/>}/>
+            <IsRole.Provider value={{isRolRender: isRolRenderF, isRolBoolean: isRolBooleanF}}>
+                <BrowserRouter>
+                    <Routes>
+                        {session === null ? <Route path="*" element={null}/> : !session ?
+                            <Route path="*" element={<Login iniciarSession={iniciarSession}/>}/> :
+                            <>
+                                <Route element={<Marco cerrarSession={cerrarSession}/>}>
+                                    <Route path="/" element={<Navigate to="/principal"/>}/>
+                                    <Route path="/principal" element={<Principal/>}/>
+                                    <Route element={<Ubicacion/>}>
+                                        <Route path="/ubicacion" element={<Personas/>}/>
+                                        <Route path="/ubicacion/residencias" element={<Edificio/>}/>
+                                        <Route path="/ubicacion/residencias/:id/apartamento" element={<Apartamento/>}/>
+                                        <Route path="/ubicacion/residencias/:idEdificio/apartamento/:id/cuarto"
+                                               element={<Cuarto/>}/>
+                                        <Route
+                                            path="/ubicacion/residencias/:idEdificio/apartamento/:idApartamento/cuarto/:id/residente"
+                                            element={<Residente/>}/>
+                                    </Route>
+                                    <Route path="/cuarteleria" element={<Cuarteleria/>}/>
+                                    <Route path="/guardia" element={<Guardia/>}/>
+                                    <Route path="/guardia/:id/integrantes" element={<Integrantes/>}/>
+                                    <Route path="/usuario" element={<Usuario/>}/>
                                 </Route>
-                                <Route path="/cuarteleria" element={<Cuarteleria/>}/>
-                                <Route path="/guardia" element={<Guardia/>}/>
-                                <Route path="/guardia/:id/integrantes" element={<Integrantes/>}/>
-                                <Route path="/usuario" element={<Usuario/>}/>
-                            </Route>
-                            <Route path={"*"} element={<E404/>}/>
-                        </>
-                    }
-                </Routes>
-            </BrowserRouter>
+                                <Route path={"*"} element={<E404/>}/>
+                            </>
+                        }
+                    </Routes>
+                </BrowserRouter>
+            </IsRole.Provider>
         </DatosUser.Provider>
     );
 }

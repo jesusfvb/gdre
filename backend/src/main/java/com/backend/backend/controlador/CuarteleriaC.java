@@ -25,6 +25,11 @@ public class CuarteleriaC {
         return ResponseEntity.ok(cuarteleriaS.listar());
     }
 
+    @GetMapping("/{id}")
+    private ResponseEntity<List<CuarteleriaResp>> listarPorIdUsuario(@PathVariable Integer id) {
+        return ResponseEntity.ok(cuarteleriaS.listar(id));
+    }
+
     @PostMapping
     private ResponseEntity<CuarteleriaResp> salvar(@RequestBody CuarteleriaSo cuarteleria) {
         return ResponseEntity.ok(cuarteleriaS.salvar(cuarteleria));

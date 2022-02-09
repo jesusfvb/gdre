@@ -1,4 +1,4 @@
-import {ChangeEvent, MouseEvent, ReactElement, SyntheticEvent, useEffect, useState} from "react";
+import {ChangeEvent, MouseEvent, ReactElement, SyntheticEvent, useContext, useEffect, useState} from "react";
 import {
     DataGrid,
     GridColumns,
@@ -28,10 +28,12 @@ import {
 import {Add, AddTask, Delete, HowToReg, NavigateBefore, Warning} from "@mui/icons-material";
 import axios from "axios";
 import {useNavigate, useParams} from "react-router-dom";
+import {IsRole} from "../App";
 
 export default function Integrantes(): ReactElement {
     const navegate = useNavigate()
     const params = useParams()
+    const {isRolRender, isRolBoolean} = useContext(IsRole)
     const columns: GridColumns = [
         {
             field: "participante",
@@ -74,6 +76,7 @@ export default function Integrantes(): ReactElement {
             type: "date",
             minWidth: 170,
             filterable: false,
+            hide: !isRolBoolean("Administrador"),
             renderCell: (params) => (
                 <>
                     <IconButton onClick={handleClickOpenAE(params.value, 1)}>
@@ -293,12 +296,18 @@ export default function Integrantes(): ReactElement {
                 </IconButton>
                 <GridToolbarFilterButton/>
                 <Box sx={{flexGrow: 1}}/>
-                <IconButton color={"success"} onClick={handleClickOpen()}>
-                    <Add/>
-                </IconButton>
-                <IconButton color={"error"} onClick={borrar()} disabled={selected.length === 0}>
-                    <Delete/>
-                </IconButton>
+                {
+                    isRolRender("Administrador",
+                        <>
+                            <IconButton color={"success"} onClick={handleClickOpen()}>
+                                <Add/>
+                            </IconButton>
+                            <IconButton color={"error"} onClick={borrar()} disabled={selected.length === 0}>
+                                <Delete/>
+                            </IconButton>
+                        </>)
+                }
+
             </GridToolbarContainer>
         )
     }
@@ -313,7 +322,9 @@ export default function Integrantes(): ReactElement {
     }, [])
     return (
         <div style={{height: "calc(100vh - 60px)"}}>
-            <DataGrid columns={columns} rows={rows} components={{Toolbar: MyToolbar}} autoPageSize checkboxSelection
+            <DataGrid columns={columns} rows={rows} components={{Toolbar: MyToolbar}} autoPageSize
+                      checkboxSelection={isRolBoolean("Administrador")}
+                      disableSelectionOnClick={!isRolBoolean("Administrador")}
                       onSelectionModelChange={(selectionModel) => setSelected(selectionModel)}/>
             <Dialog open={open.open} onClose={handleClose}>
                 <DialogTitle>Integrantes</DialogTitle>

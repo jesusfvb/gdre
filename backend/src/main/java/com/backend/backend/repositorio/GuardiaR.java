@@ -10,10 +10,9 @@ import java.util.List;
 @Repository
 public interface GuardiaR extends JpaRepository<Guardia, Integer> {
 
-    @Query("select g from Guardia g where g.ubicacion='Residencia'")
-    List<Guardia> findAllByUbicacionIsResidencia();
+    List<Guardia> findByUbicacion(Guardia.Ubicacion ubicacion);
 
-    @Query("select g from Guardia g where g.ubicacion='Docente'")
-    List<Guardia> findAllByUbicacionIsDocente();
+    List<Guardia> findByUbicacionAndIntegrantes_Participante_Id(Guardia.Ubicacion ubicacion, Integer id);
+
 
 }

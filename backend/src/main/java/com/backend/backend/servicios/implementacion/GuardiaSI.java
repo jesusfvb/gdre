@@ -32,12 +32,22 @@ public class GuardiaSI implements GuardiaS {
 
     @Override
     public List<GuardiaResp> listarResidencia() {
-        return guardiaR.findAllByUbicacionIsResidencia().parallelStream().map(GuardiaResp::new).collect(Collectors.toList());
+        return guardiaR.findByUbicacion(Guardia.Ubicacion.Residencia).parallelStream().map(GuardiaResp::new).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<GuardiaResp> listarResidencia(Integer id) {
+        return guardiaR.findByUbicacionAndIntegrantes_Participante_Id(Guardia.Ubicacion.Residencia, id).parallelStream().map(GuardiaResp::new).collect(Collectors.toList());
     }
 
     @Override
     public List<GuardiaResp> listarDocente() {
-        return guardiaR.findAllByUbicacionIsDocente().parallelStream().map(GuardiaResp::new).collect(Collectors.toList());
+        return guardiaR.findByUbicacion(Guardia.Ubicacion.Docente).parallelStream().map(GuardiaResp::new).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<GuardiaResp> listarDocente(Integer id) {
+        return guardiaR.findByUbicacionAndIntegrantes_Participante_Id(Guardia.Ubicacion.Docente, id).parallelStream().map(GuardiaResp::new).collect(Collectors.toList());
     }
 
     @Override

@@ -1,4 +1,4 @@
-import {MouseEvent, ReactElement, SyntheticEvent, useEffect, useState} from "react";
+import {MouseEvent, ReactElement, SyntheticEvent, useContext, useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import {
     DataGrid,
@@ -8,7 +8,8 @@ import {
     GridToolbarFilterButton
 } from "@mui/x-data-grid";
 import {
-    Autocomplete, AutocompleteValue,
+    Autocomplete,
+    AutocompleteValue,
     Box,
     Button,
     CircularProgress,
@@ -22,10 +23,12 @@ import {
 } from "@mui/material";
 import {Add, Delete, NavigateBefore} from "@mui/icons-material";
 import axios from "axios";
+import {IsRole} from "../../App";
 
 export default function Residente(): ReactElement {
     const navegate = useNavigate()
     const params = useParams()
+    const {isRolRender, isRolBoolean} = useContext(IsRole)
     const columns: GridColumns = [
         {
             field: "nombre",
@@ -40,6 +43,7 @@ export default function Residente(): ReactElement {
             filterable: false,
             headerName: "Acción",
             minWidth: 100,
+            hide: !isRolBoolean("Administrador"),
             renderCell: (param) => (
                 <IconButton color={"error"} onClick={desubicar(param.value)}>
                     <Delete/>
@@ -167,12 +171,16 @@ export default function Residente(): ReactElement {
                 <GridToolbarFilterButton/>
                 <Typography variant={"subtitle1"} sx={{marginLeft: 1}}>Residentes</Typography>
                 <Box sx={{flexGrow: 1}}/>
-                <IconButton onClick={handleClickOpen}>
-                    <Add color={"success"}/>
-                </IconButton>
-                <IconButton onClick={desubicar()} disabled={selected.length === 0} color={"error"}>
-                    <Delete/>
-                </IconButton>
+                {isRolRender("Administrador",
+                    <>
+                        <IconButton onClick={handleClickOpen}>
+                            <Add color={"success"}/>
+                        </IconButton>
+                        <IconButton onClick={desubicar()} disabled={selected.length === 0} color={"error"}>
+                            <Delete/>
+                        </IconButton>
+                    </>
+                )}
             </GridToolbarContainer>
         )
     }
@@ -180,7 +188,9 @@ export default function Residente(): ReactElement {
     useEffect(getData, [params.id])
     return (
         <>
-            <DataGrid autoPageSize={true} density={"compact"} columns={columns} rows={rows} checkboxSelection
+            <DataGrid autoPageSize={true} density={"compact"} columns={columns} rows={rows}
+                      checkboxSelection={isRolBoolean("Administrador")}
+                      disableSelectionOnClick={!isRolBoolean("Administrador")}
                       onSelectionModelChange={(selectionModel) => setSelected(selectionModel)}
                       components={{
                           Toolbar: MyToolbar,

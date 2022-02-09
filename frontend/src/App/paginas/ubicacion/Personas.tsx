@@ -1,7 +1,8 @@
-import {MouseEvent, ReactElement, SyntheticEvent, useEffect, useState} from "react";
+import {MouseEvent, ReactElement, SyntheticEvent, useContext, useEffect, useState} from "react";
 import {DataGrid, GridColumns, GridToolbarContainer, GridToolbarFilterButton} from "@mui/x-data-grid";
 import {
-    Autocomplete, AutocompleteValue,
+    Autocomplete,
+    AutocompleteValue,
     Button,
     ButtonGroup,
     CircularProgress,
@@ -12,10 +13,12 @@ import {
     IconButton,
     TextField
 } from "@mui/material";
-import {Check, Close, Delete, AddLocation} from "@mui/icons-material";
+import {AddLocation, Check, Close, Delete} from "@mui/icons-material";
 import axios from "axios";
+import {IsRole} from "../../App";
 
 export default function Personas(): ReactElement {
+    const {isRolRender, isRolBoolean} = useContext(IsRole)
     const columns: GridColumns = [
         {
             field: "nombre",
@@ -54,6 +57,7 @@ export default function Personas(): ReactElement {
             filterable: false,
             headerName: "Acción",
             minWidth: 100,
+            hide: !isRolBoolean("Administrador"),
             renderCell: (param) => {
                 switch (option) {
                     case 1:
@@ -392,14 +396,18 @@ export default function Personas(): ReactElement {
         return (
             <GridToolbarContainer>
                 <GridToolbarFilterButton/>
-                <ButtonGroup sx={{marginLeft: 1}} size={"small"}>
-                    <Button variant={(option === 1) ? "contained" : "outlined"}
-                            onClick={() => setOption(1)}>Ubicados</Button>
-                    <Button variant={(option === 2) ? "contained" : "outlined"} onClick={() => setOption(2)}>No
-                        Ubicados</Button>
-                    <Button variant={(option === 3) ? "contained" : "outlined"} onClick={() => setOption(3)}>Por
-                        Confirmar</Button>
-                </ButtonGroup>
+                {
+                    isRolRender("Administrador",
+                        <ButtonGroup sx={{marginLeft: 1}} size={"small"}>
+                            <Button variant={(option === 1) ? "contained" : "outlined"}
+                                    onClick={() => setOption(1)}>Ubicados</Button>
+                            <Button variant={(option === 2) ? "contained" : "outlined"} onClick={() => setOption(2)}>No
+                                Ubicados</Button>
+                            <Button variant={(option === 3) ? "contained" : "outlined"} onClick={() => setOption(3)}>Por
+                                Confirmar</Button>
+                        </ButtonGroup>
+                    )
+                }
             </GridToolbarContainer>
         )
     }

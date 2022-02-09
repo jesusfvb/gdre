@@ -1,4 +1,4 @@
-import {MouseEvent, ReactElement, SyntheticEvent, useEffect, useState, ChangeEvent} from "react";
+import {MouseEvent, ReactElement, SyntheticEvent, useEffect, useState, ChangeEvent, useContext} from "react";
 import {
     DataGrid,
     GridColumns,
@@ -20,8 +20,11 @@ import {
 } from "@mui/material";
 import {Add, Check, Delete, Update} from "@mui/icons-material";
 import axios from "axios";
+import {DatosUser, IsRole} from "../App";
 
 export default function Cuarteleria(): ReactElement {
+    const {id} = useContext(DatosUser)
+    const {isRolRender, isRolBoolean} = useContext(IsRole)
     const columns: GridColumns = [
         {
             field: "nombre",
@@ -46,6 +49,8 @@ export default function Cuarteleria(): ReactElement {
             headerName: "Acciones",
             type: "date",
             minWidth: 130,
+            filterable: false,
+            hide: !isRolBoolean("Administrador"),
             renderCell: (params) => (
                 <>
                     <IconButton color="primary" onClick={handleClickOpenEvaluacion(params.value)}>
@@ -209,25 +214,34 @@ export default function Cuarteleria(): ReactElement {
             <GridToolbarContainer>
                 <GridToolbarFilterButton/>
                 <Box sx={{flexGrow: 1}}/>
-                <IconButton color={"success"} onClick={handleClickOpen()}>
-                    <Add/>
-                </IconButton>
-                <IconButton color={"error"} onClick={borrar()} disabled={selected.length === 0}>
-                    <Delete/>
-                </IconButton>
+                {
+                    isRolRender("Administrador",
+                        <>
+                            <IconButton color={"success"} onClick={handleClickOpen()}>
+                                <Add/>
+                            </IconButton>
+                            <IconButton color={"error"} onClick={borrar()} disabled={selected.length === 0}>
+                                <Delete/>
+                            </IconButton>
+                        </>
+                    )
+                }
+
             </GridToolbarContainer>
         )
     }
 
     useEffect(() => {
         axios
-            .get("/cuarteleria")
+            .get((isRolBoolean("Estudiante") ? "/cuarteleria/" + id : "/cuarteleria"))
             .then((response) => setRows(response.data))
             .catch(error => console.error(error))
     }, [])
     return (
         <div style={{height: "calc(100vh - 60px)"}}>
-            <DataGrid columns={columns} rows={rows} components={{Toolbar: MyToolbar}} autoPageSize checkboxSelection
+            <DataGrid columns={columns} rows={rows} components={{Toolbar: MyToolbar}} autoPageSize
+                      checkboxSelection={isRolBoolean("Administrador")}
+                      disableSelectionOnClick={!isRolBoolean("Administrador")}
                       onSelectionModelChange={(selectionModel) => setSelected(selectionModel)}/>
             <Dialog open={open.open} onClose={handleClose}>
                 <DialogTitle>Cuarteleria</DialogTitle>
