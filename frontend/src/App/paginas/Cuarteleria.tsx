@@ -50,7 +50,7 @@ export default function Cuarteleria(): ReactElement {
             type: "date",
             minWidth: 130,
             filterable: false,
-            hide: !isRolBoolean("Administrador"),
+            hide: !isRolBoolean(["Instructora", "Administrador"]),
             renderCell: (params) => (
                 <>
                     <IconButton color="primary" onClick={handleClickOpenEvaluacion(params.value)}>
@@ -215,7 +215,7 @@ export default function Cuarteleria(): ReactElement {
                 <GridToolbarFilterButton/>
                 <Box sx={{flexGrow: 1}}/>
                 {
-                    isRolRender("Administrador",
+                    isRolRender(["Instructora", "Administrador"],
                         <>
                             <IconButton color={"success"} onClick={handleClickOpen()}>
                                 <Add/>

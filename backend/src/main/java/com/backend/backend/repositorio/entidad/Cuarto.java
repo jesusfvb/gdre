@@ -1,8 +1,5 @@
 package com.backend.backend.repositorio.entidad;
 
-import com.backend.backend.controlador.respuestas.CuartoResp;
-import com.backend.backend.controlador.solicitudes.cuarto.CuartoNewSo;
-import com.backend.backend.controlador.solicitudes.cuarto.CuartoUpSo;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

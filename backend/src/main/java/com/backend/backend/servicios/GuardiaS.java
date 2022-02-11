@@ -22,6 +22,8 @@ public interface GuardiaS {
 
     List<GuardiaResp> listarDocente(Integer id);
 
+    List<GuardiaResp> listarDocenteProfesor(Integer id);
+
     GuardiaResp salvarResidencia(GuardiaResidenciaSol guardia);
 
     GuardiaResp salvarDocente(GuardiaDocenteSol guardia);

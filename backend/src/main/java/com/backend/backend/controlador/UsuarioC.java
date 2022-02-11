@@ -31,6 +31,11 @@ public class UsuarioC {
         return ResponseEntity.ok(usuarioS.listarUbicados());
     }
 
+    @GetMapping("/profesor")
+    public ResponseEntity<List<UsuarioResp>> listarProfesor() {
+        return ResponseEntity.ok(usuarioS.listarProfesor());
+    }
+
     @GetMapping("/no_ubicados")
     public ResponseEntity<List<UsuarioResp>> listarNoUbicados() {
         return ResponseEntity.ok(usuarioS.listarNoUbicados());

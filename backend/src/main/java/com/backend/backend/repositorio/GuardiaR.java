@@ -14,5 +14,6 @@ public interface GuardiaR extends JpaRepository<Guardia, Integer> {
 
     List<Guardia> findByUbicacionAndIntegrantes_Participante_Id(Guardia.Ubicacion ubicacion, Integer id);
 
+    List<Guardia> findByUbicacionAndCoordinador_Id(Guardia.Ubicacion ubicacion, Integer id);
 
 }

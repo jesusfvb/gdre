@@ -21,6 +21,12 @@ public class GuardiaC {
 
     private final GuardiaS guardiaS;
 
+
+    @GetMapping()
+    private ResponseEntity<List<GuardiaResp>> listar() {
+        return ResponseEntity.ok(guardiaS.listar());
+    }
+
     @GetMapping("/residencia")
     private ResponseEntity<List<GuardiaResp>> listarResidencia() {
         return ResponseEntity.ok(guardiaS.listarResidencia());
@@ -39,6 +45,11 @@ public class GuardiaC {
     @GetMapping("/docente/{id}")
     private ResponseEntity<List<GuardiaResp>> listarDocentePorIdParticipante(@PathVariable Integer id) {
         return ResponseEntity.ok(guardiaS.listarDocente(id));
+    }
+
+    @GetMapping("/docente/profesor/{id}")
+    private ResponseEntity<List<GuardiaResp>> listarDocentePorIProfesor(@PathVariable Integer id) {
+        return ResponseEntity.ok(guardiaS.listarDocenteProfesor(id));
     }
 
     @PostMapping("/residencia")

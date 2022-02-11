@@ -76,7 +76,7 @@ export default function Integrantes(): ReactElement {
             type: "date",
             minWidth: 170,
             filterable: false,
-            hide: !isRolBoolean("Administrador"),
+            hide: !isRolBoolean(["Profesor", "Instructora", "Administrador"]),
             renderCell: (params) => (
                 <>
                     <IconButton onClick={handleClickOpenAE(params.value, 1)}>
@@ -88,9 +88,13 @@ export default function Integrantes(): ReactElement {
                     <IconButton onClick={handleClickOpenAdvertencia(params.value, 1)}>
                         <Warning/>
                     </IconButton>
-                    <IconButton color="error" onClick={borrar(params.value)}>
-                        <Delete/>
-                    </IconButton>
+                    {
+                        isRolRender("Administrador",
+                            <IconButton color="error" onClick={borrar(params.value)}>
+                                <Delete/>
+                            </IconButton>
+                        )
+                    }
                 </>
             )
         }
@@ -297,7 +301,7 @@ export default function Integrantes(): ReactElement {
                 <GridToolbarFilterButton/>
                 <Box sx={{flexGrow: 1}}/>
                 {
-                    isRolRender("Administrador",
+                    isRolRender(["Vicedecano", "Administrador"],
                         <>
                             <IconButton color={"success"} onClick={handleClickOpen()}>
                                 <Add/>
