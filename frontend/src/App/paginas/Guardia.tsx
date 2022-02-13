@@ -24,10 +24,12 @@ import {Add, Delete, NavigateNext, Update} from "@mui/icons-material";
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
 import {DatosUser, IsRole} from "../App";
+import {useSnackbar} from "notistack";
 
 export default function Guardia(): ReactElement {
     const {id} = useContext(DatosUser)
     const {isRolRender, isRolBoolean} = useContext(IsRole)
+    const {enqueueSnackbar} = useSnackbar();
     const [option, setOption] = useState<number>(1)
     const navegate = useNavigate()
     const columns: GridColumns = [
@@ -60,7 +62,7 @@ export default function Guardia(): ReactElement {
                                 <IconButton color="primary" onClick={handleClickOpen(params.value)}>
                                     <Update/>
                                 </IconButton>
-                                <IconButton color="error" onClick={borrar(params.value)}>
+                                <IconButton color="error" onClick={handleClickOpenBorrar(params.value)}>
                                     <Delete/>
                                 </IconButton>
                             </>
@@ -84,7 +86,16 @@ export default function Guardia(): ReactElement {
         fecha: ""
     })
     const [selected, setSelected] = useState<GridSelectionModel>([])
+    const [borrarAlert, setBorrar] = useState<{ open: boolean, id: number | undefined }>({open: false, id: undefined});
 
+    const handleClickOpenBorrar = (id: number | undefined = undefined) => (event: MouseEvent) => {
+        event.preventDefault();
+        event.stopPropagation();
+        setBorrar({open: true, id: id});
+    };
+    const handleCloseBorrar = () => {
+        setBorrar({open: false, id: undefined});
+    };
 
     const handleClickOpen = (id: number | undefined = undefined) => (evento: MouseEvent) => {
         evento.stopPropagation()
@@ -119,8 +130,9 @@ export default function Guardia(): ReactElement {
                     newRows[rows.findIndex(row => row.id === open.id)] = response.data
                     setRows(newRows)
                     handleClose()
+                    enqueueSnackbar("Acción realizada con exito", {variant: "success"})
                 })
-                .catch(error => console.error(error))
+                .catch(error => enqueueSnackbar("Error al realizar la Acción"))
         } else {
             axios
                 .post((option === 1) ? "/guardia/residencia" : "/guardia/docente", (option === 1) ? {
@@ -132,14 +144,15 @@ export default function Guardia(): ReactElement {
                 .then(response => {
                     setRows([...rows, response.data])
                     handleClose()
+                    enqueueSnackbar("Acción realizada con exito", {variant: "success"})
                 })
-                .catch((error) => console.error(error))
+                .catch((error) => enqueueSnackbar("Error al realizar la Acción"))
         }
     }
-    const borrar = (id: number | undefined = undefined) => (evento: MouseEvent) => {
+    const borrar = (evento: MouseEvent) => {
         evento.stopPropagation()
         axios
-            .delete("/guardia", {data: (id !== undefined) ? [id] : selected})
+            .delete("/guardia", {data: (borrarAlert.id !== undefined) ? [borrarAlert.id] : selected})
             .then(response => {
                 let newRows: any = []
                 rows.forEach((value) => {
@@ -148,8 +161,10 @@ export default function Guardia(): ReactElement {
                     }
                 })
                 setRows(newRows)
+                handleCloseBorrar()
+                enqueueSnackbar("Acción realizada con exito", {variant: "success"})
             })
-            .catch(error => console.error(error))
+            .catch(error => enqueueSnackbar("Error al realizar la Acción"))
     }
 
     function MyAutocomplete(): ReactElement {
@@ -233,7 +248,8 @@ export default function Guardia(): ReactElement {
                             <IconButton color={"success"} onClick={handleClickOpen()}>
                                 <Add/>
                             </IconButton>
-                            <IconButton color={"error"} onClick={borrar()} disabled={selected.length === 0}>
+                            <IconButton color={"error"} onClick={handleClickOpenBorrar()}
+                                        disabled={selected.length === 0}>
                                 <Delete/>
                             </IconButton>
                         </>
@@ -279,6 +295,25 @@ export default function Guardia(): ReactElement {
                 <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>
                     <Button onClick={save}>Aceptar</Button>
+                </DialogActions>
+            </Dialog>
+            <Dialog
+                open={borrarAlert.open}
+                onClose={handleCloseBorrar}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">
+                    Borrar
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContent id="alert-dialog-description">
+                        Desea Continuar la Acción
+                    </DialogContent>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={borrar}>Acepar</Button>
+                    <Button onClick={handleCloseBorrar} color={"error"}> Cancelar </Button>
                 </DialogActions>
             </Dialog>
         </div>

@@ -16,9 +16,11 @@ import {
 import {AddLocation, Check, Close, Delete} from "@mui/icons-material";
 import axios from "axios";
 import {IsRole} from "../../App";
+import {useSnackbar} from "notistack";
 
 export default function Personas(): ReactElement {
     const {isRolRender, isRolBoolean} = useContext(IsRole)
+    const {enqueueSnackbar} = useSnackbar();
     const columns: GridColumns = [
         {
             field: "nombre",
@@ -62,7 +64,7 @@ export default function Personas(): ReactElement {
                 switch (option) {
                     case 1:
                         return (
-                            <IconButton color={"error"} onClick={desubicar(param.value)}>
+                            <IconButton color={"error"} onClick={handleClickOpenBorrar(param.value)}>
                                 <Delete/>
                             </IconButton>
                         )
@@ -72,7 +74,7 @@ export default function Personas(): ReactElement {
                                 <IconButton color={"error"} onClick={handleClickOpen(param.value)}>
                                     <AddLocation/>
                                 </IconButton>
-                                <IconButton color={"secondary"} onClick={desconfirmar(param.value)}>
+                                <IconButton color={"secondary"} onClick={handleClickOpenBorrar(param.value)}>
                                     <Close/>
                                 </IconButton>
                             </>
@@ -98,7 +100,15 @@ export default function Personas(): ReactElement {
         apartamento: true,
         cuarto: true
     })
+    const [borrarAlert, setBorrar] = useState<{ open: boolean, id: number | undefined }>({open: false, id: undefined});
 
+    const handleClickOpenBorrar = (id: number | undefined = undefined) => (event: MouseEvent) => {
+        event.stopPropagation();
+        setBorrar({open: true, id: id});
+    };
+    const handleCloseBorrar = () => {
+        setBorrar({open: false, id: undefined});
+    };
 
     const handleClickOpen = (id: number) => (evento: MouseEvent) => {
         evento.stopPropagation()
@@ -148,13 +158,15 @@ export default function Personas(): ReactElement {
                     newRows.splice(newRows.findIndex((value) => value.id === response.data.id), 1)
                     setRows(newRows)
                     handleClose()
-                })
+                    enqueueSnackbar("Acción realizada con exito", {variant: "success"})
+                }).catch(error => enqueueSnackbar("Error al realizar la Acción"))
+
         }
     }
-    const desubicar = (id: number | undefined = undefined) => (evento: MouseEvent) => {
+    const desubicar = (evento: MouseEvent) => {
         evento.stopPropagation()
         axios
-            .put("/usuario/desubicar", [id])
+            .put("/usuario/desubicar", [borrarAlert.id])
             .then(response => {
                 let newRows: any = []
                 rows.forEach((value) => {
@@ -163,8 +175,10 @@ export default function Personas(): ReactElement {
                     }
                 })
                 setRows(newRows)
+                handleCloseBorrar()
+                enqueueSnackbar("Acción realizada con exito", {variant: "success"})
             })
-            .catch(error => console.error(error))
+            .catch(error => enqueueSnackbar("Error al realizar la Acción"))
     }
     const confirmar = (id: number) => (evento: MouseEvent) => {
         evento.stopPropagation()
@@ -178,13 +192,14 @@ export default function Personas(): ReactElement {
                     }
                 })
                 setRows(newRows)
+                enqueueSnackbar("Acción realizada con exito", {variant: "success"})
             })
-            .catch(error => console.error(error))
+            .catch(error => enqueueSnackbar("Error al realizar la Acción"))
     }
-    const desconfirmar = (id: number) => (evento: MouseEvent) => {
+    const desconfirmar = (evento: MouseEvent) => {
         evento.stopPropagation()
         axios
-            .put("/usuario/desconfirmar", [id])
+            .put("/usuario/desconfirmar", [borrarAlert.id])
             .then(response => {
                 let newRows: any = []
                 rows.forEach((value) => {
@@ -193,8 +208,10 @@ export default function Personas(): ReactElement {
                     }
                 })
                 setRows(newRows)
+                handleCloseBorrar()
+                enqueueSnackbar("Acción realizada con exito", {variant: "success"})
             })
-            .catch(error => console.error(error))
+            .catch(error => enqueueSnackbar("Error al realizar la Acción"))
     }
 
     function MyAutocompleteEdificio(): ReactElement {
@@ -429,6 +446,27 @@ export default function Personas(): ReactElement {
                 <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>
                     <Button onClick={ubicar}>Aceptar</Button>
+                </DialogActions>
+            </Dialog>
+            <Dialog
+                open={borrarAlert.open}
+                onClose={handleCloseBorrar}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">
+                    Borrar
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContent id="alert-dialog-description">
+                        Desea Continuar la Acción
+                    </DialogContent>
+                </DialogContent>
+                <DialogActions>
+                    {(option === 2) ?
+                        <Button onClick={desconfirmar}>Acepar</Button> :
+                        <Button onClick={desubicar}>Acepar</Button>}
+                    <Button onClick={handleCloseBorrar} color={"error"}> Cancelar </Button>
                 </DialogActions>
             </Dialog>
         </>

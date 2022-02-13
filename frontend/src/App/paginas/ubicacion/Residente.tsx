@@ -24,11 +24,13 @@ import {
 import {Add, Delete, NavigateBefore} from "@mui/icons-material";
 import axios from "axios";
 import {IsRole} from "../../App";
+import {useSnackbar} from "notistack";
 
 export default function Residente(): ReactElement {
     const navegate = useNavigate()
     const params = useParams()
     const {isRolRender, isRolBoolean} = useContext(IsRole)
+    const {enqueueSnackbar} = useSnackbar();
     const columns: GridColumns = [
         {
             field: "nombre",
@@ -45,7 +47,7 @@ export default function Residente(): ReactElement {
             minWidth: 100,
             hide: !isRolBoolean("Administrador"),
             renderCell: (param) => (
-                <IconButton color={"error"} onClick={desubicar(param.value)}>
+                <IconButton color={"error"} onClick={handleClickOpenBorrar(param.value)}>
                     <Delete/>
                 </IconButton>
             )
@@ -55,6 +57,15 @@ export default function Residente(): ReactElement {
     const [selected, setSelected] = useState<GridSelectionModel>([])
     const [open, setOpen] = useState<boolean>(false);
     const [validate, setValidate] = useState<boolean>(true)
+    const [borrarAlert, setBorrar] = useState<{ open: boolean, id: number | undefined }>({open: false, id: undefined});
+
+    const handleClickOpenBorrar = (id: number | undefined = undefined) => (event: MouseEvent) => {
+        event.stopPropagation();
+        setBorrar({open: true, id: id});
+    };
+    const handleCloseBorrar = () => {
+        setBorrar({open: false, id: undefined});
+    };
 
     const handleClickOpen = (evento: MouseEvent) => {
         evento.stopPropagation()
@@ -81,12 +92,13 @@ export default function Residente(): ReactElement {
             .then(response => {
                 setRows([...rows, response.data])
                 handleClose()
-            })
+                enqueueSnackbar("Acción realizada con exito", {variant: "success"})
+            }).catch(error => enqueueSnackbar("Error al realizar la Acción"))
     }
-    const desubicar = (id: number | undefined = undefined) => (evento: MouseEvent) => {
+    const desubicar = (evento: MouseEvent) => {
         evento.stopPropagation()
         axios
-            .put("/usuario/desubicar", (id === undefined) ? selected : [id])
+            .put("/usuario/desubicar", (borrarAlert.id === undefined) ? selected : [borrarAlert.id])
             .then(response => {
                 let newRows: any = []
                 rows.forEach((value) => {
@@ -95,8 +107,10 @@ export default function Residente(): ReactElement {
                     }
                 })
                 setRows(newRows)
+                enqueueSnackbar("Acción realizada con exito", {variant: "success"})
+                handleCloseBorrar()
             })
-            .catch(error => console.error(error))
+            .catch(error => enqueueSnackbar("Error al realizar la Acción"))
     }
 
     function MyAutocomplete(): ReactElement {
@@ -176,7 +190,7 @@ export default function Residente(): ReactElement {
                         <IconButton onClick={handleClickOpen}>
                             <Add color={"success"}/>
                         </IconButton>
-                        <IconButton onClick={desubicar()} disabled={selected.length === 0} color={"error"}>
+                        <IconButton onClick={handleClickOpenBorrar()} disabled={selected.length === 0} color={"error"}>
                             <Delete/>
                         </IconButton>
                     </>
@@ -203,6 +217,25 @@ export default function Residente(): ReactElement {
                 <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>
                     <Button onClick={ubicar}>Aceptar</Button>
+                </DialogActions>
+            </Dialog>
+            <Dialog
+                open={borrarAlert.open}
+                onClose={handleCloseBorrar}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">
+                    Borrar
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContent id="alert-dialog-description">
+                        Desea Continuar la Acción
+                    </DialogContent>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={desubicar}>Acepar</Button>
+                    <Button onClick={handleCloseBorrar} color={"error"}> Cancelar </Button>
                 </DialogActions>
             </Dialog>
         </>

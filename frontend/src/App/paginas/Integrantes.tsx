@@ -29,10 +29,12 @@ import {Add, AddTask, Delete, HowToReg, NavigateBefore, Warning} from "@mui/icon
 import axios from "axios";
 import {useNavigate, useParams} from "react-router-dom";
 import {IsRole} from "../App";
+import {useSnackbar} from "notistack";
 
 export default function Integrantes(): ReactElement {
     const navegate = useNavigate()
     const params = useParams()
+    const {enqueueSnackbar} = useSnackbar();
     const {isRolRender, isRolBoolean} = useContext(IsRole)
     const columns: GridColumns = [
         {
@@ -90,7 +92,7 @@ export default function Integrantes(): ReactElement {
                     </IconButton>
                     {
                         isRolRender("Administrador",
-                            <IconButton color="error" onClick={borrar(params.value)}>
+                            <IconButton color="error" onClick={handleClickOpenBorrar(params.value)}>
                                 <Delete/>
                             </IconButton>
                         )
@@ -116,13 +118,20 @@ export default function Integrantes(): ReactElement {
         id: undefined,
         advertencia: ""
     })
+    const [borrarAlert, setBorrar] = useState<{ open: boolean, id: number | undefined }>({open: false, id: undefined});
+
+    const handleClickOpenBorrar = (id: number | undefined = undefined) => (event: MouseEvent) => {
+        event.preventDefault();
+        event.stopPropagation();
+        setBorrar({open: true, id: id});
+    };
+    const handleCloseBorrar = () => {
+        setBorrar({open: false, id: undefined});
+    };
+
 
     const handleClickOpen = (id: number | undefined = undefined) => (evento: MouseEvent) => {
         evento.stopPropagation()
-        // if (id !== undefined) {
-        //     let guardia = rows.find(row => row.id === id)
-        //     setValue({coordinador: guardia.coordinador, fecha: guardia.fecha})
-        // }
         setOpen({open: true, id: id});
     };
     const handleClose = () => {
@@ -185,13 +194,13 @@ export default function Integrantes(): ReactElement {
             .then(response => {
                 setRows([...rows, response.data])
                 handleClose()
+                enqueueSnackbar("Acción realizada con exito", {variant: "success"})
             })
-            .catch((error) => console.error(error))
+            .catch((error) => enqueueSnackbar("Error al realizar la Acción"))
     }
-    const borrar = (id: number | undefined = undefined) => (evento: MouseEvent) => {
-        evento.stopPropagation()
+    const borrar = () => {
         axios
-            .delete("/integrante", {data: (id !== undefined) ? [id] : selected})
+            .delete("/integrante", {data: (borrarAlert.id !== undefined) ? [borrarAlert.id] : selected})
             .then(response => {
                 let newRows: any = []
                 rows.forEach((value) => {
@@ -200,8 +209,10 @@ export default function Integrantes(): ReactElement {
                     }
                 })
                 setRows(newRows)
+                handleCloseBorrar()
+                enqueueSnackbar("Acción realizada con exito", {variant: "success"})
             })
-            .catch(error => console.error(error))
+            .catch(error => enqueueSnackbar("Error al realizar la Acción"))
     }
     const asistenciaEvaluacion = () => {
         axios.put((openAE.option === 1) ? "/integrante/asistencia" : "/integrante/evaluacion",
@@ -217,21 +228,24 @@ export default function Integrantes(): ReactElement {
                 newRows[rows.findIndex(row => row.id === openAE.id)] = response.data
                 setRows(newRows)
                 handleCloseAE()
+                enqueueSnackbar("Acción realizada con exito", {variant: "success"})
             })
-            .catch(error => console.error(error));
+            .catch(error => enqueueSnackbar("Error al realizar la Acción"));
     }
     const advertir = () => {
         axios.put("/integrante/advertencia", {
             id: advertencia.id,
             advertencia: advertencia.advertencia
-        }).then(response => {
-            console.log(response.data)
-            let newRows = [...rows]
-            newRows[rows.findIndex(row => row.id === openAE.id)] = response.data
-            setRows(newRows)
-            handleCloseAdvertencia()
-        }).catch(error => {
-            console.error(error)
+        })
+            .then(response => {
+                console.log(response.data)
+                let newRows = [...rows]
+                newRows[rows.findIndex(row => row.id === openAE.id)] = response.data
+                setRows(newRows)
+                handleCloseAdvertencia()
+                enqueueSnackbar("Acción realizada con exito", {variant: "success"})
+            }).catch(error => {
+            enqueueSnackbar("Error al realizar la Acción")
         })
     }
 
@@ -306,7 +320,8 @@ export default function Integrantes(): ReactElement {
                             <IconButton color={"success"} onClick={handleClickOpen()}>
                                 <Add/>
                             </IconButton>
-                            <IconButton color={"error"} onClick={borrar()} disabled={selected.length === 0}>
+                            <IconButton color={"error"} onClick={handleClickOpenBorrar()}
+                                        disabled={selected.length === 0}>
                                 <Delete/>
                             </IconButton>
                         </>)
@@ -396,6 +411,25 @@ export default function Integrantes(): ReactElement {
                         onClick={handleCloseAdvertencia}>{(advertencia.id !== undefined) ? "Cancelar" : "Salir"}
                     </Button>
                     {(advertencia.id !== undefined) ? <Button onClick={advertir}>Aceptar</Button> : null}
+                </DialogActions>
+            </Dialog>
+            <Dialog
+                open={borrarAlert.open}
+                onClose={handleCloseBorrar}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">
+                    Borrar
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContent id="alert-dialog-description">
+                        Desea Continuar la Acción
+                    </DialogContent>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={borrar}>Acepar</Button>
+                    <Button onClick={handleCloseBorrar} color={"error"}> Cancelar </Button>
                 </DialogActions>
             </Dialog>
         </div>
