@@ -21,10 +21,12 @@ import {Add, Delete, NavigateNext, Update} from "@mui/icons-material";
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
 import {IsRole} from "../../App";
+import {useSnackbar} from "notistack";
 
 export default function Edificio(): ReactElement {
     const navegate = useNavigate()
     const {isRolRender, isRolBoolean} = useContext(IsRole)
+    const {enqueueSnackbar} = useSnackbar();
     const columns: GridColumns = [
         {
             field: "numero",
@@ -46,7 +48,7 @@ export default function Edificio(): ReactElement {
                             <IconButton color={"primary"} onClick={handleClickOpen(params.value)}>
                                 <Update/>
                             </IconButton>
-                            <IconButton color={"error"} onClick={borrar(params.value)}>
+                            <IconButton color={"error"} onClick={handleClickOpenBorrar(params.value)}>
                                 <Delete/>
                             </IconButton>
                         </>
@@ -65,6 +67,15 @@ export default function Edificio(): ReactElement {
     const [selected, setSelected] = useState<GridSelectionModel>([])
     const [open, setOpen] = useState<{ open: boolean, params?: any }>({open: false});
     const [validate, setValidate] = useState<boolean>(true)
+    const [borrarAlert, setBorrar] = useState<{ open: boolean, id: number | undefined }>({open: false, id: undefined});
+
+    const handleClickOpenBorrar = (id: number | undefined = undefined) => (event: MouseEvent) => {
+        event.stopPropagation();
+        setBorrar({open: true, id: id});
+    };
+    const handleCloseBorrar = () => {
+        setBorrar({open: false, id: undefined});
+    };
 
     const handleChange = (even: ChangeEvent<HTMLInputElement>) => {
         const exp = new RegExp("^[0-9]+$")
@@ -106,7 +117,9 @@ export default function Edificio(): ReactElement {
                         newRows[rows.findIndex(row => row.id === open.params.id)] = response.data
                         setRows(newRows)
                         handleClose()
+                        enqueueSnackbar("Acción realizada con exito", {variant: "success"})
                     })
+                    .catch(error => enqueueSnackbar("Error al realizar la Acción"))
             } else {
                 axios
                     .post("/edificio", {
@@ -115,15 +128,17 @@ export default function Edificio(): ReactElement {
                     .then(response => {
                         setRows([...rows, response.data])
                         handleClose()
+                        enqueueSnackbar("Acción realizada con exito", {variant: "success"})
                     })
+                    .catch(error => enqueueSnackbar("Error al realizar la Acción"))
             }
         }
     }
-    const borrar = (id: number | undefined = undefined) => (evento: MouseEvent) => {
+    const borrar = (evento: MouseEvent) => {
         evento.stopPropagation()
         axios
             .delete("/edificio", {
-                data: (id === undefined) ? selected : [id]
+                data: (borrarAlert.id === undefined) ? selected : [borrarAlert.id]
             })
             .then(response => {
                 let newRows: any = []
@@ -133,8 +148,10 @@ export default function Edificio(): ReactElement {
                     }
                 })
                 setRows(newRows)
+                handleCloseBorrar()
+                enqueueSnackbar("Acción realizada con exito", {variant: "success"})
             })
-            .catch(error => console.error(error))
+            .catch(error => enqueueSnackbar("Error al realizar la Acción"))
     }
 
     function MyToolbar(): ReactElement {
@@ -148,7 +165,8 @@ export default function Edificio(): ReactElement {
                         <IconButton onClick={handleClickOpen()}>
                             <Add color={"success"}/>
                         </IconButton>
-                        <IconButton onClick={borrar()} disabled={selected.length === 0} color={"error"}>
+                        <IconButton onClick={handleClickOpenBorrar()} disabled={selected.length === 0}
+                                    color={"error"}>
                             <Delete/>
                         </IconButton>
                     </>
@@ -186,6 +204,25 @@ export default function Edificio(): ReactElement {
                 <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>
                     <Button onClick={save}>Aceptar</Button>
+                </DialogActions>
+            </Dialog>
+            <Dialog
+                open={borrarAlert.open}
+                onClose={handleCloseBorrar}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">
+                    Borrar
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContent id="alert-dialog-description">
+                        Desea Continuar la Acción
+                    </DialogContent>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={borrar}>Acepar</Button>
+                    <Button onClick={handleCloseBorrar} color={"error"}> Cancelar </Button>
                 </DialogActions>
             </Dialog>
         </>

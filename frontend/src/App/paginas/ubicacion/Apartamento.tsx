@@ -21,11 +21,13 @@ import {
 import {Add, Delete, NavigateBefore, NavigateNext, Update} from "@mui/icons-material";
 import axios from "axios";
 import {IsRole} from "../../App";
+import {useSnackbar} from "notistack";
 
 export default function Apartamento() {
     const navegate = useNavigate()
     const params = useParams()
     const {isRolRender, isRolBoolean} = useContext(IsRole)
+    const {enqueueSnackbar} = useSnackbar();
     const columns: GridColumns = [
         {
             field: "numero",
@@ -39,15 +41,16 @@ export default function Apartamento() {
             field: "id",
             filterable: false,
             headerName: "Acción",
-            minWidth: 130,
+            minWidth: 150,
             renderCell: (param) => (
                 <>
                     {isRolRender("Administrador",
                         <>
-                            <IconButton color={"primary"} onClick={handleClickOpen(param.value)}>
+                            <IconButton key={1} color={"primary"} onClick={handleClickOpen(param.value)}>
                                 <Update/>
                             </IconButton>
-                            <IconButton color={"error"} onClick={borrar(param.value)}>
+
+                            <IconButton key={2} color={"error"} onClick={handleClickOpenBorrar(param.value)}>
                                 <Delete/>
                             </IconButton>
                         </>
@@ -66,6 +69,15 @@ export default function Apartamento() {
     const [selected, setSelected] = useState<GridSelectionModel>([])
     const [open, setOpen] = useState<{ open: boolean, params?: any }>({open: false});
     const [validate, setValidate] = useState<boolean>(true)
+    const [borrarAlert, setBorrar] = useState<{ open: boolean, id: number | undefined }>({open: false, id: undefined});
+
+    const handleClickOpenBorrar = (id: number | undefined = undefined) => (event: MouseEvent) => {
+        event.stopPropagation();
+        setBorrar({open: true, id: id});
+    };
+    const handleCloseBorrar = () => {
+        setBorrar({open: false, id: undefined});
+    };
 
     const handleChange = (even: ChangeEvent<HTMLInputElement>) => {
         const exp = new RegExp("^[0-9]+$")
@@ -110,7 +122,10 @@ export default function Apartamento() {
                         newRows[rows.findIndex(row => row.id === open.params.id)] = response.data
                         setRows(newRows)
                         handleClose()
-                    })
+                        enqueueSnackbar("Acción realizada con exito", {variant: "success"})
+                    }).catch(error => {
+                    enqueueSnackbar("Error al realizar la Acción")
+                })
             } else {
                 axios
                     .post("/apartamento", {
@@ -120,15 +135,18 @@ export default function Apartamento() {
                     .then(response => {
                         setRows([...rows, response.data])
                         handleClose()
-                    })
+                        enqueueSnackbar("Acción realizada con exito", {variant: "success"})
+                    }).catch(error => {
+                    enqueueSnackbar("Error al realizar la Acción")
+                }).catch(error => enqueueSnackbar("Error al realizar la Acción"))
             }
         }
     }
-    const borrar = (id: number | undefined = undefined) => (evento: MouseEvent) => {
+    const borrar = (evento: MouseEvent) => {
         evento.stopPropagation()
         axios
             .delete("/apartamento", {
-                data: (id === undefined) ? selected : [id]
+                data: (borrarAlert.id === undefined) ? selected : [borrarAlert.id]
             })
             .then(response => {
                 let newRows: any = []
@@ -138,8 +156,10 @@ export default function Apartamento() {
                     }
                 })
                 setRows(newRows)
+                handleCloseBorrar()
+                enqueueSnackbar("Acción realizada con exito", {variant: "success"})
             })
-            .catch(error => console.error(error))
+            .catch(error => enqueueSnackbar("Error al realizar la Acción"))
     }
 
     function MyToolbar(): ReactElement {
@@ -153,14 +173,14 @@ export default function Apartamento() {
                 <Typography variant={"subtitle1"} sx={{marginLeft: 1}}>Apartamento</Typography>
                 <Box sx={{flexGrow: 1}}/>
                 {isRolRender("Administrador",
-                    <>
+                    <div>
                         <IconButton onClick={handleClickOpen()}>
                             <Add color={"success"}/>
                         </IconButton>
-                        <IconButton onClick={borrar()} disabled={selected.length === 0} color={"error"}>
+                        <IconButton disabled={selected.length === 0} color={"error"} onClick={handleClickOpenBorrar()}>
                             <Delete/>
                         </IconButton>
-                    </>
+                    </div>
                 )}
             </GridToolbarContainer>
         )
@@ -195,6 +215,25 @@ export default function Apartamento() {
                 <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>
                     <Button onClick={save}>Aceptar</Button>
+                </DialogActions>
+            </Dialog>
+            <Dialog
+                open={borrarAlert.open}
+                onClose={handleCloseBorrar}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">
+                    Borrar
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContent id="alert-dialog-description">
+                        Desea Continuar la Acción
+                    </DialogContent>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={borrar}>Acepar</Button>
+                    <Button onClick={handleCloseBorrar} color={"error"}> Cancelar </Button>
                 </DialogActions>
             </Dialog>
         </>
