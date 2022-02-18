@@ -87,6 +87,9 @@ export default function Guardia(): ReactElement {
     })
     const [selected, setSelected] = useState<GridSelectionModel>([])
     const [borrarAlert, setBorrar] = useState<{ open: boolean, id: number | undefined }>({open: false, id: undefined});
+    const [validate, setValidate] = useState<{ coordinador: boolean, fecha: boolean }>({
+        coordinador: true, fecha: true
+    })
 
     const handleClickOpenBorrar = (id: number | undefined = undefined) => (event: MouseEvent) => {
         event.preventDefault();
@@ -106,47 +109,57 @@ export default function Guardia(): ReactElement {
         setOpen({open: true, id: id});
     };
     const handleClose = () => {
+        setValidate({coordinador: true, fecha: true});
         setValue({coordinador: null, fecha: ""})
         setOpen({open: false, id: undefined});
     };
 
     const handleChangeFecha = (evento: ChangeEvent<HTMLInputElement>) => {
+        setValidate({...validate, fecha: evento.target.value.length === 0})
         setValue({...value, fecha: evento.target.value});
     }
 
     const save = () => {
-        if (open.id !== undefined) {
-            axios
-                .put((option === 1) ? "/guardia/residencia" : "/guardia/docente", (option === 1) ? {
-                    id: open.id,
-                    fecha: value.fecha,
-                } : {
-                    id: open.id,
-                    idCoordinador: value.coordinador.id,
-                    fecha: value.fecha
-                })
-                .then(response => {
-                    let newRows = [...rows]
-                    newRows[rows.findIndex(row => row.id === open.id)] = response.data
-                    setRows(newRows)
-                    handleClose()
-                    enqueueSnackbar("Acción realizada con exito", {variant: "success"})
-                })
-                .catch(error => enqueueSnackbar("Error al realizar la Acción"))
+        let salir: boolean
+        if (option === 1) {
+            salir = !validate.fecha
         } else {
-            axios
-                .post((option === 1) ? "/guardia/residencia" : "/guardia/docente", (option === 1) ? {
-                    fecha: value.fecha,
-                } : {
-                    idCoordinador: value.coordinador.id,
-                    fecha: value.fecha
-                })
-                .then(response => {
-                    setRows([...rows, response.data])
-                    handleClose()
-                    enqueueSnackbar("Acción realizada con exito", {variant: "success"})
-                })
-                .catch((error) => enqueueSnackbar("Error al realizar la Acción"))
+            salir = !(validate.fecha && validate.coordinador)
+        }
+        if (salir) {
+            if (open.id !== undefined) {
+                axios
+                    .put((option === 1) ? "/guardia/residencia" : "/guardia/docente", (option === 1) ? {
+                        id: open.id,
+                        fecha: value.fecha,
+                    } : {
+                        id: open.id,
+                        idCoordinador: value.coordinador.id,
+                        fecha: value.fecha
+                    })
+                    .then(response => {
+                        let newRows = [...rows]
+                        newRows[rows.findIndex(row => row.id === open.id)] = response.data
+                        setRows(newRows)
+                        handleClose()
+                        enqueueSnackbar("Acción realizada con exito", {variant: "success"})
+                    })
+                    .catch(error => enqueueSnackbar("Error al realizar la Acción"))
+            } else {
+                axios
+                    .post((option === 1) ? "/guardia/residencia" : "/guardia/docente", (option === 1) ? {
+                        fecha: value.fecha,
+                    } : {
+                        idCoordinador: value.coordinador.id,
+                        fecha: value.fecha
+                    })
+                    .then(response => {
+                        setRows([...rows, response.data])
+                        handleClose()
+                        enqueueSnackbar("Acción realizada con exito", {variant: "success"})
+                    })
+                    .catch((error) => enqueueSnackbar("Error al realizar la Acción"))
+            }
         }
     }
     const borrar = (evento: MouseEvent) => {
@@ -173,6 +186,11 @@ export default function Guardia(): ReactElement {
         const loading = open && options.length === 0;
 
         const handleChange = (event: SyntheticEvent, newValue: AutocompleteValue<any, any, any, any>) => {
+            if (newValue !== null) {
+                setValidate({...validate, coordinador: false})
+            } else {
+                setValidate({...validate, coordinador: true})
+            }
             setValue({...value, coordinador: newValue})
         }
         useEffect(() => {
@@ -207,6 +225,7 @@ export default function Guardia(): ReactElement {
                     <TextField
                         {...params}
                         label="Coordinador"
+                        error={validate.coordinador}
                         InputProps={{
                             ...params.InputProps,
                             endAdornment: (
@@ -289,7 +308,8 @@ export default function Guardia(): ReactElement {
                 <DialogTitle>Guardia</DialogTitle>
                 <DialogContent>
                     {(option === 2) ? <MyAutocomplete/> : null}
-                    <TextField type={"date"} label="Fecha" variant="outlined" fullWidth focused sx={{marginTop: 2}}
+                    <TextField type={"date"} label="Fecha" variant="outlined" error={validate.fecha} fullWidth focused
+                               sx={{marginTop: 2}}
                                value={value.fecha} onChange={handleChangeFecha}/>
                 </DialogContent>
                 <DialogActions>

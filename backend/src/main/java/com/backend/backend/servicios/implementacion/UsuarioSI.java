@@ -59,7 +59,7 @@ public class UsuarioSI implements UsuarioS {
 
     @Override
     public List<UsuarioResp> listarPorConfirmar() {
-        return usuarioR.findAllByCuartoIsNullAndUbicarIsNull().parallelStream()
+        return usuarioR.findByCuartoIsNullAndUbicarIsNullAndRoles(Usuario.Rol.Estudiante).parallelStream()
                 .map(UsuarioResp::new).collect(Collectors.toList());
     }
 
