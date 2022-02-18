@@ -43,7 +43,7 @@ export default function Edificio(): ReactElement {
             minWidth: 130,
             renderCell: (params) => (
                 <>
-                    {isRolRender("Administrador",
+                    {isRolRender(["Administrador","Vicedecano"],
                         <>
                             <IconButton color={"primary"} onClick={handleClickOpen(params.value)}>
                                 <Update/>
@@ -179,8 +179,8 @@ export default function Edificio(): ReactElement {
     return (
         <>
             <DataGrid autoPageSize={true} density={"compact"} columns={columns} rows={rows}
-                      checkboxSelection={isRolBoolean("Administrador")}
-                      disableSelectionOnClick={!isRolBoolean("Administrador")}
+                      checkboxSelection={isRolBoolean(["Administrador","Vicedecano"])}
+                      disableSelectionOnClick={!isRolBoolean(["Administrador","Vicedecano"])}
                       onSelectionModelChange={(selectionModel) => setSelected(selectionModel)}
                       components={{
                           Toolbar: MyToolbar,

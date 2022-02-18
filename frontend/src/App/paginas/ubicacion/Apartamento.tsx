@@ -44,7 +44,7 @@ export default function Apartamento() {
             minWidth: 150,
             renderCell: (param) => (
                 <>
-                    {isRolRender("Administrador",
+                    {isRolRender(["Administrador","Vicedecano"],
                         <>
                             <IconButton key={1} color={"primary"} onClick={handleClickOpen(param.value)}>
                                 <Update/>
@@ -190,8 +190,8 @@ export default function Apartamento() {
     return (
         <>
             <DataGrid autoPageSize={true} density={"compact"} columns={columns} rows={rows}
-                      checkboxSelection={isRolBoolean("Administrador")}
-                      disableSelectionOnClick={!isRolBoolean("Administrador")}
+                      checkboxSelection={isRolBoolean(["Administrador","Vicedecano"])}
+                      disableSelectionOnClick={!isRolBoolean(["Administrador","Vicedecano"])}
                       onSelectionModelChange={(selectionModel) => setSelected(selectionModel)}
                       components={{
                           Toolbar: MyToolbar,

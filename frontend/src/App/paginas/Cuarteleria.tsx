@@ -52,7 +52,7 @@ export default function Cuarteleria(): ReactElement {
             type: "date",
             minWidth: 130,
             filterable: false,
-            hide: !isRolBoolean(["Instructora", "Administrador"]),
+            hide: !isRolBoolean(["Instructora", "Administrador","Vicedecano"]),
             renderCell: (params) => (
                 <>
                     <IconButton color="primary" onClick={handleClickOpenEvaluacion(params.value)}>
@@ -245,7 +245,7 @@ export default function Cuarteleria(): ReactElement {
                 <GridToolbarFilterButton/>
                 <Box sx={{flexGrow: 1}}/>
                 {
-                    isRolRender(["Instructora", "Administrador"],
+                    isRolRender(["Instructora", "Administrador","Vicedecano"],
                         <>
                             <IconButton color={"success"} onClick={handleClickOpen()}>
                                 <Add/>
@@ -271,8 +271,8 @@ export default function Cuarteleria(): ReactElement {
     return (
         <div style={{height: "calc(100vh - 60px)"}}>
             <DataGrid columns={columns} rows={rows} components={{Toolbar: MyToolbar}} autoPageSize
-                      checkboxSelection={isRolBoolean("Administrador")}
-                      disableSelectionOnClick={!isRolBoolean("Administrador")}
+                      checkboxSelection={isRolBoolean(["Administrador","Vicedecano"])}
+                      disableSelectionOnClick={!isRolBoolean(["Administrador","Vicedecano"])}
                       onSelectionModelChange={(selectionModel) => setSelected(selectionModel)}/>
             <Dialog open={open.open} onClose={handleClose}>
                 <DialogTitle>Cuarteleria</DialogTitle>

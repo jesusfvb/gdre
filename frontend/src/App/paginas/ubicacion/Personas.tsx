@@ -59,7 +59,7 @@ export default function Personas(): ReactElement {
             filterable: false,
             headerName: "Acción",
             minWidth: 100,
-            hide: !isRolBoolean("Administrador"),
+            hide: !isRolBoolean(["Administrador","Vicedecano"]),
             renderCell: (param) => {
                 switch (option) {
                     case 1:

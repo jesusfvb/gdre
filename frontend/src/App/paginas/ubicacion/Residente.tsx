@@ -45,7 +45,7 @@ export default function Residente(): ReactElement {
             filterable: false,
             headerName: "Acción",
             minWidth: 100,
-            hide: !isRolBoolean("Administrador"),
+            hide: !isRolBoolean(["Administrador","Vicedecano"]),
             renderCell: (param) => (
                 <IconButton color={"error"} onClick={handleClickOpenBorrar(param.value)}>
                     <Delete/>
@@ -203,8 +203,8 @@ export default function Residente(): ReactElement {
     return (
         <>
             <DataGrid autoPageSize={true} density={"compact"} columns={columns} rows={rows}
-                      checkboxSelection={isRolBoolean("Administrador")}
-                      disableSelectionOnClick={!isRolBoolean("Administrador")}
+                      checkboxSelection={isRolBoolean(["Administrador","Vicedecano"])}
+                      disableSelectionOnClick={!isRolBoolean(["Administrador","Vicedecano"])}
                       onSelectionModelChange={(selectionModel) => setSelected(selectionModel)}
                       components={{
                           Toolbar: MyToolbar,

@@ -78,7 +78,7 @@ export default function Integrantes(): ReactElement {
             type: "date",
             minWidth: 170,
             filterable: false,
-            hide: !isRolBoolean(["Profesor", "Instructora", "Administrador"]),
+            hide: !isRolBoolean(["Profesor", "Instructora", "Administrador", "Vicedecano"]),
             renderCell: (params) => (
                 <>
                     <IconButton onClick={handleClickOpenAE(params.value, 1)}>
@@ -342,8 +342,8 @@ export default function Integrantes(): ReactElement {
     return (
         <div style={{height: "calc(100vh - 60px)"}}>
             <DataGrid columns={columns} rows={rows} components={{Toolbar: MyToolbar}} autoPageSize
-                      checkboxSelection={isRolBoolean("Administrador")}
-                      disableSelectionOnClick={!isRolBoolean("Administrador")}
+                      checkboxSelection={isRolBoolean(["Administrador","Vicedecano"])}
+                      disableSelectionOnClick={!isRolBoolean(["Administrador","Vicedecano"])}
                       onSelectionModelChange={(selectionModel) => setSelected(selectionModel)}/>
             <Dialog open={open.open} onClose={handleClose}>
                 <DialogTitle>Integrantes</DialogTitle>
