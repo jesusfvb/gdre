@@ -49,7 +49,7 @@ export default function Marco(props: { cerrarSession: Function }) {
                         <Button variant={"contained"} size={"small"} onClick={() => navigation("/ubicacion")}
                                 sx={{marginLeft: 1, width: "93%"}}>Ubicación</Button>
                     </Grid>
-                    {isRolRender("Administrador",
+                    {isRolRender(["Administrador","Vicedecano"],
                         <Grid item sx={{width: "100%", marginBottom: 1}}>
                             <Button variant={"contained"} size={"small"} onClick={() => navigation("/usuario")}
                                     sx={{marginLeft: 1, width: "93%"}}>Usuario</Button>

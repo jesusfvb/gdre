@@ -78,6 +78,9 @@ export default function Usuario(): ReactElement {
     })
     const [selected, setSelected] = useState<GridSelectionModel>([])
     const [borrarAlert, setBorrar] = useState<{ open: boolean, id: number | undefined }>({open: false, id: undefined});
+    const [validate, setValidate] = useState<{ nombre: boolean, usuario: boolean, solapin: boolean, rol: boolean }>({
+        nombre: true, usuario: true, solapin: true, rol: true
+    })
 
     const handleClickOpenBorrar = (id: number | undefined = undefined) => (event: MouseEvent) => {
         event.preventDefault();
@@ -92,61 +95,75 @@ export default function Usuario(): ReactElement {
         evento.stopPropagation()
         if (id !== undefined) {
             let user = rows.find(row => row.id === id)
+            setValidate({
+                nombre: false, usuario: false, solapin: false, rol: false
+            })
             setValue({nombre: user.nombre, usuario: user.usuario, solapin: user.solapin, rol: user.rol})
         }
         setOpen({open: true, id: id});
     };
     const handleClose = () => {
+        setValidate({
+            nombre: true, usuario: true, solapin: true, rol: true
+        })
         setValue({nombre: "", usuario: "", solapin: "", rol: ""})
         setOpen({open: false, id: undefined});
     };
 
     const handleChangeNombre = (evento: ChangeEvent<HTMLInputElement>) => {
+        setValidate({
+            ...validate,
+            nombre: evento.target.value.match("^[A-Za-zƒŠŒŽšœžŸÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèé êëìíîïðñòóôõöøùúûüýþÿ]*$") === null
+        })
         setValue({...value, nombre: evento.target.value});
     }
     const handleChangeUsuario = (evento: ChangeEvent<HTMLInputElement>) => {
+        setValidate({...validate, usuario: evento.target.value.match("^[a-z][a-zA-Z0-9_]{3,10}$") === null})
         setValue({...value, usuario: evento.target.value});
     }
     const handleChangeSolapin = (evento: ChangeEvent<HTMLInputElement>) => {
+        setValidate({...validate, solapin: evento.target.value.match("^[E|T][0-9]{8}$") === null})
         setValue({...value, solapin: evento.target.value});
     }
     const handleChangeRol = (evento: SelectChangeEvent) => {
+        setValidate({...validate, rol: evento.target.value.length === 0})
         setValue({...value, rol: evento.target.value});
     }
 
     const save = () => {
-        if (open.id !== undefined) {
-            axios
-                .put("/usuario", {
-                    id: open.id,
-                    nombre: value.nombre,
-                    username: value.usuario,
-                    solapin: value.solapin,
-                    rol: value.rol
-                })
-                .then(response => {
-                    let newRows = [...rows]
-                    newRows[rows.findIndex(row => row.id === open.id)] = response.data
-                    setRows(newRows)
-                    handleClose()
-                    enqueueSnackbar("Acción realizada con exito", {variant: "success"})
-                })
-                .catch(error => enqueueSnackbar("Error al realizar la Acción"))
-        } else {
-            axios
-                .post("/usuario", {
-                    nombre: value.nombre,
-                    username: value.usuario,
-                    solapin: value.solapin,
-                    rol: value.rol
-                })
-                .then(response => {
-                    setRows([...rows, response.data])
-                    handleClose()
-                    enqueueSnackbar("Acción realizada con exito", {variant: "success"})
-                })
-                .catch((error) => enqueueSnackbar("Error al realizar la Acción"))
-        }
+        if (!(validate.nombre && validate.rol && validate.usuario && validate.solapin))
+            if (open.id !== undefined) {
+                axios
+                    .put("/usuario", {
+                        id: open.id,
+                        nombre: value.nombre,
+                        username: value.usuario,
+                        solapin: value.solapin,
+                        rol: value.rol
+                    })
+                    .then(response => {
+                        let newRows = [...rows]
+                        newRows[rows.findIndex(row => row.id === open.id)] = response.data
+                        setRows(newRows)
+                        handleClose()
+                        enqueueSnackbar("Acción realizada con exito", {variant: "success"})
+                    })
+                    .catch(error => enqueueSnackbar("Error al realizar la Acción"))
+            } else {
+                axios
+                    .post("/usuario", {
+                        nombre: value.nombre,
+                        username: value.usuario,
+                        solapin: value.solapin,
+                        rol: value.rol
+                    })
+                    .then(response => {
+                        setRows([...rows, response.data])
+                        handleClose()
+                        enqueueSnackbar("Acción realizada con exito", {variant: "success"})
+                    })
+                    .catch((error) => enqueueSnackbar("Error al realizar la Acción"))
+            }
     }
     const borrar = () => {
         axios
@@ -195,12 +212,15 @@ export default function Usuario(): ReactElement {
                 <DialogContent sx={{width: 300}}>
                     <TextField type={"text"} label="Nombre" variant="outlined" fullWidth sx={{marginTop: 2}}
                                value={value.nombre}
+                               error={validate.nombre}
                                onChange={handleChangeNombre}/>
                     <TextField type={"text"} label="Usuario" variant="outlined" fullWidth sx={{marginTop: 2}}
                                value={value.usuario}
+                               error={validate.usuario}
                                onChange={handleChangeUsuario}/>
                     <TextField type={"text"} label="Solapin" variant="outlined" fullWidth sx={{marginTop: 2}}
                                value={value.solapin}
+                               error={validate.solapin}
                                onChange={handleChangeSolapin}/>
                     <FormControl fullWidth sx={{marginTop: 2}}>
                         <InputLabel id="demo-simple-select-label">Rol</InputLabel>
@@ -209,6 +229,7 @@ export default function Usuario(): ReactElement {
                             id="demo-simple-select"
                             value={value.rol}
                             label="Rol"
+                            error={validate.rol}
                             onChange={handleChangeRol}
                         >
                             <MenuItem value={"Estudiante"}>Estudiante</MenuItem>

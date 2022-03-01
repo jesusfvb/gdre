@@ -46,6 +46,10 @@ public class Usuario extends Entidad {
     @Enumerated(EnumType.STRING)
     private List<Rol> roles = new LinkedList<>();
 
+    @OneToMany(orphanRemoval = true)
+    @JoinColumn(name = "usuario_id")
+    private List<Cuarteleria> cuartelerias = new ArrayList<>();
+
     public Usuario(Integer idUsuario) {
         super.setId(idUsuario);
     }

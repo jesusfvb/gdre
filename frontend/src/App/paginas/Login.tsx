@@ -15,16 +15,19 @@ import {
 } from "@mui/material";
 import logo from '../img/logo.jpg'
 import {FormEvent} from "react";
+import {useNavigate} from "react-router-dom";
 
 export default function Login(props: { iniciarSession: Function }) {
     const theme = createTheme();
+    const navegate = useNavigate()
     const iniciarSession = (evento: FormEvent<HTMLFormElement>) => {
         evento.preventDefault()
         let inputs = evento.currentTarget.getElementsByTagName("input")
         props.iniciarSession(inputs[0].value, inputs[1].value)
+        navegate("/principal")
     }
 
-    function Copyright(props:any) {
+    function Copyright(props: any) {
         return (
             <Typography
                 variant="body2"

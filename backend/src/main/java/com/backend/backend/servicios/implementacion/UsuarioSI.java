@@ -59,7 +59,7 @@ public class UsuarioSI implements UsuarioS {
 
     @Override
     public List<UsuarioResp> listarPorConfirmar() {
-        return usuarioR.findAllByCuartoIsNullAndUbicarIsNull().parallelStream()
+        return usuarioR.findByCuartoIsNullAndUbicarIsNullAndRoles(Usuario.Rol.Estudiante).parallelStream()
                 .map(UsuarioResp::new).collect(Collectors.toList());
     }
 
@@ -143,7 +143,13 @@ public class UsuarioSI implements UsuarioS {
 
     @Override
     public Integer[] borrar(Integer[] ids) {
+        Usuario usuario;
         for (Integer id : ids) {
+            usuario = usuarioR.getById(id);
+            usuario.getGuardias().clear();
+            usuario.getParticipacion().clear();
+            usuario.getCuartelerias().clear();
+            usuarioR.save(usuario);
             usuarioR.deleteById(id);
         }
         return ids;

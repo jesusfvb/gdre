@@ -52,7 +52,7 @@ export default function Cuarto(): ReactElement {
             minWidth: 130,
             renderCell: (param) => (
                 <>
-                    {isRolRender("Administrador",
+                    {isRolRender(["Administrador","Vicedecano"],
                         <>
                             <IconButton color={"primary"} onClick={handleClickOpen(param.value)}>
                                 <Update/>
@@ -205,8 +205,8 @@ export default function Cuarto(): ReactElement {
     return (
         <>
             <DataGrid autoPageSize={true} density={"compact"} columns={columns} rows={rows}
-                      checkboxSelection={isRolBoolean("Administrador")}
-                      disableSelectionOnClick={!isRolBoolean("Administrador")}
+                      checkboxSelection={isRolBoolean(["Administrador","Vicedecano"])}
+                      disableSelectionOnClick={!isRolBoolean(["Administrador","Vicedecano"])}
                       onSelectionModelChange={(selectionModel) => setSelected(selectionModel)}
                       components={{
                           Toolbar: MyToolbar,
