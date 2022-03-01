@@ -95,8 +95,8 @@ export default function App(): ReactElement {
 
     const procesarToken = (jwt: string) => {
         try {
-            let jwtDecode: any = decode(jwt).payload;
             if (!isJwtTokenExpired(jwt)) {
+                let jwtDecode: any = decode(jwt).payload;
                 setDatosUser({
                     id: jwtDecode.id,
                     nombre: jwtDecode.nombre,
@@ -184,7 +184,9 @@ export default function App(): ReactElement {
                                     <Route path="/cuarteleria" element={<Cuarteleria/>}/>
                                     <Route path="/guardia" element={<Guardia/>}/>
                                     <Route path="/guardia/:id/integrantes" element={<Integrantes/>}/>
-                                    <Route path="/usuario" element={<Usuario/>}/>
+                                    {isRolRenderF(["Administrador", "Vicedecano"],
+                                        <Route path="/usuario" element={<Usuario/>}/>
+                                    )}
                                 </Route>
                                 <Route path={"*"} element={<E404/>}/>
                             </>

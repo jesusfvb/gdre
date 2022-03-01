@@ -111,15 +111,18 @@ export default function Usuario(): ReactElement {
     };
 
     const handleChangeNombre = (evento: ChangeEvent<HTMLInputElement>) => {
-        setValidate({...validate, nombre: evento.target.value.length === 0})
+        setValidate({
+            ...validate,
+            nombre: evento.target.value.match("^[A-Za-zƒŠŒŽšœžŸÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèé êëìíîïðñòóôõöøùúûüýþÿ]*$") === null
+        })
         setValue({...value, nombre: evento.target.value});
     }
     const handleChangeUsuario = (evento: ChangeEvent<HTMLInputElement>) => {
-        setValidate({...validate, usuario: evento.target.value.length === 0})
+        setValidate({...validate, usuario: evento.target.value.match("^[a-z][a-zA-Z0-9_]{3,10}$") === null})
         setValue({...value, usuario: evento.target.value});
     }
     const handleChangeSolapin = (evento: ChangeEvent<HTMLInputElement>) => {
-        setValidate({...validate, solapin: evento.target.value.length === 0})
+        setValidate({...validate, solapin: evento.target.value.match("^[E|T][0-9]{8}$") === null})
         setValue({...value, solapin: evento.target.value});
     }
     const handleChangeRol = (evento: SelectChangeEvent) => {

@@ -119,6 +119,9 @@ export default function Integrantes(): ReactElement {
         advertencia: ""
     })
     const [borrarAlert, setBorrar] = useState<{ open: boolean, id: number | undefined }>({open: false, id: undefined});
+    const [validate, setValidate] = useState<{ participante: boolean }>({
+        participante: true
+    })
 
     const handleClickOpenBorrar = (id: number | undefined = undefined) => (event: MouseEvent) => {
         event.preventDefault();
@@ -136,6 +139,7 @@ export default function Integrantes(): ReactElement {
     };
     const handleClose = () => {
         setValue({participante: null})
+        setValidate({participante: true})
         setOpen({open: false, id: undefined});
     };
 
@@ -255,6 +259,11 @@ export default function Integrantes(): ReactElement {
         const loading = open && options.length === 0;
 
         const handleChange = (event: SyntheticEvent, newValue: AutocompleteValue<any, any, any, any>) => {
+            if (newValue !== null) {
+                setValidate({...validate, participante: false})
+            } else {
+                setValidate({...validate, participante: true})
+            }
             setValue({participante: newValue})
         }
         useEffect(() => {
@@ -289,6 +298,7 @@ export default function Integrantes(): ReactElement {
                     <TextField
                         {...params}
                         label="Estudiante"
+                        error={validate.participante}
                         InputProps={{
                             ...params.InputProps,
                             endAdornment: (
@@ -342,8 +352,8 @@ export default function Integrantes(): ReactElement {
     return (
         <div style={{height: "calc(100vh - 60px)"}}>
             <DataGrid columns={columns} rows={rows} components={{Toolbar: MyToolbar}} autoPageSize
-                      checkboxSelection={isRolBoolean(["Administrador","Vicedecano"])}
-                      disableSelectionOnClick={!isRolBoolean(["Administrador","Vicedecano"])}
+                      checkboxSelection={isRolBoolean(["Administrador", "Vicedecano"])}
+                      disableSelectionOnClick={!isRolBoolean(["Administrador", "Vicedecano"])}
                       onSelectionModelChange={(selectionModel) => setSelected(selectionModel)}/>
             <Dialog open={open.open} onClose={handleClose}>
                 <DialogTitle>Integrantes</DialogTitle>

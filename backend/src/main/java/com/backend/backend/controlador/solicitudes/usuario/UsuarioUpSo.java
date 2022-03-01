@@ -24,7 +24,6 @@ public class UsuarioUpSo {
         usuario.setNombre(this.nombre);
         usuario.setUsuario(this.username);
         usuario.setSolapin(this.solapin);
-        usuario.setContrasena(this.username);
         usuario.getRoles().removeIf(rol1 -> !rol1.equals(Usuario.Rol.Usuario));
         usuario.getRoles().add(rol);
         return usuario;

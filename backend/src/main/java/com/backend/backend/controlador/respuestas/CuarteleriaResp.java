@@ -20,7 +20,7 @@ public class CuarteleriaResp {
 
     public CuarteleriaResp(Cuarteleria cuarteleria) {
         this.id = cuarteleria.getId();
-        this.nombre = cuarteleria.getUsuario().getNombre();
+        this.nombre = cuarteleria.getUsuario() != null ? cuarteleria.getUsuario().getNombre() : null;
         this.fecha = cuarteleria.getFecha();
         this.evaluacion = cuarteleria.getEvaluacion();
     }
