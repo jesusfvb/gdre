@@ -34,17 +34,23 @@ public class CuarteleriaSI implements CuarteleriaS {
 
     @Override
     public CuarteleriaResp salvar(CuarteleriaSo cuarteleria) {
+        if (cuarteleriaR.existsByFechaAndUsuario_Id(cuarteleria.getFecha(), cuarteleria.getIdUsuario())) {
+            throw new RuntimeException("Ya existe la cuarteleria");
+        }
         return new CuarteleriaResp(cuarteleriaR.save(cuarteleria.getCuarteleria(usuarioS.getPorId(cuarteleria.getIdUsuario()))));
     }
 
     @Override
     public CuarteleriaResp update(CuarteleriaUpSo cuarteleria) {
-        return new CuarteleriaResp(cuarteleriaR.save(cuarteleria.getCuarteleria(cuarteleriaR.getById(cuarteleria.getId()))));
+        return new CuarteleriaResp(cuarteleriaR.save(cuarteleria.getCuarteleria(cuarteleriaR.findById(cuarteleria.getId()).get())));
     }
 
     @Override
     public CuarteleriaResp evaluar(EvaluacionSo evaluacion) {
-        return new CuarteleriaResp(cuarteleriaR.save(evaluacion.getCuarteleria(cuarteleriaR.getById(evaluacion.getId()))));
+        if (evaluacion.getEvaluacion().equals(null)) {
+            throw new RuntimeException("Dato invalido");
+        }
+        return new CuarteleriaResp(cuarteleriaR.save(evaluacion.getCuarteleria(cuarteleriaR.findById(evaluacion.getId()).get())));
     }
 
     @Override

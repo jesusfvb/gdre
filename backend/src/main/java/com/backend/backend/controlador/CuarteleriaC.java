@@ -21,32 +21,32 @@ public class CuarteleriaC {
     private final CuarteleriaS cuarteleriaS;
 
     @GetMapping()
-    private ResponseEntity<List<CuarteleriaResp>> listar() {
+    public ResponseEntity<List<CuarteleriaResp>> listar() {
         return ResponseEntity.ok(cuarteleriaS.listar());
     }
 
     @GetMapping("/{id}")
-    private ResponseEntity<List<CuarteleriaResp>> listarPorIdUsuario(@PathVariable Integer id) {
+    public ResponseEntity<List<CuarteleriaResp>> listarPorIdUsuario(@PathVariable Integer id) {
         return ResponseEntity.ok(cuarteleriaS.listar(id));
     }
 
     @PostMapping
-    private ResponseEntity<CuarteleriaResp> salvar(@RequestBody CuarteleriaSo cuarteleria) {
+    public ResponseEntity<CuarteleriaResp> salvar(@RequestBody CuarteleriaSo cuarteleria) {
         return ResponseEntity.ok(cuarteleriaS.salvar(cuarteleria));
     }
 
     @PutMapping
-    private ResponseEntity<CuarteleriaResp> update(@RequestBody CuarteleriaUpSo cuarteleria) {
+    public ResponseEntity<CuarteleriaResp> update(@RequestBody CuarteleriaUpSo cuarteleria) {
         return ResponseEntity.ok(cuarteleriaS.update(cuarteleria));
     }
 
     @PutMapping("/evaluar")
-    private ResponseEntity<CuarteleriaResp> evaluar(@RequestBody EvaluacionSo evaluacion) {
+    public ResponseEntity<CuarteleriaResp> evaluar(@RequestBody EvaluacionSo evaluacion) {
         return ResponseEntity.ok(cuarteleriaS.evaluar(evaluacion));
     }
 
     @DeleteMapping
-    private ResponseEntity<Integer[]> delete(@RequestBody Integer[] ids) {
+    public ResponseEntity<Integer[]> delete(@RequestBody Integer[] ids) {
         return ResponseEntity.ok(cuarteleriaS.delete(ids));
     }
 }

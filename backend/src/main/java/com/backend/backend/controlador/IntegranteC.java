@@ -22,32 +22,32 @@ public class IntegranteC {
     private final IntegranteS integranteS;
 
     @GetMapping("/guardia/{id}")
-    private ResponseEntity<List<IntegranteResp>> listarPorIdGuardia(@PathVariable Integer id) {
+    public ResponseEntity<List<IntegranteResp>> listarPorIdGuardia(@PathVariable Integer id) {
         return ResponseEntity.ok(integranteS.listarPorGuardia(id));
     }
 
     @PostMapping
-    private ResponseEntity<IntegranteResp> save(@RequestBody IntegranteNewSo integrante) {
+    public ResponseEntity<IntegranteResp> save(@RequestBody IntegranteNewSo integrante) {
         return ResponseEntity.ok(integranteS.save(integrante));
     }
 
     @DeleteMapping
-    private ResponseEntity<Integer[]> delete(@RequestBody Integer[] ids) {
+    public ResponseEntity<Integer[]> delete(@RequestBody Integer[] ids) {
         return ResponseEntity.ok(integranteS.delete(ids));
     }
 
     @PutMapping("/asistencia")
-    private ResponseEntity<IntegranteResp> asistencia(@RequestBody AsistenciaSo asistencia) {
+    public ResponseEntity<IntegranteResp> asistencia(@RequestBody AsistenciaSo asistencia) {
         return ResponseEntity.ok(integranteS.asistencia(asistencia));
     }
 
     @PutMapping("/evaluacion")
-    private ResponseEntity<IntegranteResp> evaluacion(@RequestBody EvaluacionSo evaluacion) {
+    public ResponseEntity<IntegranteResp> evaluacion(@RequestBody EvaluacionSo evaluacion) {
         return ResponseEntity.ok(integranteS.evaluacion(evaluacion));
     }
 
     @PutMapping("/advertencia")
-    private ResponseEntity<IntegranteResp> advertencia(@RequestBody AdvertenciaSo advertencia) {
+    public ResponseEntity<IntegranteResp> advertencia(@RequestBody AdvertenciaSo advertencia) {
         return ResponseEntity.ok(integranteS.advertencia(advertencia));
     }
 

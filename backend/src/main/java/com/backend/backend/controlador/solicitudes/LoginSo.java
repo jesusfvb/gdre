@@ -9,6 +9,11 @@ public class LoginSo {
     public LoginSo() {
     }
 
+    public LoginSo(String usuario, String contrasenna) {
+        this.usuario = usuario;
+        this.contrasenna = contrasenna;
+    }
+
     public String getUsuario() {
         return usuario;
     }

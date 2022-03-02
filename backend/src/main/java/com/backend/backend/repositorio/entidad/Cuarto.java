@@ -14,10 +14,10 @@ import java.util.List;
 @Setter
 public class Cuarto extends Entidad {
 
-    @Column
+    @Column(nullable = false)
     private Integer numero;
 
-    @Column
+    @Column(nullable = false)
     private Integer capacidad;
 
     @ManyToOne

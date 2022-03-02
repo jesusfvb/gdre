@@ -36,6 +36,9 @@ public class CuartoSI implements CuartoS {
 
     @Override
     public CuartoResp salvar(CuartoNewSo cuartoNewSo) {
+        if (cuartoR.existsByNumeroAndApartamento_Id(cuartoNewSo.getNumero(), cuartoNewSo.getIdApartamento())) {
+            throw new RuntimeException("Cuarto ya existe");
+        }
         return new CuartoResp(cuartoR.save(cuartoNewSo.getCuarto()));
     }
 
@@ -50,6 +53,6 @@ public class CuartoSI implements CuartoS {
 
     @Override
     public CuartoResp update(CuartoUpSo cuartoUpSo) {
-        return new CuartoResp(cuartoR.save(cuartoUpSo.getCuarto(cuartoR.getById(cuartoUpSo.getId()))));
+        return new CuartoResp(cuartoR.save(cuartoUpSo.getCuarto(cuartoR.findById(cuartoUpSo.getId()).get())));
     }
 }
