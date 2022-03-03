@@ -8,6 +8,7 @@ import com.backend.backend.controlador.solicitudes.usuario.UsuarioUpSo;
 import com.backend.backend.repositorio.UsuarioR;
 import com.backend.backend.repositorio.entidad.Cuarto;
 import com.backend.backend.repositorio.entidad.Usuario;
+import com.backend.backend.servicios.CuartoS;
 import com.backend.backend.servicios.UsuarioS;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,8 @@ public class UsuarioSI implements UsuarioS {
     public final PasswordEncoder passwordEncoder;
 
     private final UsuarioR usuarioR;
+
+    private final CuartoS cuartoS;
 
     @Override
     public void quitarCuarto(Integer idCuarto) {
@@ -73,6 +76,10 @@ public class UsuarioSI implements UsuarioS {
     public UsuarioResp ubicar(UbicarSo ubicarSo) {
         Usuario usuario = usuarioR.findById(ubicarSo.getIdUsuario()).get();
         if (usuario.getUbicar() != true) {
+            throw new RuntimeException("No se puede ubicar el usuario");
+        }
+        Cuarto cuarto = cuartoS.getById(ubicarSo.getIdCuarto());
+        if (cuarto.getUsuarios().size() >= cuarto.getCapacidad()) {
             throw new RuntimeException("No se puede ubicar el usuario");
         }
         usuario.setCuarto(new Cuarto(ubicarSo.getIdCuarto()));
@@ -147,7 +154,6 @@ public class UsuarioSI implements UsuarioS {
     @Override
     public Integer[] borrar(Integer[] ids) {
         for (Integer id : ids) {
-            usuarioR.save(new Usuario(id));
             usuarioR.deleteById(id);
         }
         return ids;

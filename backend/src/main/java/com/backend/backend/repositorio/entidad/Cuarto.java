@@ -24,7 +24,7 @@ public class Cuarto extends Entidad {
     @JoinColumn(name = "apartamento_id")
     private Apartamento apartamento;
 
-    @OneToMany(mappedBy = "cuarto")
+    @OneToMany(mappedBy = "cuarto", fetch = FetchType.EAGER)
     private List<Usuario> usuarios = new ArrayList<>();
 
     public Cuarto(Integer id) {

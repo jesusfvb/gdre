@@ -104,6 +104,7 @@ export default function Guardia(): ReactElement {
         evento.stopPropagation()
         if (id !== undefined) {
             let guardia = rows.find(row => row.id === id)
+            setValidate({fecha: false, coordinador: false})
             setValue({coordinador: guardia.coordinador, fecha: guardia.fecha})
         }
         setOpen({open: true, id: id});
@@ -124,7 +125,7 @@ export default function Guardia(): ReactElement {
         if (option === 1) {
             salir = !validate.fecha
         } else {
-            salir = !(validate.fecha && validate.coordinador)
+            salir = !validate.fecha && !validate.coordinador
         }
         if (salir) {
             if (open.id !== undefined) {
@@ -160,6 +161,8 @@ export default function Guardia(): ReactElement {
                     })
                     .catch((error) => enqueueSnackbar("Error al realizar la Acción"))
             }
+        } else {
+            enqueueSnackbar("Error al realizar la Acción")
         }
     }
     const borrar = (evento: MouseEvent) => {
@@ -313,8 +316,8 @@ export default function Guardia(): ReactElement {
                                value={value.fecha} onChange={handleChangeFecha}/>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleClose}>Cancel</Button>
                     <Button onClick={save}>Aceptar</Button>
+                    <Button onClick={handleClose} color={"error"}>Cancel</Button>
                 </DialogActions>
             </Dialog>
             <Dialog

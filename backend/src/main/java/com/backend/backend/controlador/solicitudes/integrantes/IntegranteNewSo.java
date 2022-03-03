@@ -22,6 +22,8 @@ public class IntegranteNewSo {
     @JsonIgnore
     public Integrante getIntegrante(Usuario usuario) {
         Integrante integrante = new Integrante();
+        integrante.setAsistencia(Integrante.Asistencia.Pendiente);
+        integrante.setEvaluacion(Integrante.Evaluacion.Pendiente);
         integrante.setGuardia(new Guardia(idGuardia));
         integrante.setParticipante(usuario);
         return integrante;
