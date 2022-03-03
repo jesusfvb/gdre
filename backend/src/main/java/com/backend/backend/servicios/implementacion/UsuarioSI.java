@@ -154,7 +154,6 @@ public class UsuarioSI implements UsuarioS {
     @Override
     public Integer[] borrar(Integer[] ids) {
         for (Integer id : ids) {
-            usuarioR.save(new Usuario(id));
             usuarioR.deleteById(id);
         }
         return ids;

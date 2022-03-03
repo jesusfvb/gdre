@@ -63,10 +63,6 @@ export default function Login(props: { iniciarSession: Function }) {
                                     <TextField required fullWidth name="password" label="Contraseña" type="password"
                                                id="password" autoComplete="new-password"/>
                                 </Grid>
-                                <Grid item xs={12}>
-                                    <FormControlLabel control={<Checkbox color="primary"/>}
-                                                      label="Recordar Contraseña"/>
-                                </Grid>
                             </Grid>
                             <Button type="submit" fullWidth variant="contained" sx={{mt: 3, mb: 2}}>
                                 Entrar

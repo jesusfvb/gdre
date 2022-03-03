@@ -34,10 +34,10 @@ public class Usuario extends Entidad {
     @JoinColumn(name = "cuarto_id")
     private Cuarto cuarto;
 
-    @OneToMany(mappedBy = "coordinador", orphanRemoval = true)
+    @OneToMany(mappedBy = "coordinador", orphanRemoval = true, cascade = CascadeType.REMOVE)
     private List<Guardia> guardias = new ArrayList<>();
 
-    @OneToMany(mappedBy = "participante", orphanRemoval = true)
+    @OneToMany(mappedBy = "participante", orphanRemoval = true, cascade = CascadeType.REMOVE)
     private List<Integrante> participacion = new ArrayList<>();
 
     @ElementCollection(fetch = FetchType.EAGER)
@@ -46,7 +46,7 @@ public class Usuario extends Entidad {
     @Enumerated(EnumType.STRING)
     private List<Rol> roles = new LinkedList<>();
 
-    @OneToMany(orphanRemoval = true)
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "usuario_id")
     private List<Cuarteleria> cuartelerias = new ArrayList<>();
 
