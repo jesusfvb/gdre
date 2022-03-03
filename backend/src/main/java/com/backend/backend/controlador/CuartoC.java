@@ -20,22 +20,22 @@ public class CuartoC {
     private final CuartoS cuartoS;
 
     @GetMapping
-    private ResponseEntity<List<CuartoResp>> listarPorIdDeApartamento(@RequestParam Integer id) {
+    public ResponseEntity<List<CuartoResp>> listarPorIdDeApartamento(@RequestParam Integer id) {
         return ResponseEntity.ok(cuartoS.listarPorIdDeApartamento(id));
     }
 
     @PostMapping
-    private ResponseEntity<CuartoResp> salvar(@RequestBody CuartoNewSo cuartoNewSo) {
+    public ResponseEntity<CuartoResp> salvar(@RequestBody CuartoNewSo cuartoNewSo) {
         return ResponseEntity.ok(cuartoS.salvar(cuartoNewSo));
     }
 
     @DeleteMapping
-    private ResponseEntity<Integer[]> borrar(@RequestBody Integer[] ids) {
+    public ResponseEntity<Integer[]> borrar(@RequestBody Integer[] ids) {
         return ResponseEntity.ok(cuartoS.borrar(ids));
     }
 
     @PutMapping
-    private ResponseEntity<CuartoResp> update(@RequestBody CuartoUpSo cuartoUpSo) {
+    public ResponseEntity<CuartoResp> update(@RequestBody CuartoUpSo cuartoUpSo) {
         return ResponseEntity.ok(cuartoS.update(cuartoUpSo));
     }
 

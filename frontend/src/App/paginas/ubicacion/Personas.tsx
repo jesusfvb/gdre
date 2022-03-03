@@ -59,7 +59,7 @@ export default function Personas(): ReactElement {
             filterable: false,
             headerName: "Acción",
             minWidth: 100,
-            hide: !isRolBoolean(["Administrador","Vicedecano"]),
+            hide: !isRolBoolean(["Administrador", "Vicedecano"]),
             renderCell: (param) => {
                 switch (option) {
                     case 1:
@@ -161,6 +161,8 @@ export default function Personas(): ReactElement {
                     enqueueSnackbar("Acción realizada con exito", {variant: "success"})
                 }).catch(error => enqueueSnackbar("Error al realizar la Acción"))
 
+        } else {
+            enqueueSnackbar("Error al realizar la Acción")
         }
     }
     const desubicar = (evento: MouseEvent) => {
@@ -444,8 +446,8 @@ export default function Personas(): ReactElement {
                     {(valueApartamento !== null && valueEdificio !== null) ? <MyAutocompleteCuarto/> : null}
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleClose}>Cancel</Button>
                     <Button onClick={ubicar}>Aceptar</Button>
+                    <Button onClick={handleClose} color={"error"}>Cancel</Button>
                 </DialogActions>
             </Dialog>
             <Dialog

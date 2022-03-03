@@ -21,22 +21,22 @@ public class ApartamentoC {
     private final ApartamentoS apartamentoS;
 
     @GetMapping
-    private ResponseEntity<List<ApartamentoResp>> listarPorIdEdificio(@RequestParam Integer id) {
+    public ResponseEntity<List<ApartamentoResp>> listarPorIdEdificio(@RequestParam Integer id) {
         return ResponseEntity.ok(apartamentoS.listarPorIdEdificio(id));
     }
 
     @PostMapping
-    private ResponseEntity<ApartamentoResp> salvar(@RequestBody ApartamentoNewSo apartamentoNewSo) {
+    public ResponseEntity<ApartamentoResp> salvar(@RequestBody ApartamentoNewSo apartamentoNewSo) {
         return ResponseEntity.ok(apartamentoS.salvar(apartamentoNewSo));
     }
 
     @DeleteMapping
-    private ResponseEntity<Integer[]> borrar(@RequestBody Integer[] ids) {
+    public ResponseEntity<Integer[]> borrar(@RequestBody Integer[] ids) {
         return ResponseEntity.ok(apartamentoS.borrar(ids));
     }
 
     @PutMapping
-    private ResponseEntity<ApartamentoResp> update(@RequestBody ApartamentoUpSo apartamentoUpSo) {
+    public ResponseEntity<ApartamentoResp> update(@RequestBody ApartamentoUpSo apartamentoUpSo) {
         return ResponseEntity.ok(apartamentoS.update(apartamentoUpSo));
     }
 }

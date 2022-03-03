@@ -26,7 +26,7 @@ public class UsuarioResp {
         this.nombre = usuario.getNombre();
         this.usuario = usuario.getUsuario();
         this.solapin = usuario.getSolapin();
-        this.rol = usuario.getRoles().get(1).name();
+        this.rol = usuario.getRoles().size() == 0 ? null : usuario.getRoles().get(1).name();
     }
 
 }

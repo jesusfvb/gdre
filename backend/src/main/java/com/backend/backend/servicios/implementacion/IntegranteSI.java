@@ -30,22 +30,28 @@ public class IntegranteSI implements IntegranteS {
 
     @Override
     public IntegranteResp save(IntegranteNewSo integrante) {
-        return new IntegranteResp(integranteR.save(integrante.getIntegrante(usuarioR.getById(integrante.getIdParticipante()))));
+        if (integranteR.existsByGuardia_IdAndParticipante_Id(integrante.getIdGuardia(), integrante.getIdParticipante())) {
+            throw new RuntimeException("El Integrante ya existe");
+        }
+        return new IntegranteResp(integranteR.save(integrante.getIntegrante(usuarioR.findById(integrante.getIdParticipante()).get())));
     }
 
     @Override
     public IntegranteResp asistencia(AsistenciaSo asistencia) {
-        return new IntegranteResp(integranteR.save(asistencia.getIntegrante(integranteR.getById(asistencia.getId()))));
+        return new IntegranteResp(integranteR.save(asistencia.getIntegrante(integranteR.findById(asistencia.getId()).get())));
     }
 
     @Override
     public IntegranteResp evaluacion(EvaluacionSo evaluacion) {
-        return new IntegranteResp(integranteR.save(evaluacion.getIntegrante(integranteR.getById(evaluacion.getId()))));
+        return new IntegranteResp(integranteR.save(evaluacion.getIntegrante(integranteR.findById(evaluacion.getId()).get())));
     }
 
     @Override
     public IntegranteResp advertencia(AdvertenciaSo advertencia) {
-        return new IntegranteResp(integranteR.save(advertencia.getIntegrante(integranteR.getById(advertencia.getId()))));
+        if (advertencia.getAdvertencia() == null) {
+            throw new RuntimeException("Not nul");
+        }
+        return new IntegranteResp(integranteR.save(advertencia.getIntegrante(integranteR.findById(advertencia.getId()).get())));
     }
 
     @Override

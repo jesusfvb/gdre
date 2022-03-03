@@ -16,7 +16,7 @@ import java.time.LocalDate;
 @Setter
 public class Cuarteleria extends Entidad {
 
-    @Column
+    @Column(nullable = false)
     private LocalDate fecha;
 
     @Column

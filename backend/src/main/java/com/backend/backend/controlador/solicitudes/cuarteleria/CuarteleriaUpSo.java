@@ -1,12 +1,14 @@
 package com.backend.backend.controlador.solicitudes.cuarteleria;
 
 import com.backend.backend.repositorio.entidad.Cuarteleria;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 public class CuarteleriaUpSo {
 

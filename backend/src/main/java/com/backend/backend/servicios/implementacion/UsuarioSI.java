@@ -8,6 +8,7 @@ import com.backend.backend.controlador.solicitudes.usuario.UsuarioUpSo;
 import com.backend.backend.repositorio.UsuarioR;
 import com.backend.backend.repositorio.entidad.Cuarto;
 import com.backend.backend.repositorio.entidad.Usuario;
+import com.backend.backend.servicios.CuartoS;
 import com.backend.backend.servicios.UsuarioS;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,8 @@ public class UsuarioSI implements UsuarioS {
     public final PasswordEncoder passwordEncoder;
 
     private final UsuarioR usuarioR;
+
+    private final CuartoS cuartoS;
 
     @Override
     public void quitarCuarto(Integer idCuarto) {
@@ -71,7 +74,14 @@ public class UsuarioSI implements UsuarioS {
 
     @Override
     public UsuarioResp ubicar(UbicarSo ubicarSo) {
-        Usuario usuario = usuarioR.getById(ubicarSo.getIdUsuario());
+        Usuario usuario = usuarioR.findById(ubicarSo.getIdUsuario()).get();
+        if (usuario.getUbicar() != true) {
+            throw new RuntimeException("No se puede ubicar el usuario");
+        }
+        Cuarto cuarto = cuartoS.getById(ubicarSo.getIdCuarto());
+        if (cuarto.getUsuarios().size() >= cuarto.getCapacidad()) {
+            throw new RuntimeException("No se puede ubicar el usuario");
+        }
         usuario.setCuarto(new Cuarto(ubicarSo.getIdCuarto()));
         return new UsuarioResp(usuarioR.save(usuario));
     }
@@ -85,14 +95,14 @@ public class UsuarioSI implements UsuarioS {
 
     @Override
     public UsuarioResp update(UsuarioUpSo usuario) {
-        return new UsuarioResp(usuarioR.save(usuario.getUsuario(usuarioR.getById(usuario.getId()))));
+        return new UsuarioResp(usuarioR.save(usuario.getUsuario(usuarioR.findById(usuario.getId()).get())));
     }
 
     @Override
     public Integer[] desubicar(Integer[] ids) {
         Usuario usuario;
         for (Integer id : ids) {
-            usuario = usuarioR.getById(id);
+            usuario = usuarioR.findById(id).get();
             usuario.setCuarto(null);
             usuarioR.save(usuario);
         }
@@ -103,7 +113,7 @@ public class UsuarioSI implements UsuarioS {
     public Integer[] confirmar(Integer[] ids) {
         Usuario usuario;
         for (Integer id : ids) {
-            usuario = usuarioR.getById(id);
+            usuario = usuarioR.findById(id).get();
             usuario.setUbicar(true);
             usuarioR.save(usuario);
         }
@@ -114,7 +124,7 @@ public class UsuarioSI implements UsuarioS {
     public Integer[] desconfirmar(Integer[] ids) {
         Usuario usuario;
         for (Integer id : ids) {
-            usuario = usuarioR.getById(id);
+            usuario = usuarioR.findById(id).get();
             usuario.setUbicar(null);
             usuarioR.save(usuario);
         }
@@ -123,7 +133,7 @@ public class UsuarioSI implements UsuarioS {
 
     @Override
     public Usuario getPorId(Integer id) {
-        return usuarioR.getById(id);
+        return usuarioR.findById(id).get();
     }
 
     @Override
@@ -143,13 +153,8 @@ public class UsuarioSI implements UsuarioS {
 
     @Override
     public Integer[] borrar(Integer[] ids) {
-        Usuario usuario;
         for (Integer id : ids) {
-            usuario = usuarioR.getById(id);
-            usuario.getGuardias().clear();
-            usuario.getParticipacion().clear();
-            usuario.getCuartelerias().clear();
-            usuarioR.save(usuario);
+            usuarioR.save(new Usuario(id));
             usuarioR.deleteById(id);
         }
         return ids;

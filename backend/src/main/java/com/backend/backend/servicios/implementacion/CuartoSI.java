@@ -10,6 +10,7 @@ import com.backend.backend.servicios.CuartoS;
 import com.backend.backend.servicios.UsuarioS;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
@@ -17,7 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@AllArgsConstructor(onConstructor = @__(@Autowired))
+@AllArgsConstructor(onConstructor = @__({@Autowired, @Lazy}))
 public class CuartoSI implements CuartoS {
 
     private final CuartoR cuartoR;
@@ -26,7 +27,7 @@ public class CuartoSI implements CuartoS {
 
     @Override
     public Cuarto getById(Integer idCuarto) {
-        return cuartoR.getById(idCuarto);
+        return cuartoR.findById(idCuarto).get();
     }
 
     @Override
@@ -36,6 +37,9 @@ public class CuartoSI implements CuartoS {
 
     @Override
     public CuartoResp salvar(CuartoNewSo cuartoNewSo) {
+        if (cuartoR.existsByNumeroAndApartamento_Id(cuartoNewSo.getNumero(), cuartoNewSo.getIdApartamento())) {
+            throw new RuntimeException("Cuarto ya existe");
+        }
         return new CuartoResp(cuartoR.save(cuartoNewSo.getCuarto()));
     }
 
@@ -50,6 +54,10 @@ public class CuartoSI implements CuartoS {
 
     @Override
     public CuartoResp update(CuartoUpSo cuartoUpSo) {
-        return new CuartoResp(cuartoR.save(cuartoUpSo.getCuarto(cuartoR.getById(cuartoUpSo.getId()))));
+        Cuarto cuarto = cuartoR.findById(cuartoUpSo.getId()).get();
+        if (cuartoUpSo.getCapacidad() < cuarto.getUsuarios().size()) {
+            throw new RuntimeException("No se puede modificar cuarto");
+        }
+        return new CuartoResp(cuartoR.save(cuartoUpSo.getCuarto(cuarto)));
     }
 }

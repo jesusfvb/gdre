@@ -15,16 +15,16 @@ public class Usuario extends Entidad {
 
     public enum Rol {Usuario, Estudiante, Profesor, Instructora, Vicedecano, Administrador}
 
-    @Column
+    @Column(nullable = false)
     private String nombre;
 
-    @Column
+    @Column(unique = true, nullable = false)
     private String usuario;
 
-    @Column
+    @Column(nullable = false)
     private String contrasena;
 
-    @Column
+    @Column(unique = true, nullable = false)
     private String solapin;
 
     @Column()
@@ -41,7 +41,7 @@ public class Usuario extends Entidad {
     private List<Integrante> participacion = new ArrayList<>();
 
     @ElementCollection(fetch = FetchType.EAGER)
-    @Column(name = "role")
+    @Column(name = "role", nullable = false)
     @CollectionTable(name = "usuario_roles", joinColumns = @JoinColumn(name = "owner_id"))
     @Enumerated(EnumType.STRING)
     private List<Rol> roles = new LinkedList<>();
@@ -52,6 +52,10 @@ public class Usuario extends Entidad {
 
     public Usuario(Integer idUsuario) {
         super.setId(idUsuario);
+        this.nombre = "";
+        this.usuario = "";
+        this.contrasena = "";
+        this.solapin = "";
     }
 
 }

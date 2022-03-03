@@ -3,16 +3,18 @@ package com.backend.backend.controlador.solicitudes.apartamento;
 import com.backend.backend.repositorio.entidad.Apartamento;
 import com.backend.backend.repositorio.entidad.Edificio;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 public class ApartamentoNewSo {
 
-    Integer idEdificio;
+    private Integer idEdificio;
 
-    Integer numero;
+    private Integer numero;
 
     @JsonIgnore
     public Apartamento getApartamento() {

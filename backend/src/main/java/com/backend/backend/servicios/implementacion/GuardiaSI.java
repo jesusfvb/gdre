@@ -57,22 +57,28 @@ public class GuardiaSI implements GuardiaS {
 
     @Override
     public GuardiaResp salvarResidencia(GuardiaResidenciaSol guardia) {
+        if (guardiaR.existsByFechaAndUbicacion(guardia.getFecha(), Guardia.Ubicacion.Residencia)) {
+            throw new RuntimeException("Guardia ya existe");
+        }
         return new GuardiaResp(guardiaR.save(guardia.getGuardia()));
     }
 
     @Override
     public GuardiaResp salvarDocente(GuardiaDocenteSol guardia) {
+        if (guardiaR.existsByFechaAndUbicacionAndCoordinador_Id(guardia.getFecha(), Guardia.Ubicacion.Docente, guardia.getIdCoordinador())) {
+            throw new RuntimeException("Guardia ya existe");
+        }
         return new GuardiaResp(guardiaR.save(guardia.getGuardia(usuarioS.getPorId(guardia.getIdCoordinador()))));
     }
 
     @Override
     public GuardiaResp modificarResidencia(GuardiaResidenciaUpSol guardia) {
-        return new GuardiaResp(guardiaR.save(guardia.getGuardia(guardiaR.getById(guardia.getId()))));
+        return new GuardiaResp(guardiaR.save(guardia.getGuardia(guardiaR.findById(guardia.getId()).get())));
     }
 
     @Override
     public GuardiaResp modificarDocente(GuardiaDocenteUpSol guardia) {
-        return new GuardiaResp(guardiaR.save(guardia.getGuardia(guardiaR.getById(guardia.getId()), usuarioS.getPorId(guardia.getIdCoordinador()))));
+        return new GuardiaResp(guardiaR.save(guardia.getGuardia(guardiaR.findById(guardia.getId()).get(), usuarioS.getPorId(guardia.getIdCoordinador()))));
     }
 
     @Override

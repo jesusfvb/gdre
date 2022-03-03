@@ -18,7 +18,9 @@ export default function Marco(props: { cerrarSession: Function }) {
                     <Paper elevation={2} sx={{margin: 2}}>
                         <Grid item container justifyContent={"center"} alignItems={"center"} direction={"column"}
                               paddingTop={2} paddingBottom={2}>
-                            <Avatar sx={{width: 90, height: 90}}/>
+                            <Avatar sx={{width: 90, height: 90}}>
+                                <Typography variant={"h2"}>{datosUser.usuario[0].toUpperCase()}</Typography>
+                            </Avatar>
                             <Typography variant={"h5"}>{datosUser.usuario}</Typography>
                             <Grid container item justifyContent={"center"} sx={{marginTop: 1}}>
                                 <Typography variant={"overline"}> Dirección </Typography>
@@ -49,7 +51,7 @@ export default function Marco(props: { cerrarSession: Function }) {
                         <Button variant={"contained"} size={"small"} onClick={() => navigation("/ubicacion")}
                                 sx={{marginLeft: 1, width: "93%"}}>Ubicación</Button>
                     </Grid>
-                    {isRolRender(["Administrador","Vicedecano"],
+                    {isRolRender(["Administrador", "Vicedecano"],
                         <Grid item sx={{width: "100%", marginBottom: 1}}>
                             <Button variant={"contained"} size={"small"} onClick={() => navigation("/usuario")}
                                     sx={{marginLeft: 1, width: "93%"}}>Usuario</Button>

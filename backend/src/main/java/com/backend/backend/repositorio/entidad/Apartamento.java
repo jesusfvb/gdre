@@ -1,8 +1,5 @@
 package com.backend.backend.repositorio.entidad;
 
-import com.backend.backend.controlador.respuestas.ApartamentoResp;
-import com.backend.backend.controlador.solicitudes.apartamento.ApartamentoNewSo;
-import com.backend.backend.controlador.solicitudes.apartamento.ApartamentoUpSo;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,7 +14,7 @@ import java.util.List;
 @Setter
 public class Apartamento extends Entidad {
 
-    @Column
+    @Column(nullable = false)
     private Integer numero;
 
     @ManyToOne()

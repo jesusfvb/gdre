@@ -9,5 +9,7 @@ import java.util.List;
 @Repository
 public interface IntegranteR extends JpaRepository<Integrante, Integer> {
     List<Integrante> findAllByGuardia_Id(Integer id);
+
+    boolean existsByGuardia_IdAndParticipante_Id(Integer id, Integer id1);
 }
     

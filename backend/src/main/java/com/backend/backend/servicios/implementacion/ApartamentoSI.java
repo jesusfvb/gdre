@@ -21,7 +21,6 @@ public class ApartamentoSI implements ApartamentoS {
 
     private final ApartamentoR apartamentoR;
 
-
     @Override
     public Apartamento geById(Integer idApartamento) {
         return apartamentoR.getById(idApartamento);
@@ -34,6 +33,9 @@ public class ApartamentoSI implements ApartamentoS {
 
     @Override
     public ApartamentoResp salvar(ApartamentoNewSo apartamentoNewSo) {
+        if (apartamentoR.existsByNumeroAndEdificio_Id(apartamentoNewSo.getNumero(), apartamentoNewSo.getIdEdificio())) {
+            throw new RuntimeException("Apartamento ya Existe");
+        }
         return new ApartamentoResp(apartamentoR.save(apartamentoNewSo.getApartamento()));
     }
 
@@ -47,6 +49,6 @@ public class ApartamentoSI implements ApartamentoS {
 
     @Override
     public ApartamentoResp update(ApartamentoUpSo apartamentoUpSo) {
-        return new ApartamentoResp(apartamentoR.save(apartamentoUpSo.getApartamento(apartamentoR.getById(apartamentoUpSo.getId()))));
+        return new ApartamentoResp(apartamentoR.save(apartamentoUpSo.getApartamento()));
     }
 }

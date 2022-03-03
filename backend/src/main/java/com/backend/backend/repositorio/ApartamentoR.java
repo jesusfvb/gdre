@@ -12,4 +12,6 @@ public interface ApartamentoR extends JpaRepository<Apartamento, Integer> {
 
     List<Apartamento> findAllByEdificio_Id(Integer id);
 
+    boolean existsByNumeroAndEdificio_Id(Integer numero, Integer id);
+
 }

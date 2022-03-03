@@ -44,6 +44,6 @@ public class EdificioSI implements EdificioS {
 
     @Override
     public EdificioResp update(EdificioUpSo solicitud) {
-        return new EdificioResp(edificioR.save(solicitud.getEdificio(edificioR.getById(solicitud.getId()))));
+        return new EdificioResp(edificioR.save(solicitud.getEdificio(edificioR.findById(solicitud.getId()).get().getApartamentos())));
     }
 }

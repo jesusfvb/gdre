@@ -8,23 +8,21 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 public class Edificio extends Entidad {
 
-    @Column
+    @Column(unique = true, nullable = false)
     private Integer numero;
 
-    @OneToMany(mappedBy = "edificio", cascade = {CascadeType.REMOVE,}, orphanRemoval = true)
+    @OneToMany(mappedBy = "edificio", cascade = {CascadeType.REMOVE,}, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Apartamento> apartamentos = new ArrayList<>();
 
     public Edificio(Integer id) {

@@ -44,7 +44,7 @@ export default function Apartamento() {
             minWidth: 150,
             renderCell: (param) => (
                 <>
-                    {isRolRender(["Administrador","Vicedecano"],
+                    {isRolRender(["Administrador", "Vicedecano"],
                         <>
                             <IconButton key={1} color={"primary"} onClick={handleClickOpen(param.value)}>
                                 <Update/>
@@ -123,8 +123,9 @@ export default function Apartamento() {
                         setRows(newRows)
                         handleClose()
                         enqueueSnackbar("Acción realizada con exito", {variant: "success"})
-                    }).catch(error => {
+                    }).catch((error) => {
                     enqueueSnackbar("Error al realizar la Acción")
+                    console.error(error)
                 })
             } else {
                 axios
@@ -138,8 +139,13 @@ export default function Apartamento() {
                         enqueueSnackbar("Acción realizada con exito", {variant: "success"})
                     }).catch(error => {
                     enqueueSnackbar("Error al realizar la Acción")
-                }).catch(error => enqueueSnackbar("Error al realizar la Acción"))
+                }).catch((error) => {
+                    enqueueSnackbar("Error al realizar la Acción")
+                    console.error(error)
+                })
             }
+        } else {
+            enqueueSnackbar("Error al realizar la Acción")
         }
     }
     const borrar = (evento: MouseEvent) => {
@@ -190,14 +196,14 @@ export default function Apartamento() {
     return (
         <>
             <DataGrid autoPageSize={true} density={"compact"} columns={columns} rows={rows}
-                      checkboxSelection={isRolBoolean(["Administrador","Vicedecano"])}
-                      disableSelectionOnClick={!isRolBoolean(["Administrador","Vicedecano"])}
+                      checkboxSelection={isRolBoolean(["Administrador", "Vicedecano"])}
+                      disableSelectionOnClick={!isRolBoolean(["Administrador", "Vicedecano"])}
                       onSelectionModelChange={(selectionModel) => setSelected(selectionModel)}
                       components={{
                           Toolbar: MyToolbar,
                       }}/>
             <Dialog open={open.open} onClose={handleClose}>
-                <DialogTitle>Nuevo Apartamento</DialogTitle>
+                <DialogTitle>Apartamento</DialogTitle>
                 <DialogContent ref={containerInputs}>
                     <TextField
                         autoFocus
@@ -213,8 +219,8 @@ export default function Apartamento() {
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleClose}>Cancel</Button>
                     <Button onClick={save}>Aceptar</Button>
+                    <Button onClick={handleClose} color={"error"}>Cancel</Button>
                 </DialogActions>
             </Dialog>
             <Dialog

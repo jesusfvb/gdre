@@ -18,7 +18,7 @@ public class Guardia extends Entidad {
 
     public enum Ubicacion {Residencia, Docente;}
 
-    @Column
+    @Column(nullable = false)
     private LocalDate fecha;
 
     @Enumerated(EnumType.STRING)

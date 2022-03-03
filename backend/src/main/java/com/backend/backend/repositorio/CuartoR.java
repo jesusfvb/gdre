@@ -11,4 +11,6 @@ public interface CuartoR extends JpaRepository<Cuarto, Integer> {
 
     List<Cuarto> findAllByApartamento_Id(Integer id);
 
+    boolean existsByNumeroAndApartamento_Id(Integer numero, Integer id);
+
 }
