@@ -113,10 +113,17 @@ export default function Usuario(): ReactElement {
     };
 
     const handleChangeNombre = (evento: ChangeEvent<HTMLInputElement>) => {
-        setValidate({
-            ...validate,
-            nombre: evento.target.value.match("^[A-Za-zƒŠŒŽšœžŸÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèé êëìíîïðñòóôõöøùúûüýþÿ]*$") === null
-        })
+        if (evento.target.value.length === 0) {
+            setValidate({
+                ...validate,
+                nombre: true
+            })
+        } else {
+            setValidate({
+                ...validate,
+                nombre: evento.target.value.match("^[A-Za-zƒŠŒŽšœžŸÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèé êëìíîïðñòóôõöøùúûüýþÿ]*$") === null
+            })
+        }
         setValue({...value, nombre: evento.target.value});
     }
     const handleChangeUsuario = (evento: ChangeEvent<HTMLInputElement>) => {
