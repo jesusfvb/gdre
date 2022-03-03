@@ -101,8 +101,8 @@ export default function App(): ReactElement {
                     id: jwtDecode.id,
                     nombre: jwtDecode.nombre,
                     usuario: jwtDecode.sub,
-                    edificio: (jwtDecode.edificio === null) ? "N/A" : jwtDecode.edificio,
-                    apartamento: (jwtDecode.apartamento === null) ? "N/A" : jwtDecode.apartament,
+                    edificio: (jwtDecode.edificio === null || jwtDecode.edificio === undefined) ? "N/A" : jwtDecode.edificio,
+                    apartamento: (jwtDecode.apartamento === null || jwtDecode.apartamento === undefined) ? "N/A" : jwtDecode.apartamento,
                 })
                 setRoles(jwtDecode.roles)
                 sessionTrue(jwt)

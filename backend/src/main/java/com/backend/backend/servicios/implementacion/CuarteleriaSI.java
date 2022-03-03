@@ -5,6 +5,7 @@ import com.backend.backend.controlador.solicitudes.cuarteleria.CuarteleriaSo;
 import com.backend.backend.controlador.solicitudes.cuarteleria.CuarteleriaUpSo;
 import com.backend.backend.controlador.solicitudes.cuarteleria.EvaluacionSo;
 import com.backend.backend.repositorio.CuarteleriaR;
+import com.backend.backend.repositorio.entidad.Cuarteleria;
 import com.backend.backend.servicios.CuarteleriaS;
 import com.backend.backend.servicios.UsuarioS;
 import lombok.AllArgsConstructor;
@@ -42,7 +43,11 @@ public class CuarteleriaSI implements CuarteleriaS {
 
     @Override
     public CuarteleriaResp update(CuarteleriaUpSo cuarteleria) {
-        return new CuarteleriaResp(cuarteleriaR.save(cuarteleria.getCuarteleria(cuarteleriaR.findById(cuarteleria.getId()).get())));
+        Cuarteleria cuarteleria1 = cuarteleria.getCuarteleria(cuarteleriaR.findById(cuarteleria.getId()).get());
+        if (cuarteleriaR.existsByFechaAndUsuario_Id(cuarteleria1.getFecha(), cuarteleria1.getUsuario().getId())) {
+            throw new RuntimeException("Ya existe la cuarteleria");
+        }
+        return new CuarteleriaResp(cuarteleriaR.save(cuarteleria1));
     }
 
     @Override

@@ -11,7 +11,6 @@ export default function BarraDeNavegacion(props: { cerrarSession: Function }) {
                         GDRE
                     </Typography>
                     <Box sx={{flexGrow: 1}}/>
-                    <Button disableElevation variant={"contained"}> Quienes somos </Button>
                     <Button onClick={() => props.cerrarSession()} variant={"contained"} color={"error"}>Salir</Button>
                 </Toolbar>
             </AppBar>

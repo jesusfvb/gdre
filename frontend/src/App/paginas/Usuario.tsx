@@ -42,20 +42,22 @@ export default function Usuario(): ReactElement {
         {
             field: "usuario",
             headerName: "Usuario",
-            type: "date",
+            type: "string",
             flex: 1
         },
         {
             field: "rol",
             headerName: "Rol",
-            type: "date",
+            type: "singleSelect",
+            valueOptions: ["Usuario", "Estudiante", "Profesor", "Instructora", "Vicedecano", "Administrador"],
             flex: 1
         },
         {
             field: "id",
             headerName: "Acciones",
-            type: "date",
+            type: "actions",
             minWidth: 130,
+            filterable: false,
             renderCell: (params) => (
                 <>
                     <IconButton color="primary" onClick={handleClickOpen(params.value)}>
@@ -131,7 +133,7 @@ export default function Usuario(): ReactElement {
     }
 
     const save = () => {
-        if (!(validate.nombre && validate.rol && validate.usuario && validate.solapin))
+        if (!(validate.nombre || validate.rol || validate.usuario || validate.solapin))
             if (open.id !== undefined) {
                 axios
                     .put("/usuario", {
@@ -148,7 +150,10 @@ export default function Usuario(): ReactElement {
                         handleClose()
                         enqueueSnackbar("Acción realizada con exito", {variant: "success"})
                     })
-                    .catch(error => enqueueSnackbar("Error al realizar la Acción"))
+                    .catch((error) => {
+                        enqueueSnackbar("Error al realizar la Acción")
+                        console.error(error)
+                    })
             } else {
                 axios
                     .post("/usuario", {
@@ -162,8 +167,13 @@ export default function Usuario(): ReactElement {
                         handleClose()
                         enqueueSnackbar("Acción realizada con exito", {variant: "success"})
                     })
-                    .catch((error) => enqueueSnackbar("Error al realizar la Acción"))
-            }
+                    .catch((error) => {
+                        enqueueSnackbar("Error al realizar la Acción")
+                        console.error(error)
+                    })
+            } else {
+            enqueueSnackbar("Error al realizar la Acción")
+        }
     }
     const borrar = () => {
         axios
@@ -179,7 +189,10 @@ export default function Usuario(): ReactElement {
                 handleCloseBorrar()
                 enqueueSnackbar("Acción realizada con exito", {variant: "success"})
             })
-            .catch(error => enqueueSnackbar("Error al realizar la Acción"))
+            .catch((error) => {
+                enqueueSnackbar("Error al realizar la Acción")
+                console.error(error)
+            })
     }
 
     function MyToolbar(): ReactElement {
@@ -240,8 +253,8 @@ export default function Usuario(): ReactElement {
                     </FormControl>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleClose}>Cancel</Button>
                     <Button onClick={save}>Aceptar</Button>
+                    <Button onClick={handleClose} color={"error"}>Cancel</Button>
                 </DialogActions>
             </Dialog>
             <Dialog

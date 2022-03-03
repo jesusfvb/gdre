@@ -43,7 +43,8 @@ export default function Cuarteleria(): ReactElement {
         {
             field: "evaluacion",
             headerName: "Evaluación",
-            type: "date",
+            type: "singleSelect",
+            valueOptions: ["No Evaluado", "Bien", "Regular", "Mal"],
             flex: 1
         },
         {
@@ -52,7 +53,7 @@ export default function Cuarteleria(): ReactElement {
             type: "date",
             minWidth: 130,
             filterable: false,
-            hide: !isRolBoolean(["Instructora", "Administrador","Vicedecano"]),
+            hide: !isRolBoolean(["Instructora", "Administrador", "Vicedecano"]),
             renderCell: (params) => (
                 <>
                     <IconButton color="primary" onClick={handleClickOpenEvaluacion(params.value)}>
@@ -69,7 +70,7 @@ export default function Cuarteleria(): ReactElement {
         }]
     const [rows, setRows] = useState<Array<any>>([])
     const [open, setOpen] = useState<{ open: boolean, id: number | undefined }>({open: false, id: undefined});
-    const [value, setValue] = useState<{ usuario: any | null, fecha: string | null }>({usuario: null, fecha: null})
+    const [value, setValue] = useState<{ usuario: any | null, fecha: string }>({usuario: null, fecha: ""})
     const [evaluacion, setEvaluacion] = useState<{ open: boolean, id: number | undefined, evaluacion: string }>({
         open: false,
         id: undefined,
@@ -92,17 +93,21 @@ export default function Cuarteleria(): ReactElement {
 
     const handleClickOpen = (id: number | undefined = undefined) => (evento: MouseEvent) => {
         evento.stopPropagation()
+        if (id !== undefined) {
+            setValidate({estudiante: false, fecha: false})
+            setValue({...value, fecha: rows.find(row => row.id === id).fecha})
+        }
         setOpen({open: true, id: id});
     };
     const handleClose = () => {
-        setValidate({estudiante: false, fecha: false})
-        setValue({usuario: null, fecha: null})
+        setValidate({estudiante: true, fecha: true})
+        setValue({usuario: null, fecha: ""})
         setOpen({open: false, id: undefined});
     };
 
     const handleClickOpenEvaluacion = (id: number | undefined = undefined) => (evento: MouseEvent) => {
         evento.stopPropagation()
-        setEvaluacion({open: true, id: id, evaluacion: ""});
+        setEvaluacion({open: true, id: id, evaluacion: rows.find(row => row.id === id).evaluacion});
     };
     const handleCloseEvaluacion = () => {
         setEvaluacion({open: false, id: undefined, evaluacion: ""});
@@ -117,7 +122,7 @@ export default function Cuarteleria(): ReactElement {
     }
 
     const save = () => {
-        if (!(validate.fecha, validate.estudiante)) {
+        if (!validate.fecha && !validate.estudiante) {
             if (open.id !== undefined) {
                 axios
                     .put("/cuarteleria", {
@@ -145,6 +150,8 @@ export default function Cuarteleria(): ReactElement {
                     })
                     .catch((error) => enqueueSnackbar("Error al realizar la Acción"))
             }
+        } else {
+            enqueueSnackbar("Error al realizar la Acción")
         }
     }
     const borrar = (evento: MouseEvent) => {
@@ -245,7 +252,7 @@ export default function Cuarteleria(): ReactElement {
                 <GridToolbarFilterButton/>
                 <Box sx={{flexGrow: 1}}/>
                 {
-                    isRolRender(["Instructora", "Administrador","Vicedecano"],
+                    isRolRender(["Instructora", "Administrador", "Vicedecano"],
                         <>
                             <IconButton color={"success"} onClick={handleClickOpen()}>
                                 <Add/>
@@ -271,20 +278,21 @@ export default function Cuarteleria(): ReactElement {
     return (
         <div style={{height: "calc(100vh - 60px)"}}>
             <DataGrid columns={columns} rows={rows} components={{Toolbar: MyToolbar}} autoPageSize
-                      checkboxSelection={isRolBoolean(["Administrador","Vicedecano"])}
-                      disableSelectionOnClick={!isRolBoolean(["Administrador","Vicedecano"])}
+                      checkboxSelection={isRolBoolean(["Administrador", "Vicedecano"])}
+                      disableSelectionOnClick={!isRolBoolean(["Administrador", "Vicedecano"])}
                       onSelectionModelChange={(selectionModel) => setSelected(selectionModel)}/>
             <Dialog open={open.open} onClose={handleClose}>
                 <DialogTitle>Cuarteleria</DialogTitle>
                 <DialogContent>
                     {(open.id === undefined) ? <MyAutocomplete/> : null}
-                    <TextField type={"date"} label="Fecha" error={validate.fecha} variant="outlined" fullWidth focused
+                    <TextField type={"date"} label="Fecha" value={value.fecha} error={validate.fecha} variant="outlined"
+                               fullWidth focused
                                sx={{marginTop: 2}}
                                onChange={handleChangeFecha}/>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleClose}>Cancel</Button>
                     <Button onClick={save}>Aceptar</Button>
+                    <Button onClick={handleClose} color={"error"}>Cancel</Button>
                 </DialogActions>
             </Dialog>
             <Dialog open={evaluacion.open} onClose={handleCloseEvaluacion}>
@@ -299,6 +307,7 @@ export default function Cuarteleria(): ReactElement {
                             label="Evaluacion"
                             onChange={handleChangeEvaluacion}
                         >
+                            <MenuItem value={"No Evaluado"}>No Evaluado</MenuItem>
                             <MenuItem value={"Bien"}>Bien</MenuItem>
                             <MenuItem value={"Regular"}>Regular</MenuItem>
                             <MenuItem value={"Mal"}>Mal</MenuItem>
@@ -306,8 +315,8 @@ export default function Cuarteleria(): ReactElement {
                     </FormControl>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleCloseEvaluacion}>Cancel</Button>
                     <Button onClick={evaluar}>Aceptar</Button>
+                    <Button onClick={handleCloseEvaluacion} color={"error"}>Cancel</Button>
                 </DialogActions>
             </Dialog>
             <Dialog

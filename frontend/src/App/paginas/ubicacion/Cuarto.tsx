@@ -52,7 +52,7 @@ export default function Cuarto(): ReactElement {
             minWidth: 130,
             renderCell: (param) => (
                 <>
-                    {isRolRender(["Administrador","Vicedecano"],
+                    {isRolRender(["Administrador", "Vicedecano"],
                         <>
                             <IconButton color={"primary"} onClick={handleClickOpen(param.value)}>
                                 <Update/>
@@ -96,8 +96,12 @@ export default function Cuarto(): ReactElement {
     }
     const handleChangeCapacidad = (even: ChangeEvent<HTMLInputElement>) => {
         const exp = new RegExp("^[0-9]+$")
+
         if (even.target.value.length === 0) {
             setValidate({...validate, capacidad: true})
+        } else if (Number.parseInt(even.target.value) < 1) {
+            even.target.value = "1"
+            setValidate({...validate, capacidad: false})
         } else {
             setValidate({...validate, capacidad: !exp.test(even.target.value)})
         }
@@ -153,6 +157,8 @@ export default function Cuarto(): ReactElement {
                     })
                     .catch(error => enqueueSnackbar("Error al realizar la Acción"))
             }
+        } else {
+            enqueueSnackbar("Error al realizar la Acción")
         }
     }
     const borrar = (evento: MouseEvent) => {
@@ -205,14 +211,14 @@ export default function Cuarto(): ReactElement {
     return (
         <>
             <DataGrid autoPageSize={true} density={"compact"} columns={columns} rows={rows}
-                      checkboxSelection={isRolBoolean(["Administrador","Vicedecano"])}
-                      disableSelectionOnClick={!isRolBoolean(["Administrador","Vicedecano"])}
+                      checkboxSelection={isRolBoolean(["Administrador", "Vicedecano"])}
+                      disableSelectionOnClick={!isRolBoolean(["Administrador", "Vicedecano"])}
                       onSelectionModelChange={(selectionModel) => setSelected(selectionModel)}
                       components={{
                           Toolbar: MyToolbar,
                       }}/>
             <Dialog open={open.open} onClose={handleClose}>
-                <DialogTitle>Nuevo Cuarto</DialogTitle>
+                <DialogTitle>Cuarto</DialogTitle>
                 <DialogContent ref={containerInputs}>
                     <TextField
                         autoFocus
@@ -240,8 +246,8 @@ export default function Cuarto(): ReactElement {
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleClose}>Cancel</Button>
                     <Button onClick={save}>Aceptar</Button>
+                    <Button onClick={handleClose} color={"error"}>Cancel</Button>
                 </DialogActions>
             </Dialog>
             <Dialog

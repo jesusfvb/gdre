@@ -47,13 +47,15 @@ export default function Integrantes(): ReactElement {
         {
             field: "asistencia",
             headerName: "Asistencia",
-            type: "string",
+            type: "singleSelect",
+            valueOptions: ["Presente", "Ausente", "Pendiente"],
             flex: 1
         },
         {
             field: "evaluacion",
             headerName: "Evaluación",
-            type: "string",
+            type: "singleSelect",
+            valueOptions: ["Bien", "Regular", "Mal", "Pendiente"],
             flex: 1
         },
         {
@@ -62,15 +64,23 @@ export default function Integrantes(): ReactElement {
             type: "actions",
             filterable: false,
             flex: 1,
-            renderCell: (params) => (
-                <>
-                    <Button disabled={(params.value === null)}
-                            onClick={handleClickOpenAdvertencia(undefined, params.value)} size={"small"}
-                            variant={"contained"}>
-                        Ver
-                    </Button>
-                </>
-            )
+            renderCell: (params) => {
+                let disable = false;
+                if (params.value === null) {
+                    disable = true
+                } else if (params.value.trim().length === 0) {
+                    disable = true
+                }
+                return (
+                    <>
+                        <Button disabled={disable}
+                                onClick={handleClickOpenAdvertencia(undefined, params.value)} size={"small"}
+                                variant={"contained"}>
+                            Ver
+                        </Button>
+                    </>
+                )
+            }
         },
         {
             field: "id",
@@ -163,7 +173,6 @@ export default function Integrantes(): ReactElement {
 
     const handleClickOpenAdvertencia = (id: number | undefined = undefined, option: number | string) => (evento: MouseEvent) => {
         evento.stopPropagation()
-        console.log(option)
         if (typeof option === "number") {
             let integrante = rows.find(row => row.id === id)
             setAdvertencia({
@@ -190,17 +199,21 @@ export default function Integrantes(): ReactElement {
     }
 
     const save = () => {
-        axios
-            .post("/integrante", {
-                idParticipante: value.participante.id,
-                idGuardia: params.id
-            })
-            .then(response => {
-                setRows([...rows, response.data])
-                handleClose()
-                enqueueSnackbar("Acción realizada con exito", {variant: "success"})
-            })
-            .catch((error) => enqueueSnackbar("Error al realizar la Acción"))
+        if (!validate.participante) {
+            axios
+                .post("/integrante", {
+                    idParticipante: value.participante.id,
+                    idGuardia: params.id
+                })
+                .then(response => {
+                    setRows([...rows, response.data])
+                    handleClose()
+                    enqueueSnackbar("Acción realizada con exito", {variant: "success"})
+                })
+                .catch((error) => enqueueSnackbar("Error al realizar la Acción"))
+        } else {
+            enqueueSnackbar("Error al realizar la Acción")
+        }
     }
     const borrar = () => {
         axios
@@ -242,9 +255,8 @@ export default function Integrantes(): ReactElement {
             advertencia: advertencia.advertencia
         })
             .then(response => {
-                console.log(response.data)
                 let newRows = [...rows]
-                newRows[rows.findIndex(row => row.id === openAE.id)] = response.data
+                newRows[rows.findIndex(row => row.id === response.data.id)] = response.data
                 setRows(newRows)
                 handleCloseAdvertencia()
                 enqueueSnackbar("Acción realizada con exito", {variant: "success"})
@@ -361,17 +373,18 @@ export default function Integrantes(): ReactElement {
                     <MyAutocomplete/>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleClose}>Cancel</Button>
                     <Button onClick={save}>Aceptar</Button>
+                    <Button onClick={handleClose} color={"error"}>Cancel</Button>
                 </DialogActions>
             </Dialog>
             <Dialog open={openAE.open} onClose={handleCloseAE}>
                 <DialogTitle>{(openAE.option === 1) ? "Asistencia" : "Evaluación"}</DialogTitle>
                 <DialogContent>
                     <FormControl fullWidth sx={{marginTop: 1}}>
-                        <InputLabel id="demo-simple-select-label">Asistencia</InputLabel>
+                        <InputLabel
+                            id="demo-simple-select-label">{openAE.option === 1 ? "Asistencia" : "Evaluación"}</InputLabel>
                         {
-                            (openAE.option === 1) ?
+                            openAE.option === undefined ? null : openAE.option === 1 ?
                                 <Select
                                     labelId="demo-simple-select-label"
                                     id="demo-simple-select"
@@ -388,7 +401,7 @@ export default function Integrantes(): ReactElement {
                                     labelId="demo-simple-select-label"
                                     id="demo-simple-select"
                                     value={option}
-                                    label="Asistencia"
+                                    label="Evaluación"
                                     onChange={handleChangeOption}
                                 >
                                     <MenuItem value={"Pendiente"}>Pendiente</MenuItem>
@@ -400,8 +413,8 @@ export default function Integrantes(): ReactElement {
                     </FormControl>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleCloseAE}>Cancel</Button>
                     <Button onClick={asistenciaEvaluacion}>Aceptar</Button>
+                    <Button onClick={handleCloseAE} color={"error"}>Cancel</Button>
                 </DialogActions>
             </Dialog>
             <Dialog open={advertencia.open} onClose={handleCloseAdvertencia}>
@@ -417,10 +430,11 @@ export default function Integrantes(): ReactElement {
                     />
                 </DialogContent>
                 <DialogActions>
+                    {(advertencia.id !== undefined) ? <Button onClick={advertir}>Aceptar</Button> : null}
                     <Button
+                        color={"error"}
                         onClick={handleCloseAdvertencia}>{(advertencia.id !== undefined) ? "Cancelar" : "Salir"}
                     </Button>
-                    {(advertencia.id !== undefined) ? <Button onClick={advertir}>Aceptar</Button> : null}
                 </DialogActions>
             </Dialog>
             <Dialog

@@ -45,7 +45,7 @@ export default function Residente(): ReactElement {
             filterable: false,
             headerName: "Acción",
             minWidth: 100,
-            hide: !isRolBoolean(["Administrador","Vicedecano"]),
+            hide: !isRolBoolean(["Administrador", "Vicedecano"]),
             renderCell: (param) => (
                 <IconButton color={"error"} onClick={handleClickOpenBorrar(param.value)}>
                     <Delete/>
@@ -84,16 +84,20 @@ export default function Residente(): ReactElement {
             .catch(error => console.error(error))
     }
     const ubicar = () => {
-        axios
-            .post("/usuario/ubicar", {
-                idCuarto: params.id,
-                idUsuario: value?.id
-            })
-            .then(response => {
-                setRows([...rows, response.data])
-                handleClose()
-                enqueueSnackbar("Acción realizada con exito", {variant: "success"})
-            }).catch(error => enqueueSnackbar("Error al realizar la Acción"))
+        if (!validate) {
+            axios
+                .post("/usuario/ubicar", {
+                    idCuarto: params.id,
+                    idUsuario: value?.id
+                })
+                .then(response => {
+                    setRows([...rows, response.data])
+                    handleClose()
+                    enqueueSnackbar("Acción realizada con exito", {variant: "success"})
+                }).catch(error => enqueueSnackbar("Error al realizar la Acción"))
+        } else {
+            enqueueSnackbar("Error al realizar la Acción")
+        }
     }
     const desubicar = (evento: MouseEvent) => {
         evento.stopPropagation()
@@ -203,8 +207,8 @@ export default function Residente(): ReactElement {
     return (
         <>
             <DataGrid autoPageSize={true} density={"compact"} columns={columns} rows={rows}
-                      checkboxSelection={isRolBoolean(["Administrador","Vicedecano"])}
-                      disableSelectionOnClick={!isRolBoolean(["Administrador","Vicedecano"])}
+                      checkboxSelection={isRolBoolean(["Administrador", "Vicedecano"])}
+                      disableSelectionOnClick={!isRolBoolean(["Administrador", "Vicedecano"])}
                       onSelectionModelChange={(selectionModel) => setSelected(selectionModel)}
                       components={{
                           Toolbar: MyToolbar,
@@ -215,8 +219,8 @@ export default function Residente(): ReactElement {
                     <MyAutocomplete/>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleClose}>Cancel</Button>
                     <Button onClick={ubicar}>Aceptar</Button>
+                    <Button onClick={handleClose} color={"error"}>Cancel</Button>
                 </DialogActions>
             </Dialog>
             <Dialog
@@ -226,7 +230,7 @@ export default function Residente(): ReactElement {
                 aria-describedby="alert-dialog-description"
             >
                 <DialogTitle id="alert-dialog-title">
-                    Borrar
+                    Quitar Ubicación
                 </DialogTitle>
                 <DialogContent>
                     <DialogContent id="alert-dialog-description">
