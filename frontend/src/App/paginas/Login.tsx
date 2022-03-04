@@ -14,16 +14,29 @@ import {
     Typography
 } from "@mui/material";
 import logo from '../img/logo.jpg'
-import {FormEvent} from "react";
+import {ChangeEvent, FormEvent, useState} from "react";
 import {useNavigate} from "react-router-dom";
+import {useSnackbar} from "notistack";
 
 export default function Login(props: { iniciarSession: Function }) {
     const theme = createTheme();
     const navegate = useNavigate()
+    const {enqueueSnackbar} = useSnackbar();
+    const [invalid, setInvalid] = useState<{ username: boolean, password: boolean }>({
+        username: false,
+        password: false
+    });
+
     const iniciarSession = (evento: FormEvent<HTMLFormElement>) => {
         evento.preventDefault()
         let inputs = evento.currentTarget.getElementsByTagName("input")
-        props.iniciarSession(inputs[0].value, inputs[1].value)
+
+        if (inputs[0].value.trim().length === 0 || inputs[1].value.trim().length === 0) {
+            setInvalid({username: true, password: true})
+            enqueueSnackbar("Campos Vacíos")
+        } else {
+            props.iniciarSession(inputs[0].value, inputs[1].value, setInvalid)
+        }
         navegate("/principal")
     }
 
@@ -57,11 +70,14 @@ export default function Login(props: { iniciarSession: Function }) {
                         <Box component="form" noValidate sx={{mt: 3}} onSubmit={iniciarSession}>
                             <Grid container spacing={2}>
                                 <Grid item xs={12}>
-                                    <TextField required fullWidth id="email" label="Usuario" name="email"/>
+                                    <TextField required fullWidth id="email" label="Usuario" name="email"
+                                               error={invalid.username}
+                                               onFocus={() => setInvalid({...invalid, username: false})}/>
                                 </Grid>
                                 <Grid item xs={12}>
                                     <TextField required fullWidth name="password" label="Contraseña" type="password"
-                                               id="password" autoComplete="new-password"/>
+                                               id="password" autoComplete="new-password" error={invalid.password}
+                                               onFocus={() => setInvalid({...invalid, password: false})}/>
                                 </Grid>
                             </Grid>
                             <Button type="submit" fullWidth variant="contained" sx={{mt: 3, mb: 2}}>

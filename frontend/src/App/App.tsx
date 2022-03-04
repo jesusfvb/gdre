@@ -58,7 +58,7 @@ export default function App(): ReactElement {
     })
     const [roles, setRoles] = useState<Array<{ authority: string }>>([])
 
-    const iniciarSession = (usuario: string, contrasenna: string): void => {
+    const iniciarSession = (usuario: string, contrasenna: string, cb: ({}: { username: boolean, password: boolean }) => void): void => {
         axios
             .post("/login", {
                 usuario: usuario,
@@ -73,6 +73,7 @@ export default function App(): ReactElement {
                 procesarToken(datos.data)
             })
             .catch(() => {
+                cb({username: true, password: true})
                 enqueueSnackbar("Usuario o Contraseña Incorrecta")
             })
     }
