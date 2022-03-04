@@ -13,7 +13,7 @@ export default function Ubicacion(): ReactElement {
         setValueTabs((location.pathname === "/ubicacion") ? location.pathname : "/ubicacion/residencias")
     }, [location.pathname])
     return (
-        <div style={{height: "calc(100vh - 105px)"}}>
+        <div style={{height: "calc(100vh - 110px)"}}>
             <Tabs value={valueTabs} onChange={handleChangeTabs} aria-label="lab API tabs example">
                 <Tab label="Personas" value="/ubicacion" onClick={() => navegate("/ubicacion")}/>
                 <Tab label="Residencias" value="/ubicacion/residencias"
