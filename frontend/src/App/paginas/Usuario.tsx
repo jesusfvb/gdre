@@ -4,7 +4,7 @@ import {
     GridColumns,
     GridSelectionModel,
     GridToolbarContainer,
-    GridToolbarFilterButton
+    GridToolbarFilterButton, esES
 } from "@mui/x-data-grid";
 import {
     Box,
@@ -19,7 +19,7 @@ import {
     MenuItem,
     Select,
     SelectChangeEvent,
-    TextField
+    TextField, Tooltip
 } from "@mui/material";
 import {Add, Delete, Update} from "@mui/icons-material";
 import axios from "axios";
@@ -60,12 +60,16 @@ export default function Usuario(): ReactElement {
             filterable: false,
             renderCell: (params) => (
                 <>
-                    <IconButton color="primary" onClick={handleClickOpen(params.value)}>
-                        <Update/>
-                    </IconButton>
-                    <IconButton color="error" onClick={handleClickOpenBorrar(params.value)}>
-                        <Delete/>
-                    </IconButton>
+                    <Tooltip title={"Modificar"}>
+                        <IconButton color="primary" onClick={handleClickOpen(params.value)}>
+                            <Update/>
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title={"Borrar"}>
+                        <IconButton color="error" onClick={handleClickOpenBorrar(params.value)}>
+                            <Delete/>
+                        </IconButton>
+                    </Tooltip>
                 </>
             )
         }]
@@ -155,7 +159,7 @@ export default function Usuario(): ReactElement {
                         newRows[rows.findIndex(row => row.id === open.id)] = response.data
                         setRows(newRows)
                         handleClose()
-                        enqueueSnackbar("Acción realizada con exito", {variant: "success"})
+                        enqueueSnackbar("Acción realizada con éxito", {variant: "success"})
                     })
                     .catch((error) => {
                         enqueueSnackbar("Error al realizar la Acción")
@@ -172,7 +176,7 @@ export default function Usuario(): ReactElement {
                     .then(response => {
                         setRows([...rows, response.data])
                         handleClose()
-                        enqueueSnackbar("Acción realizada con exito", {variant: "success"})
+                        enqueueSnackbar("Acción realizada con éxito", {variant: "success"})
                     })
                     .catch((error) => {
                         enqueueSnackbar("Error al realizar la Acción")
@@ -194,7 +198,7 @@ export default function Usuario(): ReactElement {
                 })
                 setRows(newRows)
                 handleCloseBorrar()
-                enqueueSnackbar("Acción realizada con exito", {variant: "success"})
+                enqueueSnackbar("Acción realizada con éxito", {variant: "success"})
             })
             .catch((error) => {
                 enqueueSnackbar("Error al realizar la Acción")
@@ -207,12 +211,16 @@ export default function Usuario(): ReactElement {
             <GridToolbarContainer>
                 <GridToolbarFilterButton/>
                 <Box sx={{flexGrow: 1}}/>
-                <IconButton color={"success"} onClick={handleClickOpen()}>
-                    <Add/>
-                </IconButton>
-                <IconButton color={"error"} onClick={handleClickOpenBorrar()} disabled={selected.length === 0}>
-                    <Delete/>
-                </IconButton>
+                <Tooltip title={"Registrar"}>
+                    <IconButton color={"success"} onClick={handleClickOpen()}>
+                        <Add/>
+                    </IconButton>
+                </Tooltip>
+                <Tooltip title={"Borrar"}>
+                    <IconButton color={"error"} onClick={handleClickOpenBorrar()} disabled={selected.length === 0}>
+                        <Delete/>
+                    </IconButton>
+                </Tooltip>
             </GridToolbarContainer>
         )
     }
@@ -226,7 +234,8 @@ export default function Usuario(): ReactElement {
     return (
         <div style={{height: "calc(100vh - 60px)"}}>
             <DataGrid columns={columns} rows={rows} components={{Toolbar: MyToolbar}} autoPageSize checkboxSelection
-                      onSelectionModelChange={(selectionModel) => setSelected(selectionModel)}/>
+                      onSelectionModelChange={(selectionModel) => setSelected(selectionModel)}
+                      localeText={esES.components.MuiDataGrid.defaultProps.localeText}/>
             <Dialog open={open.open} onClose={handleClose}>
                 <DialogTitle>Usuario</DialogTitle>
                 <DialogContent sx={{width: 300}}>
@@ -279,7 +288,7 @@ export default function Usuario(): ReactElement {
                     </DialogContent>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={borrar}>Acepar</Button>
+                    <Button onClick={borrar}>Aceptar</Button>
                     <Button onClick={handleCloseBorrar} color={"error"}> Cancelar </Button>
                 </DialogActions>
             </Dialog>

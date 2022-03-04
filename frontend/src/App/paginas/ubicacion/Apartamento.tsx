@@ -1,6 +1,6 @@
 import {useNavigate, useParams} from "react-router-dom";
 import {
-    DataGrid,
+    DataGrid, esES,
     GridColumns,
     GridSelectionModel,
     GridToolbarContainer,
@@ -15,7 +15,7 @@ import {
     DialogContent,
     DialogTitle,
     IconButton,
-    TextField,
+    TextField, Tooltip,
     Typography
 } from "@mui/material";
 import {Add, Delete, NavigateBefore, NavigateNext, Update} from "@mui/icons-material";
@@ -42,25 +42,31 @@ export default function Apartamento() {
             filterable: false,
             headerName: "Acción",
             minWidth: 150,
+            type: "actions",
             renderCell: (param) => (
                 <>
                     {isRolRender(["Administrador", "Vicedecano"],
                         <>
-                            <IconButton key={1} color={"primary"} onClick={handleClickOpen(param.value)}>
-                                <Update/>
-                            </IconButton>
-
-                            <IconButton key={2} color={"error"} onClick={handleClickOpenBorrar(param.value)}>
-                                <Delete/>
-                            </IconButton>
+                            <Tooltip title={"Modificar"}>
+                                <IconButton key={1} color={"primary"} onClick={handleClickOpen(param.value)}>
+                                    <Update/>
+                                </IconButton>
+                            </Tooltip>
+                            <Tooltip title={"Borrar"}>
+                                <IconButton key={2} color={"error"} onClick={handleClickOpenBorrar(param.value)}>
+                                    <Delete/>
+                                </IconButton>
+                            </Tooltip>
                         </>
                     )}
-                    <IconButton color={"secondary"} onClick={(event) => {
-                        event.stopPropagation()
-                        navegate(`/ubicacion/residencias/${params.id}/apartamento/${param.value}/cuarto`)
-                    }}>
-                        <NavigateNext/>
-                    </IconButton>
+                    <Tooltip title={"Ir"}>
+                        <IconButton color={"secondary"} onClick={(event) => {
+                            event.stopPropagation()
+                            navegate(`/ubicacion/residencias/${params.id}/apartamento/${param.value}/cuarto`)
+                        }}>
+                            <NavigateNext/>
+                        </IconButton>
+                    </Tooltip>
                 </>
             )
         }]
@@ -122,7 +128,7 @@ export default function Apartamento() {
                         newRows[rows.findIndex(row => row.id === open.params.id)] = response.data
                         setRows(newRows)
                         handleClose()
-                        enqueueSnackbar("Acción realizada con exito", {variant: "success"})
+                        enqueueSnackbar("Acción realizada con éxito", {variant: "success"})
                     }).catch((error) => {
                     enqueueSnackbar("Error al realizar la Acción")
                     console.error(error)
@@ -136,7 +142,7 @@ export default function Apartamento() {
                     .then(response => {
                         setRows([...rows, response.data])
                         handleClose()
-                        enqueueSnackbar("Acción realizada con exito", {variant: "success"})
+                        enqueueSnackbar("Acción realizada con éxito", {variant: "success"})
                     }).catch(error => {
                     enqueueSnackbar("Error al realizar la Acción")
                 }).catch((error) => {
@@ -163,7 +169,7 @@ export default function Apartamento() {
                 })
                 setRows(newRows)
                 handleCloseBorrar()
-                enqueueSnackbar("Acción realizada con exito", {variant: "success"})
+                enqueueSnackbar("Acción realizada con éxito", {variant: "success"})
             })
             .catch(error => enqueueSnackbar("Error al realizar la Acción"))
     }
@@ -171,21 +177,28 @@ export default function Apartamento() {
     function MyToolbar(): ReactElement {
         return (
             <GridToolbarContainer>
-                <IconButton color={"secondary"} onClick={() => navegate("/ubicacion/residencias/")}>
-                    <NavigateBefore/>
-                    <Typography variant={"subtitle1"}>Edificio</Typography>
-                </IconButton>
+                <Tooltip title={"Regresar"}>
+                    <IconButton color={"secondary"} onClick={() => navegate("/ubicacion/residencias/")}>
+                        <NavigateBefore/>
+                        <Typography variant={"subtitle1"}>Edificio</Typography>
+                    </IconButton>
+                </Tooltip>
                 <GridToolbarFilterButton/>
                 <Typography variant={"subtitle1"} sx={{marginLeft: 1}}>Apartamento</Typography>
                 <Box sx={{flexGrow: 1}}/>
                 {isRolRender("Administrador",
                     <div>
-                        <IconButton onClick={handleClickOpen()}>
-                            <Add color={"success"}/>
-                        </IconButton>
-                        <IconButton disabled={selected.length === 0} color={"error"} onClick={handleClickOpenBorrar()}>
-                            <Delete/>
-                        </IconButton>
+                        <Tooltip title={"Registrar"}>
+                            <IconButton onClick={handleClickOpen()}>
+                                <Add color={"success"}/>
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip title={"Borrar"}>
+                            <IconButton disabled={selected.length === 0} color={"error"}
+                                        onClick={handleClickOpenBorrar()}>
+                                <Delete/>
+                            </IconButton>
+                        </Tooltip>
                     </div>
                 )}
             </GridToolbarContainer>
@@ -199,9 +212,8 @@ export default function Apartamento() {
                       checkboxSelection={isRolBoolean(["Administrador", "Vicedecano"])}
                       disableSelectionOnClick={!isRolBoolean(["Administrador", "Vicedecano"])}
                       onSelectionModelChange={(selectionModel) => setSelected(selectionModel)}
-                      components={{
-                          Toolbar: MyToolbar,
-                      }}/>
+                      components={{Toolbar: MyToolbar,}}
+                      localeText={esES.components.MuiDataGrid.defaultProps.localeText}/>
             <Dialog open={open.open} onClose={handleClose}>
                 <DialogTitle>Apartamento</DialogTitle>
                 <DialogContent ref={containerInputs}>
@@ -238,7 +250,7 @@ export default function Apartamento() {
                     </DialogContent>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={borrar}>Acepar</Button>
+                    <Button onClick={borrar}>Aceptar</Button>
                     <Button onClick={handleCloseBorrar} color={"error"}> Cancelar </Button>
                 </DialogActions>
             </Dialog>

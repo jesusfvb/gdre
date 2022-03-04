@@ -1,7 +1,7 @@
 import {ChangeEvent, MouseEvent, ReactElement, useContext, useEffect, useRef, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import {
-    DataGrid,
+    DataGrid, esES,
     GridColumns,
     GridSelectionModel,
     GridToolbarContainer,
@@ -15,7 +15,7 @@ import {
     DialogContent,
     DialogTitle,
     IconButton,
-    TextField,
+    TextField, Tooltip,
     Typography
 } from "@mui/material";
 import {Add, Delete, NavigateBefore, NavigateNext, Update} from "@mui/icons-material";
@@ -50,24 +50,31 @@ export default function Cuarto(): ReactElement {
             filterable: false,
             headerName: "Acción",
             minWidth: 130,
+            type: "actions",
             renderCell: (param) => (
                 <>
                     {isRolRender(["Administrador", "Vicedecano"],
                         <>
-                            <IconButton color={"primary"} onClick={handleClickOpen(param.value)}>
-                                <Update/>
-                            </IconButton>
-                            <IconButton color={"error"} onClick={handleClickOpenBorrar(param.value)}>
-                                <Delete/>
-                            </IconButton>
+                            <Tooltip title={"Modificar"}>
+                                <IconButton color={"primary"} onClick={handleClickOpen(param.value)}>
+                                    <Update/>
+                                </IconButton>
+                            </Tooltip>
+                            <Tooltip title={"Borrar"}>
+                                <IconButton color={"error"} onClick={handleClickOpenBorrar(param.value)}>
+                                    <Delete/>
+                                </IconButton>
+                            </Tooltip>
                         </>
                     )}
-                    <IconButton color={"secondary"} onClick={(event) => {
-                        event.stopPropagation()
-                        navegate(`/ubicacion/residencias/${params.idEdificio}/apartamento/${params.id}/cuarto/${param.value}/residente`)
-                    }}>
-                        <NavigateNext/>
-                    </IconButton>
+                    <Tooltip title={"Ir"}>
+                        <IconButton color={"secondary"} onClick={(event) => {
+                            event.stopPropagation()
+                            navegate(`/ubicacion/residencias/${params.idEdificio}/apartamento/${params.id}/cuarto/${param.value}/residente`)
+                        }}>
+                            <NavigateNext/>
+                        </IconButton>
+                    </Tooltip>
                 </>
             )
         }]
@@ -140,7 +147,7 @@ export default function Cuarto(): ReactElement {
                         newRows[rows.findIndex(row => row.id === open.params.id)] = response.data
                         setRows(newRows)
                         handleClose()
-                        enqueueSnackbar("Acción realizada con exito", {variant: "success"})
+                        enqueueSnackbar("Acción realizada con éxito", {variant: "success"})
                     })
                     .catch(error => enqueueSnackbar("Error al realizar la Acción"))
             } else {
@@ -153,7 +160,7 @@ export default function Cuarto(): ReactElement {
                     .then(response => {
                         setRows([...rows, response.data])
                         handleClose()
-                        enqueueSnackbar("Acción realizada con exito", {variant: "success"})
+                        enqueueSnackbar("Acción realizada con éxito", {variant: "success"})
                     })
                     .catch(error => enqueueSnackbar("Error al realizar la Acción"))
             }
@@ -176,7 +183,7 @@ export default function Cuarto(): ReactElement {
                 })
                 setRows(newRows)
                 handleCloseBorrar()
-                enqueueSnackbar("Acción realizada con exito", {variant: "success"})
+                enqueueSnackbar("Acción realizada con éxito", {variant: "success"})
             })
             .catch(error => enqueueSnackbar("Error al realizar la Acción"))
     }
@@ -185,22 +192,29 @@ export default function Cuarto(): ReactElement {
     function MyToolbar(): ReactElement {
         return (
             <GridToolbarContainer>
-                <IconButton color={"secondary"}
-                            onClick={() => navegate(`/ubicacion/residencias/${params.idEdificio}/apartamento`)}>
-                    <NavigateBefore/>
-                    <Typography variant={"subtitle1"}>Apartamento</Typography>
-                </IconButton>
+                <Tooltip title={"Regresar"}>
+                    <IconButton color={"secondary"}
+                                onClick={() => navegate(`/ubicacion/residencias/${params.idEdificio}/apartamento`)}>
+                        <NavigateBefore/>
+                        <Typography variant={"subtitle1"}>Apartamento</Typography>
+                    </IconButton>
+                </Tooltip>
                 <GridToolbarFilterButton/>
                 <Typography variant={"subtitle1"} sx={{marginLeft: 1}}>Cuarto</Typography>
                 <Box sx={{flexGrow: 1}}/>
                 {isRolRender("Administrador",
                     <>
-                        <IconButton onClick={handleClickOpen()}>
-                            <Add color={"success"}/>
-                        </IconButton>
-                        <IconButton onClick={handleClickOpenBorrar()} disabled={selected.length === 0} color={"error"}>
-                            <Delete/>
-                        </IconButton>
+                        <Tooltip title={"Registrar"}>
+                            <IconButton onClick={handleClickOpen()}>
+                                <Add color={"success"}/>
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip title={"Borrar"}>
+                            <IconButton onClick={handleClickOpenBorrar()} disabled={selected.length === 0}
+                                        color={"error"}>
+                                <Delete/>
+                            </IconButton>
+                        </Tooltip>
                     </>
                 )}
             </GridToolbarContainer>
@@ -214,9 +228,8 @@ export default function Cuarto(): ReactElement {
                       checkboxSelection={isRolBoolean(["Administrador", "Vicedecano"])}
                       disableSelectionOnClick={!isRolBoolean(["Administrador", "Vicedecano"])}
                       onSelectionModelChange={(selectionModel) => setSelected(selectionModel)}
-                      components={{
-                          Toolbar: MyToolbar,
-                      }}/>
+                      components={{Toolbar: MyToolbar,}}
+                      localeText={esES.components.MuiDataGrid.defaultProps.localeText}/>
             <Dialog open={open.open} onClose={handleClose}>
                 <DialogTitle>Cuarto</DialogTitle>
                 <DialogContent ref={containerInputs}>
@@ -265,7 +278,7 @@ export default function Cuarto(): ReactElement {
                     </DialogContent>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={borrar}>Acepar</Button>
+                    <Button onClick={borrar}>Aceptar</Button>
                     <Button onClick={handleCloseBorrar} color={"error"}> Cancelar </Button>
                 </DialogActions>
             </Dialog>

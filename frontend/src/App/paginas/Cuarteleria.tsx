@@ -1,6 +1,6 @@
 import {MouseEvent, ReactElement, SyntheticEvent, useEffect, useState, ChangeEvent, useContext} from "react";
 import {
-    DataGrid,
+    DataGrid, esES,
     GridColumns,
     GridSelectionModel,
     GridToolbarContainer,
@@ -16,7 +16,7 @@ import {
     DialogContent,
     DialogTitle, FormControl,
     IconButton, InputLabel, MenuItem, Select, SelectChangeEvent,
-    TextField
+    TextField, Tooltip
 } from "@mui/material";
 import {Add, Check, Delete, Update} from "@mui/icons-material";
 import axios from "axios";
@@ -50,21 +50,27 @@ export default function Cuarteleria(): ReactElement {
         {
             field: "id",
             headerName: "Acciones",
-            type: "date",
+            type: "actions",
             minWidth: 130,
             filterable: false,
             hide: !isRolBoolean(["Instructora", "Administrador", "Vicedecano"]),
             renderCell: (params) => (
                 <>
-                    <IconButton color="primary" onClick={handleClickOpenEvaluacion(params.value)}>
-                        <Check/>
-                    </IconButton>
-                    <IconButton color="primary" onClick={handleClickOpen(params.value)}>
-                        <Update/>
-                    </IconButton>
-                    <IconButton color="error" onClick={handleClickOpenBorrar(params.value)}>
-                        <Delete/>
-                    </IconButton>
+                    <Tooltip title={"Evaluar"}>
+                        <IconButton color="primary" onClick={handleClickOpenEvaluacion(params.value)}>
+                            <Check/>
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title={"Modificar"}>
+                        <IconButton color="primary" onClick={handleClickOpen(params.value)}>
+                            <Update/>
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title={"Borrar"}>
+                        <IconButton color="error" onClick={handleClickOpenBorrar(params.value)}>
+                            <Delete/>
+                        </IconButton>
+                    </Tooltip>
                 </>
             )
         }]
@@ -134,7 +140,7 @@ export default function Cuarteleria(): ReactElement {
                         newRows[rows.findIndex(row => row.id === open.id)] = response.data
                         setRows(newRows)
                         handleClose()
-                        enqueueSnackbar("Acción realizada con exito", {variant: "success"})
+                        enqueueSnackbar("Acción realizada con éxito", {variant: "success"})
                     })
                     .catch(error => enqueueSnackbar("Error al realizar la Acción"))
             } else {
@@ -146,7 +152,7 @@ export default function Cuarteleria(): ReactElement {
                     .then(response => {
                         setRows([...rows, response.data])
                         handleClose()
-                        enqueueSnackbar("Acción realizada con exito", {variant: "success"})
+                        enqueueSnackbar("Acción realizada con éxito", {variant: "success"})
                     })
                     .catch((error) => enqueueSnackbar("Error al realizar la Acción"))
             }
@@ -167,7 +173,7 @@ export default function Cuarteleria(): ReactElement {
                 })
                 setRows(newRows)
                 handleCloseBorrar()
-                enqueueSnackbar("Acción realizada con exito", {variant: "success"})
+                enqueueSnackbar("Acción realizada con éxito", {variant: "success"})
             })
             .catch(error => enqueueSnackbar("Error al realizar la Acción"))
     }
@@ -179,7 +185,7 @@ export default function Cuarteleria(): ReactElement {
                 newRows[rows.findIndex(row => row.id === response.data.id)] = response.data
                 setRows(newRows)
                 handleCloseEvaluacion()
-                enqueueSnackbar("Acción realizada con exito", {variant: "success"})
+                enqueueSnackbar("Acción realizada con éxito", {variant: "success"})
             })
             .catch(error => enqueueSnackbar("Error al realizar la Acción"))
         handleCloseEvaluacion()
@@ -254,13 +260,17 @@ export default function Cuarteleria(): ReactElement {
                 {
                     isRolRender(["Instructora", "Administrador", "Vicedecano"],
                         <>
-                            <IconButton color={"success"} onClick={handleClickOpen()}>
-                                <Add/>
-                            </IconButton>
-                            <IconButton color={"error"} onClick={handleClickOpenBorrar()}
-                                        disabled={selected.length === 0}>
-                                <Delete/>
-                            </IconButton>
+                            <Tooltip title={"Registrar"}>
+                                <IconButton color={"success"} onClick={handleClickOpen()}>
+                                    <Add/>
+                                </IconButton>
+                            </Tooltip>
+                            <Tooltip title={"Borrar"}>
+                                <IconButton color={"error"} onClick={handleClickOpenBorrar()}
+                                            disabled={selected.length === 0}>
+                                    <Delete/>
+                                </IconButton>
+                            </Tooltip>
                         </>
                     )
                 }
@@ -280,7 +290,8 @@ export default function Cuarteleria(): ReactElement {
             <DataGrid columns={columns} rows={rows} components={{Toolbar: MyToolbar}} autoPageSize
                       checkboxSelection={isRolBoolean(["Administrador", "Vicedecano"])}
                       disableSelectionOnClick={!isRolBoolean(["Administrador", "Vicedecano"])}
-                      onSelectionModelChange={(selectionModel) => setSelected(selectionModel)}/>
+                      onSelectionModelChange={(selectionModel) => setSelected(selectionModel)}
+                      localeText={esES.components.MuiDataGrid.defaultProps.localeText}/>
             <Dialog open={open.open} onClose={handleClose}>
                 <DialogTitle>Cuarteleria</DialogTitle>
                 <DialogContent>
@@ -334,7 +345,7 @@ export default function Cuarteleria(): ReactElement {
                     </DialogContent>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={borrar}>Acepar</Button>
+                    <Button onClick={borrar}>Aceptar</Button>
                     <Button onClick={handleCloseBorrar} color={"error"}> Cancelar </Button>
                 </DialogActions>
             </Dialog>
