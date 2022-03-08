@@ -1,6 +1,6 @@
 import {ChangeEvent, MouseEvent, ReactElement, SyntheticEvent, useContext, useEffect, useState} from "react";
 import {
-    DataGrid,
+    DataGrid, esES,
     GridColumns,
     GridSelectionModel,
     GridToolbarContainer,
@@ -22,7 +22,7 @@ import {
     MenuItem,
     Select,
     SelectChangeEvent,
-    TextField,
+    TextField, Tooltip,
     Typography
 } from "@mui/material";
 import {Add, AddTask, Delete, HowToReg, NavigateBefore, Warning} from "@mui/icons-material";
@@ -85,26 +85,34 @@ export default function Integrantes(): ReactElement {
         {
             field: "id",
             headerName: "Acciones",
-            type: "date",
+            type: "actions",
             minWidth: 170,
             filterable: false,
             hide: !isRolBoolean(["Profesor", "Instructora", "Administrador", "Vicedecano"]),
             renderCell: (params) => (
                 <>
-                    <IconButton onClick={handleClickOpenAE(params.value, 1)}>
-                        <HowToReg/>
-                    </IconButton>
-                    <IconButton onClick={handleClickOpenAE(params.value, 2)}>
-                        <AddTask/>
-                    </IconButton>
-                    <IconButton onClick={handleClickOpenAdvertencia(params.value, 1)}>
-                        <Warning/>
-                    </IconButton>
+                    <Tooltip title={"Asistencia"}>
+                        <IconButton onClick={handleClickOpenAE(params.value, 1)}>
+                            <HowToReg/>
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title={"Evaluación"}>
+                        <IconButton onClick={handleClickOpenAE(params.value, 2)}>
+                            <AddTask/>
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title={"Advertencia"}>
+                        <IconButton onClick={handleClickOpenAdvertencia(params.value, 1)}>
+                            <Warning/>
+                        </IconButton>
+                    </Tooltip>
                     {
                         isRolRender("Administrador",
-                            <IconButton color="error" onClick={handleClickOpenBorrar(params.value)}>
-                                <Delete/>
-                            </IconButton>
+                            <Tooltip title={"Borrar"}>
+                                <IconButton color="error" onClick={handleClickOpenBorrar(params.value)}>
+                                    <Delete/>
+                                </IconButton>
+                            </Tooltip>
                         )
                     }
                 </>
@@ -208,7 +216,7 @@ export default function Integrantes(): ReactElement {
                 .then(response => {
                     setRows([...rows, response.data])
                     handleClose()
-                    enqueueSnackbar("Acción realizada con exito", {variant: "success"})
+                    enqueueSnackbar("Acción realizada con éxito", {variant: "success"})
                 })
                 .catch((error) => enqueueSnackbar("Error al realizar la Acción"))
         } else {
@@ -227,7 +235,7 @@ export default function Integrantes(): ReactElement {
                 })
                 setRows(newRows)
                 handleCloseBorrar()
-                enqueueSnackbar("Acción realizada con exito", {variant: "success"})
+                enqueueSnackbar("Acción realizada con éxito", {variant: "success"})
             })
             .catch(error => enqueueSnackbar("Error al realizar la Acción"))
     }
@@ -245,7 +253,7 @@ export default function Integrantes(): ReactElement {
                 newRows[rows.findIndex(row => row.id === openAE.id)] = response.data
                 setRows(newRows)
                 handleCloseAE()
-                enqueueSnackbar("Acción realizada con exito", {variant: "success"})
+                enqueueSnackbar("Acción realizada con éxito", {variant: "success"})
             })
             .catch(error => enqueueSnackbar("Error al realizar la Acción"));
     }
@@ -259,7 +267,7 @@ export default function Integrantes(): ReactElement {
                 newRows[rows.findIndex(row => row.id === response.data.id)] = response.data
                 setRows(newRows)
                 handleCloseAdvertencia()
-                enqueueSnackbar("Acción realizada con exito", {variant: "success"})
+                enqueueSnackbar("Acción realizada con éxito", {variant: "success"})
             }).catch(error => {
             enqueueSnackbar("Error al realizar la Acción")
         })
@@ -329,23 +337,29 @@ export default function Integrantes(): ReactElement {
     function MyToolbar(): ReactElement {
         return (
             <GridToolbarContainer>
-                <IconButton color={"secondary"}
-                            onClick={() => navegate(`/guardia`)}>
-                    <NavigateBefore/>
-                    <Typography variant={"subtitle1"}>Guardia</Typography>
-                </IconButton>
+                <Tooltip title={"Regresar"}>
+                    <IconButton color={"secondary"}
+                                onClick={() => navegate(`/guardia`)}>
+                        <NavigateBefore/>
+                        <Typography variant={"subtitle1"}>Guardia</Typography>
+                    </IconButton>
+                </Tooltip>
                 <GridToolbarFilterButton/>
                 <Box sx={{flexGrow: 1}}/>
                 {
                     isRolRender(["Vicedecano", "Administrador"],
                         <>
-                            <IconButton color={"success"} onClick={handleClickOpen()}>
-                                <Add/>
-                            </IconButton>
-                            <IconButton color={"error"} onClick={handleClickOpenBorrar()}
-                                        disabled={selected.length === 0}>
-                                <Delete/>
-                            </IconButton>
+                            <Tooltip title={"Registrar"}>
+                                <IconButton color={"success"} onClick={handleClickOpen()}>
+                                    <Add/>
+                                </IconButton>
+                            </Tooltip>
+                            <Tooltip title={"Borrar"}>
+                                <IconButton color={"error"} onClick={handleClickOpenBorrar()}
+                                            disabled={selected.length === 0}>
+                                    <Delete/>
+                                </IconButton>
+                            </Tooltip>
                         </>)
                 }
 
@@ -366,7 +380,8 @@ export default function Integrantes(): ReactElement {
             <DataGrid columns={columns} rows={rows} components={{Toolbar: MyToolbar}} autoPageSize
                       checkboxSelection={isRolBoolean(["Administrador", "Vicedecano"])}
                       disableSelectionOnClick={!isRolBoolean(["Administrador", "Vicedecano"])}
-                      onSelectionModelChange={(selectionModel) => setSelected(selectionModel)}/>
+                      onSelectionModelChange={(selectionModel) => setSelected(selectionModel)}
+                      localeText={esES.components.MuiDataGrid.defaultProps.localeText}/>
             <Dialog open={open.open} onClose={handleClose}>
                 <DialogTitle>Integrantes</DialogTitle>
                 <DialogContent>
@@ -452,7 +467,7 @@ export default function Integrantes(): ReactElement {
                     </DialogContent>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={borrar}>Acepar</Button>
+                    <Button onClick={borrar}>Aceptar</Button>
                     <Button onClick={handleCloseBorrar} color={"error"}> Cancelar </Button>
                 </DialogActions>
             </Dialog>

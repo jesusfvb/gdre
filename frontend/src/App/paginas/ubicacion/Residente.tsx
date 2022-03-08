@@ -2,6 +2,7 @@ import {MouseEvent, ReactElement, SyntheticEvent, useContext, useEffect, useStat
 import {useNavigate, useParams} from "react-router-dom";
 import {
     DataGrid,
+    esES,
     GridColumns,
     GridSelectionModel,
     GridToolbarContainer,
@@ -18,7 +19,7 @@ import {
     DialogContent,
     DialogTitle,
     IconButton,
-    TextField,
+    TextField, Tooltip,
     Typography
 } from "@mui/material";
 import {Add, Delete, NavigateBefore} from "@mui/icons-material";
@@ -45,11 +46,14 @@ export default function Residente(): ReactElement {
             filterable: false,
             headerName: "Acción",
             minWidth: 100,
+            type: "actions",
             hide: !isRolBoolean(["Administrador", "Vicedecano"]),
             renderCell: (param) => (
-                <IconButton color={"error"} onClick={handleClickOpenBorrar(param.value)}>
-                    <Delete/>
-                </IconButton>
+                <Tooltip title={"Quitar Ubicación"}>
+                    <IconButton color={"error"} onClick={handleClickOpenBorrar(param.value)}>
+                        <Delete/>
+                    </IconButton>
+                </Tooltip>
             )
         }]
     const [value, setValue] = useState<any>()
@@ -93,7 +97,7 @@ export default function Residente(): ReactElement {
                 .then(response => {
                     setRows([...rows, response.data])
                     handleClose()
-                    enqueueSnackbar("Acción realizada con exito", {variant: "success"})
+                    enqueueSnackbar("Acción realizada con éxito", {variant: "success"})
                 }).catch(error => enqueueSnackbar("Error al realizar la Acción"))
         } else {
             enqueueSnackbar("Error al realizar la Acción")
@@ -111,7 +115,7 @@ export default function Residente(): ReactElement {
                     }
                 })
                 setRows(newRows)
-                enqueueSnackbar("Acción realizada con exito", {variant: "success"})
+                enqueueSnackbar("Acción realizada con éxito", {variant: "success"})
                 handleCloseBorrar()
             })
             .catch(error => enqueueSnackbar("Error al realizar la Acción"))
@@ -181,22 +185,29 @@ export default function Residente(): ReactElement {
     function MyToolbar(): ReactElement {
         return (
             <GridToolbarContainer>
-                <IconButton color={"secondary"}
-                            onClick={() => navegate(`/ubicacion/residencias/${params.idEdificio}/apartamento/${params.idApartamento}/cuarto`)}>
-                    <NavigateBefore/>
-                    <Typography variant={"subtitle1"}>Cuarto</Typography>
-                </IconButton>
+                <Tooltip title={"Regresar"}>
+                    <IconButton color={"secondary"}
+                                onClick={() => navegate(`/ubicacion/residencias/${params.idEdificio}/apartamento/${params.idApartamento}/cuarto`)}>
+                        <NavigateBefore/>
+                        <Typography variant={"subtitle1"}>Cuarto</Typography>
+                    </IconButton>
+                </Tooltip>
                 <GridToolbarFilterButton/>
                 <Typography variant={"subtitle1"} sx={{marginLeft: 1}}>Residentes</Typography>
                 <Box sx={{flexGrow: 1}}/>
                 {isRolRender("Administrador",
                     <>
-                        <IconButton onClick={handleClickOpen}>
-                            <Add color={"success"}/>
-                        </IconButton>
-                        <IconButton onClick={handleClickOpenBorrar()} disabled={selected.length === 0} color={"error"}>
-                            <Delete/>
-                        </IconButton>
+                        <Tooltip title={"Registrar"}>
+                            <IconButton onClick={handleClickOpen}>
+                                <Add color={"success"}/>
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip title={"Quitar Ubicación"}>
+                            <IconButton onClick={handleClickOpenBorrar()} disabled={selected.length === 0}
+                                        color={"error"}>
+                                <Delete/>
+                            </IconButton>
+                        </Tooltip>
                     </>
                 )}
             </GridToolbarContainer>
@@ -210,9 +221,8 @@ export default function Residente(): ReactElement {
                       checkboxSelection={isRolBoolean(["Administrador", "Vicedecano"])}
                       disableSelectionOnClick={!isRolBoolean(["Administrador", "Vicedecano"])}
                       onSelectionModelChange={(selectionModel) => setSelected(selectionModel)}
-                      components={{
-                          Toolbar: MyToolbar,
-                      }}/>
+                      components={{Toolbar: MyToolbar,}}
+                      localeText={esES.components.MuiDataGrid.defaultProps.localeText}/>
             <Dialog open={open} onClose={handleClose}>
                 <DialogTitle>Ubicar</DialogTitle>
                 <DialogContent>
@@ -238,7 +248,7 @@ export default function Residente(): ReactElement {
                     </DialogContent>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={desubicar}>Acepar</Button>
+                    <Button onClick={desubicar}>Aceptar</Button>
                     <Button onClick={handleCloseBorrar} color={"error"}> Cancelar </Button>
                 </DialogActions>
             </Dialog>

@@ -1,4 +1,4 @@
-import {Avatar, Button, Grid, Paper, Typography} from "@mui/material";
+import {Avatar, Button, Grid, Link, Paper, Typography} from "@mui/material";
 import {Outlet, useNavigate} from "react-router-dom"
 import BarraDeNavegacion from "./BarraDeNavegacion";
 import {useContext} from "react";
@@ -8,6 +8,31 @@ export default function Marco(props: { cerrarSession: Function }) {
     const navigation = useNavigate()
     const datosUser = useContext(DatosUser)
     const {isRolRender} = useContext(IsRole)
+
+    function Copyright(props: any) {
+        return (
+            <Typography
+                sx={{
+                    position: "fixed",
+                    bottom: 10,
+                    left: "50%",
+                    transform: "translate(-50%)"
+                }}
+                variant="body2"
+                color="text.secondary"
+                align="center"
+                {...props}
+            >
+                {"Copyright © "}
+                <Link color="inherit">
+                    Your Website
+                </Link>{" "}
+                {new Date().getFullYear()}
+                {"."}
+            </Typography>
+        );
+    }
+
     return (
         <Grid container direction={"column"}>
             <Grid item sx={{marginBottom: 1}}>
@@ -61,6 +86,9 @@ export default function Marco(props: { cerrarSession: Function }) {
                 <Grid item xl={true} lg={true} md={true} sm={true} xs={true} sx={{borderLeft: "solid 1px"}}>
                     <Outlet/>
                 </Grid>
+            </Grid>
+            <Grid item xl={1} lg={1} md={1} sm={1} xs={1}>
+                <Copyright/>
             </Grid>
         </Grid>
     )

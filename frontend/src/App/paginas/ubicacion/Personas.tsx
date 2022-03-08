@@ -1,5 +1,5 @@
 import {MouseEvent, ReactElement, SyntheticEvent, useContext, useEffect, useState} from "react";
-import {DataGrid, GridColumns, GridToolbarContainer, GridToolbarFilterButton} from "@mui/x-data-grid";
+import {DataGrid, esES, GridColumns, GridToolbarContainer, GridToolbarFilterButton} from "@mui/x-data-grid";
 import {
     Autocomplete,
     AutocompleteValue,
@@ -11,7 +11,7 @@ import {
     DialogContent,
     DialogTitle,
     IconButton,
-    TextField
+    TextField, Tooltip
 } from "@mui/material";
 import {AddLocation, Check, Close, Delete} from "@mui/icons-material";
 import axios from "axios";
@@ -21,6 +21,7 @@ import {useSnackbar} from "notistack";
 export default function Personas(): ReactElement {
     const {isRolRender, isRolBoolean} = useContext(IsRole)
     const {enqueueSnackbar} = useSnackbar();
+    const [option, setOption] = useState<1 | 2 | 3>(1)
     const columns: GridColumns = [
         {
             field: "nombre",
@@ -36,7 +37,8 @@ export default function Personas(): ReactElement {
             type: "number",
             headerName: "Edificio",
             headerAlign: "left",
-            align: "left"
+            align: "left",
+            hide: option !== 1
         },
         {
             field: "apartamento",
@@ -44,7 +46,8 @@ export default function Personas(): ReactElement {
             type: "number",
             headerName: "Apartamento",
             headerAlign: "left",
-            align: "left"
+            align: "left",
+            hide: option !== 1
         },
         {
             field: "cuarto",
@@ -52,38 +55,48 @@ export default function Personas(): ReactElement {
             type: "number",
             headerName: "Cuarto",
             headerAlign: "left",
-            align: "left"
+            align: "left",
+            hide: option !== 1
         },
         {
             field: "id",
             filterable: false,
             headerName: "Acción",
             minWidth: 100,
+            type: "actions",
             hide: !isRolBoolean(["Administrador", "Vicedecano"]),
             renderCell: (param) => {
                 switch (option) {
                     case 1:
                         return (
-                            <IconButton color={"error"} onClick={handleClickOpenBorrar(param.value)}>
-                                <Delete/>
-                            </IconButton>
+                            <Tooltip title={"Quitar Ubicación"}>
+                                <IconButton color={"error"} onClick={handleClickOpenBorrar(param.value)}>
+                                    <Delete/>
+                                </IconButton>
+                            </Tooltip>
                         )
                     case 2:
                         return (
                             <>
-                                <IconButton color={"error"} onClick={handleClickOpen(param.value)}>
-                                    <AddLocation/>
-                                </IconButton>
-                                <IconButton color={"secondary"} onClick={handleClickOpenBorrar(param.value)}>
-                                    <Close/>
-                                </IconButton>
+                                <Tooltip title={"Ubicar"}>
+                                    <IconButton color={"error"} onClick={handleClickOpen(param.value)}>
+                                        <AddLocation/>
+                                    </IconButton>
+                                </Tooltip>
+                                <Tooltip title={"Revocar"}>
+                                    <IconButton color={"secondary"} onClick={handleClickOpenBorrar(param.value)}>
+                                        <Close/>
+                                    </IconButton>
+                                </Tooltip>
                             </>
                         )
                     case 3:
                         return (
-                            <IconButton color={"primary"} onClick={confirmar(param.value)}>
-                                <Check/>
-                            </IconButton>
+                            <Tooltip title={"Confirmar"}>
+                                <IconButton color={"primary"} onClick={confirmar(param.value)}>
+                                    <Check/>
+                                </IconButton>
+                            </Tooltip>
                         )
                 }
             }
@@ -92,7 +105,6 @@ export default function Personas(): ReactElement {
     const [valueEdificio, setValueEdificio] = useState<any | null>(null)
     const [valueApartamento, setValueApartamento] = useState<any | null>(null)
     const [valueCuarto, setValueCuarto] = useState<any | null>(null)
-    const [option, setOption] = useState<1 | 2 | 3>(1)
     const [rows, setRows] = useState<Array<any>>([])
     const [open, setOpen] = useState<boolean>(false);
     const [validate, setValidate] = useState<{ edificio: boolean, apartamento: boolean, cuarto: boolean }>({
@@ -158,7 +170,7 @@ export default function Personas(): ReactElement {
                     newRows.splice(newRows.findIndex((value) => value.id === response.data.id), 1)
                     setRows(newRows)
                     handleClose()
-                    enqueueSnackbar("Acción realizada con exito", {variant: "success"})
+                    enqueueSnackbar("Acción realizada con éxito", {variant: "success"})
                 }).catch(error => enqueueSnackbar("Error al realizar la Acción"))
 
         } else {
@@ -178,7 +190,7 @@ export default function Personas(): ReactElement {
                 })
                 setRows(newRows)
                 handleCloseBorrar()
-                enqueueSnackbar("Acción realizada con exito", {variant: "success"})
+                enqueueSnackbar("Acción realizada con éxito", {variant: "success"})
             })
             .catch(error => enqueueSnackbar("Error al realizar la Acción"))
     }
@@ -194,7 +206,7 @@ export default function Personas(): ReactElement {
                     }
                 })
                 setRows(newRows)
-                enqueueSnackbar("Acción realizada con exito", {variant: "success"})
+                enqueueSnackbar("Acción realizada con éxito", {variant: "success"})
             })
             .catch(error => enqueueSnackbar("Error al realizar la Acción"))
     }
@@ -211,7 +223,7 @@ export default function Personas(): ReactElement {
                 })
                 setRows(newRows)
                 handleCloseBorrar()
-                enqueueSnackbar("Acción realizada con exito", {variant: "success"})
+                enqueueSnackbar("Acción realizada con éxito", {variant: "success"})
             })
             .catch(error => enqueueSnackbar("Error al realizar la Acción"))
     }
@@ -435,9 +447,9 @@ export default function Personas(): ReactElement {
     return (
         <>
             <DataGrid autoPageSize={true} density={"compact"} columns={columns} rows={rows}
-                      components={{
-                          Toolbar: MyToolbar,
-                      }}/>
+                      components={{Toolbar: MyToolbar,}}
+                      disableSelectionOnClick
+                      localeText={esES.components.MuiDataGrid.defaultProps.localeText}/>
             <Dialog open={open} onClose={handleClose}>
                 <DialogTitle>Ubicar</DialogTitle>
                 <DialogContent>
@@ -466,8 +478,8 @@ export default function Personas(): ReactElement {
                 </DialogContent>
                 <DialogActions>
                     {(option === 2) ?
-                        <Button onClick={desconfirmar}>Acepar</Button> :
-                        <Button onClick={desubicar}>Acepar</Button>}
+                        <Button onClick={desconfirmar}>Aceptar</Button> :
+                        <Button onClick={desubicar}>Aceptar</Button>}
                     <Button onClick={handleCloseBorrar} color={"error"}> Cancelar </Button>
                 </DialogActions>
             </Dialog>
